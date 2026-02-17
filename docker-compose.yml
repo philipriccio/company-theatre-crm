@@ -1,0 +1,42 @@
+# Company Theatre CRM - Docker Compose for Production
+version: '3.8'
+
+services:
+  crm:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL:-http://localhost:3000}
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=crm
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_DB=company_theatre_crm
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # Cron job runner for scheduled campaigns
+  cron:
+    build: .
+    command: >
+      sh -c "while true; do
+        wget -q -O - http://crm:3000/api/cron/send-scheduled || true;
+        sleep 60;
+      done"
+    depends_on:
+      - crm
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Contact {
+  id                 String              @id @default(cuid())
+  email              String              @unique
+  firstName          String?
+  lastName           String?
+  fullName           String?
+  title              String?
+  phone              String?
+  city               String?
+  state              String?
+  country            String?
+  totalDonations     Float?              @default(0)
+  solicitation       Boolean             @default(true)
+  unsubscribedAt     DateTime?
+  externalId         String?
+  metadata           Json?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  campaignRecipients CampaignRecipient[]
+  tags               ContactTag[]
+
+  @@index([email])
+  @@index([unsubscribedAt])
+}
+
+model Tag {
+  id        String       @id @default(cuid())
+  name      String       @unique
+  color     String       @default("#6366f1")
+  createdAt DateTime     @default(now())
+  contacts  ContactTag[]
+
+  @@index([name])
+}
+
+model ContactTag {
+  contactId  String
+  tagId      String
+  assignedAt DateTime @default(now())
+  contact    Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, tagId])
+}
+
+model Campaign {
+  id          String              @id @default(cuid())
+  name        String
+  subject     String
+  fromName    String              @default("The Company Theatre")
+  fromEmail   String              @default("hello@companytheatre.ca")
+  content     String
+  previewText String?
+  status      CampaignStatus      @default(DRAFT)
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  links       CampaignLink[]
+  recipients  CampaignRecipient[]
+
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model CampaignRecipient {
+  id          String    @id @default(cuid())
+  campaignId  String
+  contactId   String
+  sentAt      DateTime?
+  deliveredAt DateTime?
+  openedAt    DateTime?
+  clickedAt   DateTime?
+  bouncedAt   DateTime?
+  bounceType  String?
+  campaign    Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  contact     Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, contactId])
+  @@index([campaignId])
+  @@index([contactId])
+}
+
+model CampaignLink {
+  id          String   @id @default(cuid())
+  campaignId  String
+  originalUrl String
+  clickCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+}
+
+model Template {
+  id        String   @id @default(cuid())
+  name      String
+  content   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  CANCELLED
+}

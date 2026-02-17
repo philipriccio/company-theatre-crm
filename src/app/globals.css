@@ -1,0 +1,267 @@
+@import "tailwindcss";
+
+:root {
+  /* Company Theatre Brand Colors */
+  --ct-black: #0a0a0a;
+  --ct-charcoal: #1a1a1a;
+  --ct-slate: #2d2d2d;
+  --ct-gray: #6b6b6b;
+  --ct-silver: #a3a3a3;
+  --ct-cream: #fafaf9;
+  --ct-white: #ffffff;
+  
+  /* Accent - warm gold for theatre vibes */
+  --ct-gold: #c9a227;
+  --ct-gold-light: #e3c766;
+  --ct-gold-dark: #9a7b1c;
+  
+  /* System colors */
+  --ct-success: #22c55e;
+  --ct-warning: #f59e0b;
+  --ct-error: #ef4444;
+  --ct-info: #3b82f6;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 20px rgba(201, 162, 39, 0.15);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--ct-cream);
+  color: var(--ct-charcoal);
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--ct-gold);
+  color: var(--ct-black);
+}
+
+/* Focus ring styling */
+*:focus-visible {
+  outline: 2px solid var(--ct-gold);
+  outline-offset: 2px;
+}
+
+/* Smooth transitions everywhere */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ct-silver);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ct-gray);
+}
+
+/* Button base styles */
+.btn {
+  @apply inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-200;
+  @apply focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply active:scale-[0.98];
+}
+
+.btn-primary {
+  @apply bg-gradient-to-b from-stone-800 to-stone-900 text-white;
+  @apply hover:from-stone-700 hover:to-stone-800;
+  @apply shadow-md hover:shadow-lg;
+}
+
+.btn-secondary {
+  @apply bg-white text-stone-800 border border-stone-200;
+  @apply hover:bg-stone-50 hover:border-stone-300;
+  @apply shadow-sm hover:shadow-md;
+}
+
+.btn-gold {
+  @apply bg-gradient-to-b from-amber-500 to-amber-600 text-stone-900 font-semibold;
+  @apply hover:from-amber-400 hover:to-amber-500;
+  @apply shadow-md hover:shadow-lg;
+}
+
+.btn-ghost {
+  @apply bg-transparent text-stone-600;
+  @apply hover:bg-stone-100 hover:text-stone-900;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-sm;
+}
+
+.btn-md {
+  @apply px-4 py-2.5 text-sm;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base;
+}
+
+/* Input styles */
+.input {
+  @apply w-full px-4 py-2.5 bg-white border border-stone-200 rounded-xl;
+  @apply text-stone-900 placeholder:text-stone-400;
+  @apply focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20;
+  @apply transition-all duration-200;
+}
+
+.input:hover:not(:focus) {
+  @apply border-stone-300;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-2xl shadow-sm;
+  @apply border border-stone-100;
+  @apply transition-all duration-200;
+}
+
+.card:hover {
+  @apply shadow-md;
+}
+
+.card-interactive {
+  @apply cursor-pointer;
+  @apply hover:border-stone-200 hover:shadow-md;
+  @apply active:scale-[0.99];
+}
+
+/* Badge styles */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  @apply transition-all duration-200;
+}
+
+.badge-success {
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
+}
+
+.badge-warning {
+  @apply bg-amber-50 text-amber-700 border border-amber-200;
+}
+
+.badge-error {
+  @apply bg-red-50 text-red-700 border border-red-200;
+}
+
+.badge-info {
+  @apply bg-sky-50 text-sky-700 border border-sky-200;
+}
+
+.badge-neutral {
+  @apply bg-stone-100 text-stone-600 border border-stone-200;
+}
+
+/* Table styles */
+.table-container {
+  @apply overflow-hidden rounded-2xl border border-stone-100;
+}
+
+.table-row {
+  @apply border-b border-stone-100 last:border-b-0;
+  @apply hover:bg-stone-50/50 transition-colors;
+}
+
+/* Stat card animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stat-value {
+  animation: countUp 0.4s ease-out forwards;
+}
+
+/* Page transitions */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  @apply w-4 h-4 rounded border-stone-300 text-amber-600;
+  @apply focus:ring-amber-500 focus:ring-offset-0;
+  @apply transition-all duration-150;
+}
+
+input[type="checkbox"]:checked {
+  @apply bg-amber-600 border-amber-600;
+}
+
+/* Radio styling */
+input[type="radio"] {
+  @apply w-4 h-4 border-stone-300 text-amber-600;
+  @apply focus:ring-amber-500 focus:ring-offset-0;
+}
+
+/* Select styling */
+select {
+  @apply appearance-none bg-white border border-stone-200 rounded-xl;
+  @apply px-4 py-2.5 pr-10 text-stone-900;
+  @apply focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20;
+  @apply transition-all duration-200;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.25em 1.25em;
+}
+
+/* Textarea styling */
+textarea {
+  @apply w-full px-4 py-3 bg-white border border-stone-200 rounded-xl;
+  @apply text-stone-900 placeholder:text-stone-400;
+  @apply focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20;
+  @apply resize-y min-h-[100px];
+  @apply transition-all duration-200;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  @apply w-5 h-5 border-2 border-stone-200 border-t-amber-600 rounded-full;
+  animation: spin 0.6s linear infinite;
+}
+
+/* Tooltip */
+.tooltip {
+  @apply absolute z-50 px-2 py-1 text-xs font-medium text-white bg-stone-900 rounded-lg;
+  @apply opacity-0 invisible transition-all duration-150;
+  @apply -translate-y-1;
+}
+
+.tooltip-trigger:hover .tooltip {
+  @apply opacity-100 visible translate-y-0;
+}
