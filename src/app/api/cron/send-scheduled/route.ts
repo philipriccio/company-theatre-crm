@@ -22,7 +22,12 @@ export async function GET() {
       return NextResponse.json({ processed: 0, message: 'No campaigns due' })
     }
 
-    const results = []
+    const results: Array<{
+      campaignId: string
+      sent?: number
+      status: string
+      error?: string
+    }> = []
 
     for (const campaign of dueCampaigns) {
       try {
