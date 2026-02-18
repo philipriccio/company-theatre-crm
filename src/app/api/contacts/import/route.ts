@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
                 newTags++
               }
               tagId = tag.id
-              tagCache.set(tagName, tagId)
+              tagCache.set(tagName, tagId!)
             }
 
             // Create contact-tag relationship (skip if exists)
