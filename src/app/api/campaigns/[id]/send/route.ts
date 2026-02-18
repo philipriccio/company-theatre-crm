@@ -58,7 +58,7 @@ export async function POST(
     
     // Create recipient records for all contacts
     await prisma.campaignRecipient.createMany({
-      data: contacts.map(contact => ({
+      data: contacts.map((contact: { id: string }) => ({
         campaignId: id,
         contactId: contact.id,
       })),
