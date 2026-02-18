@@ -11,9 +11,17 @@ export default function NewCampaignPage() {
     name: '',
     subject: '',
     fromName: 'The Company Theatre',
+    fromEmail: 'philip@companytheatre.ca',
     previewText: '',
     content: '',
   })
+
+  // Approved senders for Company Theatre emails
+  const approvedSenders = [
+    { email: 'philip@companytheatre.ca', name: 'Philip Riccio' },
+    { email: 'mildred@companytheatre.ca', name: 'Mildred' },
+    { email: 'janice@companytheatre.ca', name: 'Janice' },
+  ]
 
   const handleSubmit = async (e: React.FormEvent, action: 'draft' | 'preview') => {
     e.preventDefault()
@@ -90,18 +98,38 @@ export default function NewCampaignPage() {
                 />
               </div>
 
-              <div>
-                <label htmlFor="fromName" className="block text-sm font-medium text-stone-700 mb-2">
-                  From Name
-                </label>
-                <input
-                  type="text"
-                  id="fromName"
-                  value={formData.fromName}
-                  onChange={(e) => setFormData({ ...formData, fromName: e.target.value })}
-                  className="input"
-                  required
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="fromEmail" className="block text-sm font-medium text-stone-700 mb-2">
+                    Send From
+                  </label>
+                  <select
+                    id="fromEmail"
+                    value={formData.fromEmail}
+                    onChange={(e) => setFormData({ ...formData, fromEmail: e.target.value })}
+                    className="input"
+                    required
+                  >
+                    {approvedSenders.map((sender) => (
+                      <option key={sender.email} value={sender.email}>
+                        {sender.name} ({sender.email})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="fromName" className="block text-sm font-medium text-stone-700 mb-2">
+                    Display Name
+                  </label>
+                  <input
+                    type="text"
+                    id="fromName"
+                    value={formData.fromName}
+                    onChange={(e) => setFormData({ ...formData, fromName: e.target.value })}
+                    className="input"
+                    required
+                  />
+                </div>
               </div>
             </div>
           </div>
