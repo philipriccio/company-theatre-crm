@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     const contactName = fullName || 
       (firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName || email.split('@')[0])
 
-    // Create the contact
+    // Create the contact first
     const contact = await prisma.contact.create({
       data: {
         email: email.toLowerCase(),
@@ -38,17 +38,36 @@ export async function POST(request: NextRequest) {
         firstName: firstName || null,
         lastName: lastName || null,
         source: source || 'Website',
-        tags: tags && tags.length > 0 ? {
-          connectOrCreate: tags.map((tagName: string) => ({
-            where: { name: tagName },
-            create: { name: tagName },
-          })),
-        } : undefined,
       },
-      include: { tags: true },
     })
 
-    return NextResponse.json(contact, { status: 201 })
+    // Add tags if provided
+    if (tags && tags.length > 0) {
+      for (const tagName of tags) {
+        // Find or create the tag
+        const tag = await prisma.tag.upsert({
+          where: { name: tagName },
+          update: {},
+          create: { name: tagName },
+        })
+        
+        // Create the ContactTag relation
+        await prisma.contactTag.create({
+          data: {
+            contactId: contact.id,
+            tagId: tag.id,
+          },
+        })
+      }
+    }
+
+    // Fetch the contact with tags
+    const contactWithTags = await prisma.contact.findUnique({
+      where: { id: contact.id },
+      include: { tags: { include: { tag: true } } },
+    })
+
+    return NextResponse.json(contactWithTags, { status: 201 })
   } catch (error) {
     console.error('Error creating contact:', error)
     return NextResponse.json(
