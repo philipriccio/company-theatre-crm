@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-import { wrapInTemplate, personalizeContent } from '@/lib/email-template'
-import { sendEmail } from '@/lib/sendgrid'
+import { startBackgroundCampaignSend } from '@/lib/campaign-sender'
 
 export async function POST(
   request: NextRequest,
@@ -82,112 +81,30 @@ export async function POST(
     })
   }
 
-  // Otherwise, send immediately
-  // Update campaign status
+  // Send immediately — create recipients, set status, start background processing
+
+  // Create all recipient records upfront
+  await prisma.campaignRecipient.createMany({
+    data: contacts.map((contact: { id: string }) => ({
+      campaignId: id,
+      contactId: contact.id,
+    })),
+    skipDuplicates: true,
+  })
+
+  // Update campaign status to SENDING
   await prisma.campaign.update({
     where: { id },
     data: { status: 'SENDING' },
   })
 
-  // Get app URL for tracking
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  // Start background email processing (fire-and-forget)
+  startBackgroundCampaignSend(id, contacts)
 
-  // Send emails
-  let sent = 0
-  let failed = 0
-
-  for (const contact of contacts) {
-    // Create recipient record first to get tracking ID
-    const recipient = await prisma.campaignRecipient.create({
-      data: {
-        campaignId: id,
-        contactId: contact.id,
-      },
-    })
-
-    // Generate unsubscribe URL
-    const unsubscribeToken = Buffer.from(contact.email).toString('base64url')
-    const unsubscribeUrl = `${appUrl}/unsubscribe/${unsubscribeToken}`
-
-    // Generate tracking pixel URL
-    const trackingPixelUrl = `${appUrl}/api/track/open/${recipient.id}`
-
-    // Personalize content
-    let personalizedContent = personalizeContent(campaign.content, contact)
-    
-    // Add tracking pixel
-    personalizedContent += `<img src="${trackingPixelUrl}" width="1" height="1" style="display:none" alt="" />`
-
-    // Wrap links for click tracking
-    personalizedContent = wrapLinksForTracking(personalizedContent, recipient.id, appUrl)
-
-    // Wrap in template
-    const html = wrapInTemplate({
-      content: personalizedContent,
-      previewText: campaign.previewText || undefined,
-      unsubscribeUrl,
-    })
-
-    // Send email
-    const success = await sendEmail({
-      to: contact.email,
-      from: {
-        email: campaign.fromEmail,
-        name: campaign.fromName,
-      },
-      subject: campaign.subject,
-      html,
-      customArgs: {
-        campaign_id: id,
-        recipient_id: recipient.id,
-      },
-    })
-
-    if (success) {
-      await prisma.campaignRecipient.update({
-        where: { id: recipient.id },
-        data: { sentAt: new Date() },
-      })
-      sent++
-    } else {
-      failed++
-    }
-
-    // Small delay to avoid rate limits
-    if (sent % 10 === 0) {
-      await new Promise(resolve => setTimeout(resolve, 100))
-    }
-  }
-
-  // Update campaign status
-  await prisma.campaign.update({
-    where: { id },
-    data: {
-      status: 'SENT',
-      sentAt: new Date(),
-    },
-  })
-
+  // Return immediately
   return NextResponse.json({
     success: true,
-    sent,
-    failed,
-    total: contacts.length,
+    queued: true,
+    recipientCount: contacts.length,
   })
-}
-
-// Helper to wrap links for click tracking
-function wrapLinksForTracking(html: string, recipientId: string, appUrl: string): string {
-  // Match href attributes in anchor tags
-  return html.replace(
-    /href="(https?:\/\/[^"]+)"/g,
-    (match, url) => {
-      // Don't track unsubscribe links
-      if (url.includes('/unsubscribe/')) {
-        return match
-      }
-      const encodedUrl = encodeURIComponent(url)
-      return `href="${appUrl}/api/track/click/${recipientId}?url=${encodedUrl}"`
-    }
-  )
 }

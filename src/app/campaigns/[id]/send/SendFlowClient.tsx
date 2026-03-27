@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface Tag {
@@ -15,6 +15,14 @@ interface Props {
   totalSubscribed: number
 }
 
+interface SendProgress {
+  status: string
+  totalRecipients: number
+  sent: number
+  failed: number
+  completedAt: string | null
+}
+
 export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   const router = useRouter()
   const [mode, setMode] = useState<'all' | 'tags'>('all')
@@ -24,6 +32,8 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   const [scheduledDate, setScheduledDate] = useState('')
   const [scheduledTime, setScheduledTime] = useState('')
   const [confirmText, setConfirmText] = useState('')
+  const [progress, setProgress] = useState<SendProgress | null>(null)
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const selectedCount =
     mode === 'all'
@@ -39,6 +49,35 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
         : [...prev, tagId]
     )
   }
+
+  // Poll for campaign status during sending
+  const pollStatus = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/campaigns/${campaignId}/status`)
+      if (!res.ok) return
+      const data: SendProgress = await res.json()
+      setProgress(data)
+
+      if (data.status === 'SENT') {
+        // Stop polling — sending is complete
+        if (pollRef.current) {
+          clearInterval(pollRef.current)
+          pollRef.current = null
+        }
+      }
+    } catch {
+      // Ignore poll errors, will retry
+    }
+  }, [campaignId])
+
+  // Start polling when sending begins
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current)
+      }
+    }
+  }, [])
 
   const handleConfirmedSend = async () => {
     if (confirmText.toUpperCase() !== 'SEND') return
@@ -64,13 +103,32 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
 
       if (!res.ok) throw new Error('Failed to send')
 
-      router.push(`/campaigns/${campaignId}`)
-      router.refresh()
+      const result = await res.json()
+
+      if (result.scheduled) {
+        // Scheduled — redirect immediately
+        router.push(`/campaigns/${campaignId}`)
+        router.refresh()
+        return
+      }
+
+      if (result.queued) {
+        // Sending in background — start polling for progress
+        setProgress({
+          status: 'SENDING',
+          totalRecipients: result.recipientCount,
+          sent: 0,
+          failed: 0,
+          completedAt: null,
+        })
+
+        // Start polling every 5 seconds
+        pollRef.current = setInterval(pollStatus, 5000)
+      }
     } catch {
       alert(
         `Failed to ${sendMode === 'schedule' ? 'schedule' : 'send'} campaign`
       )
-    } finally {
       setSending(false)
     }
   }
@@ -82,6 +140,108 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
 
   const canSchedule = sendMode === 'now' || (scheduledDate && scheduledTime)
   const isConfirmed = confirmText.toUpperCase() === 'SEND'
+
+  // If we're showing progress, render the progress view
+  if (progress) {
+    const percent =
+      progress.totalRecipients > 0
+        ? Math.round((progress.sent / progress.totalRecipients) * 100)
+        : 0
+    const isDone = progress.status === 'SENT'
+
+    return (
+      <div className="space-y-6">
+        <div className="bg-white rounded-xl shadow-sm p-8">
+          <div className="text-center mb-6">
+            {isDone ? (
+              <>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                  <svg
+                    className="w-8 h-8 text-green-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Campaign Sent!
+                </h2>
+                <p className="text-gray-600 mt-2">
+                  {progress.sent.toLocaleString()} emails sent
+                  {progress.failed > 0 && (
+                    <span className="text-red-600">
+                      , {progress.failed.toLocaleString()} failed
+                    </span>
+                  )}
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                  <svg
+                    className="w-8 h-8 text-blue-600 animate-spin"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Sending Campaign...
+                </h2>
+                <p className="text-gray-600 mt-2">
+                  {progress.sent.toLocaleString()} of{' '}
+                  {progress.totalRecipients.toLocaleString()} emails sent
+                </p>
+              </>
+            )}
+          </div>
+
+          {/* Progress bar */}
+          <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+            <div
+              className={`h-3 rounded-full transition-all duration-500 ${
+                isDone ? 'bg-green-500' : 'bg-blue-500'
+              }`}
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+          <p className="text-sm text-gray-500 text-center">{percent}%</p>
+
+          {isDone && (
+            <button
+              onClick={() => {
+                router.push(`/campaigns/${campaignId}`)
+                router.refresh()
+              }}
+              className="w-full mt-6 px-4 py-3 bg-[#0a0a0a] text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+            >
+              View Campaign
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
