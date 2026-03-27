@@ -14,8 +14,20 @@ type CampaignWithStats = Campaign & {
   }[]
 }
 
-export default async function CampaignsPage() {
+interface SearchParams {
+  status?: string
+}
+
+export default async function CampaignsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>
+}) {
+  const params = await searchParams
+  const statusFilter = params.status || ''
+
   const campaigns = await prisma.campaign.findMany({
+    where: statusFilter ? { status: statusFilter } : {},
     include: {
       _count: {
         select: { recipients: true },
@@ -47,6 +59,32 @@ export default async function CampaignsPage() {
           <PlusIcon className="w-4 h-4" />
           New Campaign
         </Link>
+      </div>
+
+      {/* Status Filter */}
+      <div className="card p-4 mb-6">
+        <form method="GET" className="flex gap-4 items-center">
+          <label className="text-sm font-medium text-stone-500">Status:</label>
+          <select
+            name="status"
+            defaultValue={statusFilter}
+            className="w-48"
+          >
+            <option value="">All Statuses</option>
+            <option value="DRAFT">Draft</option>
+            <option value="SCHEDULED">Scheduled</option>
+            <option value="SENDING">Sending</option>
+            <option value="SENT">Sent</option>
+          </select>
+          <button type="submit" className="btn btn-primary btn-sm">
+            Filter
+          </button>
+          {statusFilter && (
+            <a href="/campaigns" className="text-sm text-stone-500 hover:text-stone-700">
+              Clear
+            </a>
+          )}
+        </form>
       </div>
 
       {campaigns.length === 0 ? (
