@@ -100,7 +100,7 @@ export default async function CampaignsPage({
           </p>
           <Link
             href="/campaigns/new"
-            className="btn btn-gold btn-md inline-flex"
+            className="btn btn-primary btn-md inline-flex"
           >
             Create your first campaign
           </Link>
@@ -126,7 +126,7 @@ export default async function CampaignsPage({
                     ? 'bg-gradient-to-br from-emerald-500 to-emerald-600' 
                     : campaign.status === 'DRAFT'
                     ? 'bg-gradient-to-br from-stone-200 to-stone-300'
-                    : 'bg-gradient-to-br from-amber-500 to-amber-600'
+                    : 'bg-gradient-to-br from-blue-500 to-blue-600'
                 }`}>
                   <MailIcon className={`w-6 h-6 ${
                     campaign.status === 'DRAFT' ? 'text-stone-500' : 'text-white'
@@ -158,7 +158,7 @@ export default async function CampaignsPage({
                       <p className="text-xs text-stone-400">Opens</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-semibold text-amber-600">{clickRate}%</p>
+                      <p className="text-2xl font-semibold text-[#ff3b1d]">{clickRate}%</p>
                       <p className="text-xs text-stone-400">Clicks</p>
                     </div>
                   </div>
@@ -181,14 +181,14 @@ export default async function CampaignsPage({
                         })}
                   </p>
                   {campaign.scheduledAt && campaign.status === 'SCHEDULED' && (
-                    <p className="text-xs text-amber-600">
+                    <p className="text-xs text-blue-600">
                       {new Date(campaign.scheduledAt).toLocaleDateString()}
                     </p>
                   )}
                 </div>
 
                 {/* Arrow */}
-                <div className="text-stone-300 group-hover:text-amber-500 transition-colors">
+                <div className="text-stone-300 group-hover:text-[#ff3b1d] transition-colors">
                   <ChevronIcon className="w-5 h-5" />
                 </div>
               </Link>

@@ -180,11 +180,11 @@ export default async function ContactsPage({
                 <td className="px-6 py-4">
                   <Link href={`/contacts/${contact.id}`} className="block">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center text-stone-600 font-medium text-sm group-hover:from-amber-100 group-hover:to-amber-200 group-hover:text-amber-700 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center text-stone-600 font-medium text-sm group-hover:from-red-50 group-hover:to-red-100 group-hover:text-[#ff3b1d] transition-colors">
                         {getInitials(contact)}
                       </div>
                       <div>
-                        <div className="font-medium text-stone-900 group-hover:text-amber-700 transition-colors">
+                        <div className="font-medium text-stone-900 group-hover:text-[#ff3b1d] transition-colors">
                           {contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.email}
                         </div>
                         <div className="text-sm text-stone-500">{contact.email}</div>

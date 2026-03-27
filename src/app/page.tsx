@@ -114,7 +114,7 @@ export default async function Dashboard() {
             <h2 className="text-lg font-semibold text-stone-900">Recent Campaigns</h2>
             <Link 
               href="/campaigns"
-              className="text-sm text-amber-600 hover:text-amber-700 font-medium"
+              className="text-sm text-[#ff3b1d] hover:text-[#e6351a] font-medium"
             >
               View all →
             </Link>
@@ -127,8 +127,8 @@ export default async function Dashboard() {
                   href={`/campaigns/${campaign.id}`}
                   className="flex items-center gap-4 p-3 -mx-3 rounded-xl hover:bg-stone-50 transition-colors group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center group-hover:from-amber-50 group-hover:to-amber-100 transition-colors">
-                    <MailIcon className="w-5 h-5 text-stone-500 group-hover:text-amber-600" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center group-hover:from-red-50 group-hover:to-red-100 transition-colors">
+                    <MailIcon className="w-5 h-5 text-stone-500 group-hover:text-[#ff3b1d]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-stone-900 truncate">{campaign.name}</p>
@@ -152,7 +152,7 @@ export default async function Dashboard() {
               <p className="text-stone-500 text-sm">No campaigns sent yet</p>
               <Link 
                 href="/campaigns/new"
-                className="text-sm text-amber-600 hover:text-amber-700 font-medium mt-2 inline-block"
+                className="text-sm text-[#ff3b1d] hover:text-[#e6351a] font-medium mt-2 inline-block"
               >
                 Create your first campaign →
               </Link>
@@ -180,11 +180,11 @@ function StatCard({
   accent?: boolean
 }) {
   return (
-    <div className={`card p-6 ${accent ? 'ring-1 ring-amber-200 bg-gradient-to-br from-white to-amber-50/30' : ''}`}>
+    <div className={`card p-6 ${accent ? 'ring-1 ring-red-500/20 bg-gradient-to-br from-white to-red-50/20' : ''}`}>
       <div className="flex items-start justify-between mb-4">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
           accent 
-            ? 'bg-gradient-to-br from-amber-500 to-amber-600 text-white' 
+            ? 'bg-gradient-to-br from-[#ff3b1d] to-[#e6351a] text-white' 
             : 'bg-stone-100 text-stone-500'
         }`}>
           {icon}
@@ -225,7 +225,7 @@ function ActionButton({
       className={`
         flex items-center gap-4 p-3 rounded-xl transition-all duration-200 group
         ${primary 
-          ? 'bg-gradient-to-r from-stone-900 to-stone-800 text-white hover:from-stone-800 hover:to-stone-700 shadow-md hover:shadow-lg' 
+          ? 'bg-gradient-to-r from-[#0a0a0a] to-[#171717] text-white hover:from-[#171717] hover:to-[#262626] shadow-md hover:shadow-lg' 
           : 'bg-stone-50 hover:bg-stone-100'
         }
       `}
@@ -234,7 +234,7 @@ function ActionButton({
         w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105
         ${primary ? 'bg-white/10' : 'bg-white shadow-sm'}
       `}>
-        <span className={primary ? 'text-amber-400' : 'text-stone-500'}>
+        <span className={primary ? 'text-[#ff3b1d]' : 'text-stone-500'}>
           {icon}
         </span>
       </div>

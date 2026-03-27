@@ -41,7 +41,7 @@ export default async function TagsPage() {
         <TagSection 
           title="Show Attendance"
           icon={<TicketIcon />}
-          color="amber"
+          color="red"
           tags={attendanceTags}
         />
 
@@ -73,11 +73,11 @@ function TagSection({
 }: { 
   title: string
   icon: React.ReactNode
-  color: 'amber' | 'blue' | 'stone'
+  color: 'red' | 'blue' | 'stone'
   tags: { id: string; name: string; _count: { contacts: number } }[]
 }) {
   const colorClasses = {
-    amber: 'from-amber-500 to-amber-600',
+    red: 'from-[#ff3b1d] to-[#e6351a]',
     blue: 'from-blue-500 to-blue-600',
     stone: 'from-stone-500 to-stone-600',
   }

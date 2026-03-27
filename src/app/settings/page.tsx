@@ -66,7 +66,7 @@ export default function SettingsPage() {
                   href="https://app.sendgrid.com/settings/api_keys" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-amber-600 hover:text-amber-700 underline underline-offset-2"
+                  className="text-[#ff3b1d] hover:text-[#e6351a] underline underline-offset-2"
                 >
                   SendGrid Dashboard
                 </a>
@@ -78,7 +78,7 @@ export default function SettingsPage() {
         {/* Sender Configuration */}
         <div className="card p-6">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff3b1d] to-[#e6351a] flex items-center justify-center">
               <MailIcon className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -172,7 +172,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving}
-            className="btn btn-gold btn-md"
+            className="btn btn-primary btn-md"
           >
             {saving ? (
               <>

@@ -96,8 +96,8 @@ function DraggableBlock({
         flex flex-col items-center gap-2 p-3 rounded-xl border-2 border-dashed
         transition-all duration-150 text-center
         ${isDragging 
-          ? 'border-amber-500 bg-amber-50 opacity-50' 
-          : 'border-stone-200 hover:border-amber-400 hover:bg-amber-50/50'
+          ? 'border-[#ff3b1d] bg-red-50 opacity-50' 
+          : 'border-stone-200 hover:border-[#ff3b1d]/60 hover:bg-red-50/50'
         }
       `}
     >

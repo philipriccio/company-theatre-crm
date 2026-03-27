@@ -384,7 +384,7 @@ function ColorPicker({ value, onChange }: { value: string; onChange: (v: string)
             key={color}
             onClick={() => onChange(color)}
             className={`w-7 h-7 rounded-lg border-2 transition-transform hover:scale-110 ${
-              value === color ? 'border-amber-500 scale-110' : 'border-transparent'
+              value === color ? 'border-[#ff3b1d] scale-110' : 'border-transparent'
             }`}
             style={{ backgroundColor: color }}
           />

@@ -181,11 +181,11 @@ export default function NewCampaignPage() {
                 </label>
                 <div className="mb-3 flex items-center gap-4 text-xs text-stone-500">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ff3b1d]"></span>
                     Supports HTML
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ff3b1d]"></span>
                     Variables: {"{{firstName}}"}, {"{{lastName}}"}, {"{{email}}"}
                   </span>
                 </div>
@@ -228,7 +228,7 @@ export default function NewCampaignPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-gold btn-md"
+              className="btn btn-primary btn-md"
             >
               {loading ? (
                 <>

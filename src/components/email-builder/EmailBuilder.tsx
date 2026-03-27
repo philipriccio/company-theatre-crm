@@ -132,7 +132,7 @@ export function EmailBuilder({ initialTemplate, onSave, onExportHtml }: EmailBui
               type="text"
               value={templateName}
               onChange={(e) => setTemplateName(e.target.value)}
-              className="text-lg font-semibold text-stone-900 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-amber-500 rounded px-2 py-1 -ml-2"
+              className="text-lg font-semibold text-stone-900 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-[#ff3b1d] rounded px-2 py-1 -ml-2"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -145,7 +145,7 @@ export function EmailBuilder({ initialTemplate, onSave, onExportHtml }: EmailBui
             <button onClick={handleExport} className="btn btn-secondary btn-sm">
               Export HTML
             </button>
-            <button onClick={handleSave} className="btn btn-gold btn-sm">
+            <button onClick={handleSave} className="btn btn-primary btn-sm">
               Save Template
             </button>
           </div>

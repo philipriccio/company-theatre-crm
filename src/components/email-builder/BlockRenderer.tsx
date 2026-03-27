@@ -20,8 +20,8 @@ export function BlockRenderer({
 }: BlockRendererProps) {
   const wrapperClass = `
     relative transition-all duration-150
-    ${isSelected ? 'ring-2 ring-amber-500 ring-offset-2' : ''}
-    ${onClick ? 'cursor-pointer hover:ring-2 hover:ring-amber-300 hover:ring-offset-2' : ''}
+    ${isSelected ? 'ring-2 ring-[#ff3b1d] ring-offset-2' : ''}
+    ${onClick ? 'cursor-pointer hover:ring-2 hover:ring-[#ff3b1d]/50 hover:ring-offset-2' : ''}
   `
 
   const handleContentChange = (content: string) => {

@@ -38,7 +38,7 @@ export default async function TemplatesPage() {
           </p>
           <Link
             href="/templates/new"
-            className="btn btn-gold btn-md inline-flex"
+            className="btn btn-primary btn-md inline-flex"
           >
             Create your first template
           </Link>

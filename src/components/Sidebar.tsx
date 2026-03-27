@@ -16,14 +16,14 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col w-64 bg-gradient-to-b from-stone-900 to-stone-950">
+    <div className="flex flex-col w-64 bg-[#0a0a0a]">
       {/* Logo */}
-      <div className="flex items-center justify-center h-20 border-b border-stone-800/50">
+      <div className="flex items-center justify-center h-20 border-b border-white/5">
         <div className="text-center">
           <h1 className="text-lg font-semibold tracking-wider text-white">
             THE COMPANY
           </h1>
-          <p className="text-[10px] tracking-[0.3em] text-amber-500/80 uppercase">
+          <p className="text-[10px] tracking-[0.3em] text-[#ff3b1d] uppercase">
             Theatre
           </p>
         </div>
@@ -42,38 +42,38 @@ export function Sidebar() {
               href={item.href}
               className={`
                 group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
-                transition-all duration-200 ease-out
+                transition-all duration-200 ease-out relative
                 ${isActive
-                  ? 'bg-white/10 text-white shadow-lg shadow-black/20'
-                  : 'text-stone-400 hover:bg-white/5 hover:text-white'
+                  ? 'bg-[rgba(255,255,255,0.08)] text-white'
+                  : 'text-stone-400 hover:bg-[rgba(255,255,255,0.05)] hover:text-white'
                 }
               `}
             >
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-[#ff3b1d]" />
+              )}
               <Icon 
                 className={`w-5 h-5 transition-transform duration-200 group-hover:scale-110 ${
-                  isActive ? 'text-amber-500' : 'text-stone-500 group-hover:text-amber-500/70'
+                  isActive ? 'text-[#ff3b1d]' : 'text-stone-500 group-hover:text-stone-300'
                 }`} 
               />
               {item.name}
-              {isActive && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-500" />
-              )}
             </Link>
           )
         })}
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-stone-800/50">
+      <div className="px-4 py-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-            <span className="text-xs font-bold text-stone-900">CT</span>
+          <div className="w-8 h-8 rounded-full bg-[#ff3b1d] flex items-center justify-center">
+            <span className="text-xs font-bold text-white">CT</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium text-stone-300 truncate">
               CRM
             </p>
-            <p className="text-[10px] text-stone-500">
+            <p className="text-[10px] text-neutral-600">
               v1.0
             </p>
           </div>
