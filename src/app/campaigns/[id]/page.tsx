@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { SendCampaignButton } from './SendCampaignButton'
+import { TestSendButton } from './TestSendButton'
 import { CancelCampaignButton } from './CancelCampaignButton'
 import { DuplicateCampaignButton } from './DuplicateCampaignButton'
 
@@ -37,16 +37,6 @@ export default async function CampaignDetailPage({
   const opened = campaign.recipients.filter(r => r.openedAt).length
   const clicked = campaign.recipients.filter(r => r.clickedAt).length
   const bounced = campaign.recipients.filter(r => r.bouncedAt).length
-
-  // Get available segments for sending
-  const tags = await prisma.tag.findMany({
-    include: { _count: { select: { contacts: true } } },
-    orderBy: { name: 'asc' },
-  })
-
-  const subscribedCount = await prisma.contact.count({
-    where: { solicitation: true, unsubscribedAt: null },
-  })
 
   return (
     <div className="p-8">
@@ -96,17 +86,29 @@ export default async function CampaignDetailPage({
           </div>
         </div>
 
-        {/* Send Panel */}
+        {/* Side Panel */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           {campaign.status === 'DRAFT' ? (
-            <>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Send Campaign</h2>
-              <SendCampaignButton
-                campaignId={campaign.id}
-                tags={tags.map(t => ({ id: t.id, name: t.name, count: t._count.contacts }))}
-                totalSubscribed={subscribedCount}
-              />
-            </>
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Send Campaign</h2>
+                <TestSendButton campaignId={campaign.id} />
+              </div>
+
+              <hr className="border-gray-200" />
+
+              <div>
+                <p className="text-sm text-gray-500 mb-4">
+                  Ready to send? Choose your recipients and review before sending.
+                </p>
+                <Link
+                  href={`/campaigns/${campaign.id}/send`}
+                  className="block w-full px-4 py-3 bg-[#0a0a0a] text-white rounded-lg hover:bg-[#1a1a1a] font-medium text-center transition-colors"
+                >
+                  Prepare to Send →
+                </Link>
+              </div>
+            </div>
           ) : campaign.status === 'SENT' ? (
             <>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Campaign Sent</h2>
