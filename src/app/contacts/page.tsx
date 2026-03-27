@@ -12,6 +12,7 @@ interface SearchParams {
   page?: string
   search?: string
   tag?: string
+  status?: string
 }
 
 export default async function ContactsPage({
@@ -23,6 +24,7 @@ export default async function ContactsPage({
   const page = parseInt(params.page || '1')
   const search = params.search || ''
   const tagFilter = params.tag || ''
+  const statusFilter = params.status || ''
   const pageSize = 50
 
   const where = {
@@ -37,6 +39,15 @@ export default async function ContactsPage({
       } : {},
       tagFilter ? {
         tags: { some: { tag: { name: tagFilter } } },
+      } : {},
+      statusFilter === 'subscribed' ? {
+        unsubscribedAt: null,
+        solicitation: true,
+      } : statusFilter === 'unsubscribed' ? {
+        OR: [
+          { unsubscribedAt: { not: null } },
+          { solicitation: false },
+        ],
       } : {},
     ],
   }
@@ -72,7 +83,7 @@ export default async function ContactsPage({
         </div>
         <div className="flex gap-3">
           <a
-            href={`/api/contacts/export?search=${encodeURIComponent(search)}&tag=${encodeURIComponent(tagFilter)}`}
+            href={`/api/contacts/export?search=${encodeURIComponent(search)}&tag=${encodeURIComponent(tagFilter)}&status=${encodeURIComponent(statusFilter)}`}
             className="btn btn-secondary btn-md"
             download
           >
@@ -109,6 +120,15 @@ export default async function ContactsPage({
               className="input pl-12"
             />
           </div>
+          <select
+            name="status"
+            defaultValue={statusFilter}
+            className="w-48"
+          >
+            <option value="">All Statuses</option>
+            <option value="subscribed">Subscribed</option>
+            <option value="unsubscribed">Unsubscribed</option>
+          </select>
           <select
             name="tag"
             defaultValue={tagFilter}
@@ -218,7 +238,7 @@ export default async function ContactsPage({
         <div className="flex justify-center items-center gap-2 mt-6">
           {page > 1 && (
             <Link
-              href={`/contacts?page=${page - 1}&search=${search}&tag=${tagFilter}`}
+              href={`/contacts?page=${page - 1}&search=${search}&tag=${tagFilter}&status=${statusFilter}`}
               className="btn btn-secondary btn-sm"
             >
               ← Previous
@@ -239,7 +259,7 @@ export default async function ContactsPage({
               return (
                 <Link
                   key={pageNum}
-                  href={`/contacts?page=${pageNum}&search=${search}&tag=${tagFilter}`}
+                  href={`/contacts?page=${pageNum}&search=${search}&tag=${tagFilter}&status=${statusFilter}`}
                   className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-colors ${
                     page === pageNum 
                       ? 'bg-stone-900 text-white' 
@@ -253,7 +273,7 @@ export default async function ContactsPage({
           </div>
           {page < totalPages && (
             <Link
-              href={`/contacts?page=${page + 1}&search=${search}&tag=${tagFilter}`}
+              href={`/contacts?page=${page + 1}&search=${search}&tag=${tagFilter}&status=${statusFilter}`}
               className="btn btn-secondary btn-sm"
             >
               Next →
