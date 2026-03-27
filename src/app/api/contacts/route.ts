@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, firstName, lastName, fullName, tags, source } = body
+    const { email, firstName, lastName, fullName, tags } = body
 
     if (!email) {
       return NextResponse.json(
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         fullName: contactName,
         firstName: firstName || null,
         lastName: lastName || null,
-        source: source || 'Website',
+
       },
     })
 
