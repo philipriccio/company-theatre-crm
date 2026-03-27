@@ -71,6 +71,14 @@ export default async function ContactsPage({
           </p>
         </div>
         <div className="flex gap-3">
+          <a
+            href={`/api/contacts/export?search=${encodeURIComponent(search)}&tag=${encodeURIComponent(tagFilter)}`}
+            className="btn btn-secondary btn-md"
+            download
+          >
+            <DownloadIcon className="w-4 h-4" />
+            Export CSV
+          </a>
           <Link
             href="/contacts/import"
             className="btn btn-secondary btn-md"
@@ -272,6 +280,15 @@ function getInitials(contact: ContactWithTags): string {
 }
 
 // Icons
+function DownloadIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12 3v12m0 0l-4-4m4 4l4-4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function UploadIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
