@@ -16,6 +16,12 @@ export function wrapInTemplate({
   unsubscribeUrl,
   physicalAddress = 'Toronto, ON, Canada',
 }: TemplateOptions): string {
+  // If the content is already a full HTML document (has its own DOCTYPE or <html> tag),
+  // just replace the unsubscribe placeholder and return it as-is — don't double-wrap.
+  if (content.includes('<!DOCTYPE') || content.includes('<html')) {
+    return content.replace(/\{\{unsubscribe_url\}\}/g, unsubscribeUrl)
+  }
+
   return `
 <!DOCTYPE html>
 <html lang="en">
