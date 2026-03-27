@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
-import { Campaign } from '@prisma/client'
+import { Campaign, CampaignStatus } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,9 +25,11 @@ export default async function CampaignsPage({
 }) {
   const params = await searchParams
   const statusFilter = params.status || ''
+  const validStatuses: string[] = Object.values(CampaignStatus)
+  const isValidStatus = validStatuses.includes(statusFilter)
 
   const campaigns = await prisma.campaign.findMany({
-    where: statusFilter ? { status: statusFilter } : {},
+    where: isValidStatus ? { status: statusFilter as CampaignStatus } : {},
     include: {
       _count: {
         select: { recipients: true },
