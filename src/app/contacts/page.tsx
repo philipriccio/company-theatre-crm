@@ -47,7 +47,10 @@ export default async function ContactsPage({
       include: {
         tags: { include: { tag: true } },
       },
-      orderBy: { email: 'asc' },
+      orderBy: [
+        { lastName: { sort: 'asc', nulls: 'last' } },
+        { firstName: { sort: 'asc', nulls: 'last' } },
+      ],
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),
