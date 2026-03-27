@@ -142,7 +142,7 @@ export default async function ContactsPage({
                 Status
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                Location
+                Added
               </th>
             </tr>
           </thead>
@@ -197,7 +197,7 @@ export default async function ContactsPage({
                   )}
                 </td>
                 <td className="px-6 py-4 text-sm text-stone-500">
-                  {[contact.city, contact.state, contact.country].filter(Boolean).join(', ') || '—'}
+                  {new Date(contact.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </td>
               </tr>
             ))}
