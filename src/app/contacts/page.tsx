@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Contact, Tag, ContactTag } from '@prisma/client'
 import RemoveTagButton from '@/components/RemoveTagButton'
 import AddToTagSearch from '@/components/AddToTagSearch'
+import QuickTagButton from '@/components/QuickTagButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -190,11 +191,9 @@ export default async function ContactsPage({
               <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">
                 Added
               </th>
-              {tagFilter && (
-                <th className="px-6 py-4 text-right text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                  
-                </th>
-              )}
+              <th className="px-6 py-4 text-right text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -250,11 +249,19 @@ export default async function ContactsPage({
                 <td className="px-6 py-4 text-sm text-stone-500">
                   {new Date(contact.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </td>
-                {tagFilter && (
-                  <td className="px-6 py-4 text-right">
-                    <RemoveTagButton contactId={contact.id} tagName={tagFilter} />
-                  </td>
-                )}
+                <td className="px-6 py-4 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <QuickTagButton
+                      contactId={contact.id}
+                      contactName={contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.email}
+                      existingTagNames={contact.tags.map(({ tag }: { tag: Tag }) => tag.name)}
+                      allTags={tags}
+                    />
+                    {tagFilter && (
+                      <RemoveTagButton contactId={contact.id} tagName={tagFilter} />
+                    )}
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
