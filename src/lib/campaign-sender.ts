@@ -65,7 +65,7 @@ async function processCampaignEmails(
     return
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL || 'https://crm.companytheatre.ca'
   let sent = 0
   let failed = 0
 
