@@ -2,6 +2,7 @@ import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { Contact, Tag, ContactTag } from '@prisma/client'
 import RemoveTagButton from '@/components/RemoveTagButton'
+import AddToTagSearch from '@/components/AddToTagSearch'
 
 export const dynamic = 'force-dynamic'
 
@@ -150,6 +151,22 @@ export default async function ContactsPage({
           </button>
         </form>
       </div>
+
+      {/* Add to tag bar */}
+      {tagFilter && (
+        <div className="card p-4 mb-4 flex items-center gap-4">
+          <div className="flex items-center gap-2 text-sm font-medium text-stone-700 flex-shrink-0">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-700 text-xs font-semibold">
+              {tagFilter}
+            </span>
+            <span className="text-stone-400">·</span>
+            <span>{total} contacts</span>
+          </div>
+          <div className="flex-1 flex justify-end">
+            <AddToTagSearch tagName={tagFilter} />
+          </div>
+        </div>
+      )}
 
       {/* Results count */}
       <p className="text-sm text-stone-500 mb-4">
