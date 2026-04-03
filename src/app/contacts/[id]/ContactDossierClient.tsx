@@ -637,9 +637,9 @@ export default function ContactDossierClient({ initialContact }: { initialContac
 
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3">
+    <div className="min-w-0 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3">
       <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{label}</p>
-      <p className="mt-1 text-sm text-stone-800">{value}</p>
+      <p className="mt-1 truncate text-sm text-stone-800" title={value}>{value}</p>
     </div>
   )
 }
