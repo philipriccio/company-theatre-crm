@@ -23,10 +23,21 @@ model Contact {
   unsubscribedAt     DateTime?
   externalId         String?
   metadata           Json?
+  vip                Boolean             @default(false)
+  relationshipHealth String?
+  lastContactedAt    DateTime?
+  personalNotes      String?
+  organization       String?
+  role               String?
+  context            String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   campaignRecipients CampaignRecipient[]
   tags               ContactTag[]
+  notes              ContactNote[]
+  interactions       ContactInteraction[]
+  connections        ContactConnection[]
+  followUps          ContactFollowUp[]
 
   @@index([email])
   @@index([unsubscribedAt])
@@ -50,6 +61,64 @@ model ContactTag {
   tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([contactId, tagId])
+}
+
+model ContactNote {
+  id         String   @id @default(cuid())
+  contactId  String
+  content    String
+  category   String   @default("general")
+  authorName String   @default("Philip")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  contact    Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([category])
+}
+
+model ContactInteraction {
+  id         String   @id @default(cuid())
+  contactId  String
+  type       String
+  subject    String?
+  summary    String?
+  emailId    String?
+  occurredAt DateTime
+  createdAt  DateTime @default(now())
+  contact    Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([occurredAt])
+  @@index([type])
+}
+
+model ContactConnection {
+  id           String   @id @default(cuid())
+  contactId    String
+  connectedId  String?
+  name         String
+  relationship String
+  notes        String?
+  createdAt    DateTime @default(now())
+  contact      Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+}
+
+model ContactFollowUp {
+  id          String    @id @default(cuid())
+  contactId   String
+  description String
+  dueDate     DateTime?
+  completedAt DateTime?
+  priority    String    @default("normal")
+  createdAt   DateTime  @default(now())
+  contact     Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId])
+  @@index([dueDate])
+  @@index([completedAt])
 }
 
 model Campaign {

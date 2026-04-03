@@ -19,7 +19,7 @@ export default function AddToTagSearch({ tagName }: { tagName: string }) {
   const [adding, setAdding] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const debounceRef = useRef<NodeJS.Timeout>()
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Close dropdown on outside click
   useEffect(() => {

@@ -18,6 +18,14 @@ interface SearchParams {
   status?: string
 }
 
+const healthDotClass: Record<string, string> = {
+  active: 'bg-emerald-500',
+  warm: 'bg-amber-400',
+  cooling: 'bg-orange-400',
+  cold: 'bg-red-500',
+  dormant: 'bg-stone-400',
+}
+
 export default async function ContactsPage({
   searchParams,
 }: {
@@ -38,6 +46,8 @@ export default async function ContactsPage({
           { firstName: { contains: search, mode: 'insensitive' as const } },
           { lastName: { contains: search, mode: 'insensitive' as const } },
           { fullName: { contains: search, mode: 'insensitive' as const } },
+          { organization: { contains: search, mode: 'insensitive' as const } },
+          { context: { contains: search, mode: 'insensitive' as const } },
         ],
       } : {},
       tagFilter ? {
@@ -62,6 +72,7 @@ export default async function ContactsPage({
         tags: { include: { tag: true } },
       },
       orderBy: [
+        { vip: 'desc' },
         { lastName: { sort: 'asc', nulls: 'last' } },
         { firstName: { sort: 'asc', nulls: 'last' } },
       ],
@@ -76,8 +87,7 @@ export default async function ContactsPage({
 
   return (
     <div className="p-8 page-enter">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-semibold text-stone-900 tracking-tight">Contacts</h1>
           <p className="text-stone-500 mt-1">
@@ -93,24 +103,17 @@ export default async function ContactsPage({
             <DownloadIcon className="w-4 h-4" />
             Export CSV
           </a>
-          <Link
-            href="/contacts/import"
-            className="btn btn-secondary btn-md"
-          >
+          <Link href="/contacts/import" className="btn btn-secondary btn-md">
             <UploadIcon className="w-4 h-4" />
             Import
           </Link>
-          <Link
-            href="/contacts/new"
-            className="btn btn-primary btn-md"
-          >
+          <Link href="/contacts/new" className="btn btn-primary btn-md">
             <PlusIcon className="w-4 h-4" />
             Add Contact
           </Link>
         </div>
       </div>
 
-      {/* Filters */}
       <div className="card p-4 mb-6">
         <form method="GET" className="flex gap-4">
           <div className="flex-1 relative">
@@ -119,24 +122,16 @@ export default async function ContactsPage({
               type="text"
               name="search"
               defaultValue={search}
-              placeholder="Search by name or email..."
+              placeholder="Search by name, email, organization, or context..."
               className="input pl-12"
             />
           </div>
-          <select
-            name="status"
-            defaultValue={statusFilter}
-            className="w-48"
-          >
+          <select name="status" defaultValue={statusFilter} className="w-48">
             <option value="">All Statuses</option>
             <option value="subscribed">Subscribed</option>
             <option value="unsubscribed">Unsubscribed</option>
           </select>
-          <select
-            name="tag"
-            defaultValue={tagFilter}
-            className="w-64"
-          >
+          <select name="tag" defaultValue={tagFilter} className="w-64">
             <option value="">All Tags</option>
             {tags.map((tag: Tag) => (
               <option key={tag.id} value={tag.name}>
@@ -144,16 +139,12 @@ export default async function ContactsPage({
               </option>
             ))}
           </select>
-          <button
-            type="submit"
-            className="btn btn-primary btn-md"
-          >
+          <button type="submit" className="btn btn-primary btn-md">
             Filter
           </button>
         </form>
       </div>
 
-      {/* Add to tag bar */}
       {tagFilter && (
         <div className="card p-4 mb-4 flex items-center gap-4">
           <div className="flex items-center gap-2 text-sm font-medium text-stone-700 flex-shrink-0">
@@ -169,113 +160,93 @@ export default async function ContactsPage({
         </div>
       )}
 
-      {/* Results count */}
       <p className="text-sm text-stone-500 mb-4">
         Showing {((page - 1) * pageSize) + 1}–{Math.min(page * pageSize, total)} of {total.toLocaleString()} contacts
       </p>
 
-      {/* Contacts table */}
       <div className="table-container bg-white">
         <table className="min-w-full">
           <thead>
             <tr className="bg-stone-50/80">
-              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                Contact
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                Tags
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                Added
-              </th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                
-              </th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Contact</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Tags</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-stone-500 uppercase tracking-wider">Added</th>
+              <th className="px-6 py-4 text-right text-xs font-semibold text-stone-500 uppercase tracking-wider"></th>
             </tr>
           </thead>
           <tbody>
-            {contacts.map((contact: ContactWithTags) => (
-              <tr key={contact.id} className="table-row group">
-                <td className="px-6 py-4">
-                  <Link href={`/contacts/${contact.id}`} className="block">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center text-stone-600 font-medium text-sm group-hover:from-red-50 group-hover:to-red-100 group-hover:text-[#ff3b1d] transition-colors">
-                        {getInitials(contact)}
-                      </div>
-                      <div>
-                        <div className="font-medium text-stone-900 group-hover:text-[#ff3b1d] transition-colors">
-                          {contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.email}
+            {contacts.map((contact: ContactWithTags) => {
+              const name = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.email
+              const subtitle = [contact.organization, contact.context].filter(Boolean).join(' · ')
+              return (
+                <tr key={contact.id} className="table-row group">
+                  <td className="px-6 py-4">
+                    <Link href={`/contacts/${contact.id}`} className="block">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center text-stone-600 font-medium text-sm group-hover:from-red-50 group-hover:to-red-100 group-hover:text-[#ff3b1d] transition-colors">
+                          {getInitials(contact)}
                         </div>
-                        <div className="text-sm text-stone-500">{contact.email}</div>
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2 font-medium text-stone-900 group-hover:text-[#ff3b1d] transition-colors">
+                            {contact.vip && <span className="text-amber-500">⭐</span>}
+                            {contact.relationshipHealth && (
+                              <span className={`h-2.5 w-2.5 rounded-full ${healthDotClass[contact.relationshipHealth] || 'bg-stone-300'}`} title={contact.relationshipHealth} />
+                            )}
+                            <span>{name}</span>
+                          </div>
+                          <div className="text-sm text-stone-500">{contact.email}</div>
+                          {subtitle && <div className="text-sm text-stone-500">{subtitle}</div>}
+                        </div>
                       </div>
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {contact.tags.slice(0, 3).map(({ tag }: { tag: Tag }) => (
+                        <span key={tag.id} className="badge badge-neutral">
+                          {tag.name}
+                        </span>
+                      ))}
+                      {contact.tags.length > 3 && (
+                        <span className="text-xs text-stone-400 self-center">+{contact.tags.length - 3}</span>
+                      )}
                     </div>
-                  </Link>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-wrap gap-1.5">
-                    {contact.tags.slice(0, 3).map(({ tag }: { tag: Tag }) => (
-                      <span
-                        key={tag.id}
-                        className="badge badge-neutral"
-                      >
-                        {tag.name}
-                      </span>
-                    ))}
-                    {contact.tags.length > 3 && (
-                      <span className="text-xs text-stone-400 self-center">
-                        +{contact.tags.length - 3}
-                      </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {contact.unsubscribedAt ? (
+                      <span className="badge badge-error">Unsubscribed</span>
+                    ) : !contact.solicitation ? (
+                      <span className="badge badge-warning">No Solicitation</span>
+                    ) : (
+                      <span className="badge badge-success">Subscribed</span>
                     )}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  {contact.unsubscribedAt ? (
-                    <span className="badge badge-error">
-                      Unsubscribed
-                    </span>
-                  ) : !contact.solicitation ? (
-                    <span className="badge badge-warning">
-                      No Solicitation
-                    </span>
-                  ) : (
-                    <span className="badge badge-success">
-                      Subscribed
-                    </span>
-                  )}
-                </td>
-                <td className="px-6 py-4 text-sm text-stone-500">
-                  {new Date(contact.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <QuickTagButton
-                      contactId={contact.id}
-                      contactName={contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.email}
-                      existingTagNames={contact.tags.map(({ tag }: { tag: Tag }) => tag.name)}
-                      allTags={tags}
-                    />
-                    {tagFilter && (
-                      <RemoveTagButton contactId={contact.id} tagName={tagFilter} />
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-stone-500">
+                    {new Date(contact.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <QuickTagButton
+                        contactId={contact.id}
+                        contactName={name}
+                        existingTagNames={contact.tags.map(({ tag }: { tag: Tag }) => tag.name)}
+                        allTags={tags}
+                      />
+                      {tagFilter && <RemoveTagButton contactId={contact.id} tagName={tagFilter} />}
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-2 mt-6">
           {page > 1 && (
-            <Link
-              href={`/contacts?page=${page - 1}&search=${search}&tag=${tagFilter}&status=${statusFilter}`}
-              className="btn btn-secondary btn-sm"
-            >
+            <Link href={`/contacts?page=${page - 1}&search=${search}&tag=${tagFilter}&status=${statusFilter}`} className="btn btn-secondary btn-sm">
               ← Previous
             </Link>
           )}
@@ -296,9 +267,7 @@ export default async function ContactsPage({
                   key={pageNum}
                   href={`/contacts?page=${pageNum}&search=${search}&tag=${tagFilter}&status=${statusFilter}`}
                   className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-medium transition-colors ${
-                    page === pageNum 
-                      ? 'bg-stone-900 text-white' 
-                      : 'text-stone-600 hover:bg-stone-100'
+                    page === pageNum ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-100'
                   }`}
                 >
                   {pageNum}
@@ -307,10 +276,7 @@ export default async function ContactsPage({
             })}
           </div>
           {page < totalPages && (
-            <Link
-              href={`/contacts?page=${page + 1}&search=${search}&tag=${tagFilter}&status=${statusFilter}`}
-              className="btn btn-secondary btn-sm"
-            >
+            <Link href={`/contacts?page=${page + 1}&search=${search}&tag=${tagFilter}&status=${statusFilter}`} className="btn btn-secondary btn-sm">
               Next →
             </Link>
           )}
@@ -334,8 +300,7 @@ function getInitials(contact: ContactWithTags): string {
   return contact.email[0].toUpperCase()
 }
 
-// Icons
-function DownloadIcon({ className = "w-5 h-5" }: { className?: string }) {
+function DownloadIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M12 3v12m0 0l-4-4m4 4l4-4" strokeLinecap="round" strokeLinejoin="round" />
@@ -344,7 +309,7 @@ function DownloadIcon({ className = "w-5 h-5" }: { className?: string }) {
   )
 }
 
-function UploadIcon({ className = "w-5 h-5" }: { className?: string }) {
+function UploadIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M12 15V3m0 0l-4 4m4-4l4 4" strokeLinecap="round" strokeLinejoin="round" />
@@ -353,7 +318,7 @@ function UploadIcon({ className = "w-5 h-5" }: { className?: string }) {
   )
 }
 
-function PlusIcon({ className = "w-5 h-5" }: { className?: string }) {
+function PlusIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M12 5v14M5 12h14" strokeLinecap="round" />
@@ -361,7 +326,7 @@ function PlusIcon({ className = "w-5 h-5" }: { className?: string }) {
   )
 }
 
-function SearchIcon({ className = "w-5 h-5" }: { className?: string }) {
+function SearchIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <circle cx="11" cy="11" r="7" />
