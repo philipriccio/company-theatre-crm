@@ -237,7 +237,7 @@ export default function ContactDossierClient({ initialContact }: { initialContac
   }
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 page-enter">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-4 page-enter">
       <div>
         <Link href="/contacts" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
           ← Back to Contacts
@@ -246,21 +246,26 @@ export default function ContactDossierClient({ initialContact }: { initialContac
 
       <section className="card rounded-xl p-6 shadow-sm border border-stone-200 bg-white">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
+          <div className="min-w-0 space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-3xl font-semibold tracking-tight text-stone-900">{displayName}</h1>
-              {contact.vip && <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">⭐ VIP</span>}
-              {contact.context && <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 ring-1 ring-indigo-200">{contact.context}</span>}
+              {contact.vip && <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">⭐ VIP</span>}
               {health && (
-                <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm font-medium ${health.badge}`}>
-                  <span className={`h-2.5 w-2.5 rounded-full ${health.dot}`} />
+                <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${health.badge}`}>
+                  <span className={`h-2 w-2 rounded-full ${health.dot}`} />
                   {health.label}
                 </span>
               )}
             </div>
 
-            {(contact.organization || contact.role) && (
-              <p className="text-lg text-stone-600">{[contact.organization, contact.role].filter(Boolean).join(' · ')}</p>
+            {contact.role && (
+              <p className="text-base font-medium text-stone-700">{contact.role}</p>
+            )}
+            {contact.organization && (
+              <p className="text-sm text-stone-500">{contact.organization}</p>
+            )}
+            {contact.context && (
+              <p className="text-sm leading-relaxed text-stone-600">{contact.context}</p>
             )}
 
             <div className="grid gap-3 text-sm text-stone-600 sm:grid-cols-2 lg:grid-cols-4">
@@ -343,7 +348,7 @@ export default function ContactDossierClient({ initialContact }: { initialContac
         />
       </section>
 
-      <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm space-y-5">
+      <section className="card rounded-xl border border-stone-200 bg-white p-5 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-stone-900">Follow-ups</h2>
@@ -429,7 +434,7 @@ export default function ContactDossierClient({ initialContact }: { initialContac
         )}
       </section>
 
-      <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm space-y-5">
+      <section className="card rounded-xl border border-stone-200 bg-white p-5 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-stone-900">Interaction timeline</h2>
@@ -481,7 +486,7 @@ export default function ContactDossierClient({ initialContact }: { initialContac
         </div>
       </section>
 
-      <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm space-y-5">
+      <section className="card rounded-xl border border-stone-200 bg-white p-5 shadow-sm space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-stone-900">Notes</h2>
@@ -537,7 +542,7 @@ export default function ContactDossierClient({ initialContact }: { initialContac
 
       <div className="grid gap-6 lg:grid-cols-2">
 
-      <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm space-y-5">
+      <section className="card rounded-xl border border-stone-200 bg-white p-5 shadow-sm space-y-4">
         <div>
           <h2 className="text-lg font-semibold text-stone-900">Connections</h2>
           <p className="text-sm text-stone-500">Who this person knows and how they connect.</p>
