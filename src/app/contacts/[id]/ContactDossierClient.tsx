@@ -63,6 +63,10 @@ export default function ContactDossierClient({ initialContact }: { initialContac
   const [interactionForm, setInteractionForm] = useState({ type: 'meeting', subject: '', summary: '', emailId: '', occurredAt: formatDateTimeLocal(new Date()) })
   const [connectionForm, setConnectionForm] = useState({ connectedId: '', name: '', relationship: '', notes: '' })
   const [savingSection, setSavingSection] = useState<string | null>(null)
+  const [showNoteForm, setShowNoteForm] = useState(false)
+  const [showFollowUpForm, setShowFollowUpForm] = useState(false)
+  const [showInteractionForm, setShowInteractionForm] = useState(false)
+  const [showConnectionForm, setShowConnectionForm] = useState(false)
 
   const displayName = useMemo(() => {
     return contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || contact.email
@@ -374,7 +378,10 @@ export default function ContactDossierClient({ initialContact }: { initialContac
           }) : <p className="text-sm text-stone-500">No open follow-ups.</p>}
         </div>
 
-        <form onSubmit={submitFollowUp} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 lg:grid-cols-[minmax(0,1fr),180px,140px,auto]">
+        {!showFollowUpForm ? (
+          <button type="button" onClick={() => setShowFollowUpForm(true)} className="w-full rounded-xl border-2 border-dashed border-stone-300 py-3 text-sm font-medium text-stone-500 hover:border-indigo-300 hover:text-indigo-600 transition">+ Add follow-up</button>
+        ) : (
+        <form onSubmit={(e) => { submitFollowUp(e); setShowFollowUpForm(false) }} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 lg:grid-cols-[minmax(0,1fr),180px,140px,auto]">
           <input
             value={followUpForm.description}
             onChange={(e) => setFollowUpForm((current) => ({ ...current, description: e.target.value }))}
@@ -396,10 +403,14 @@ export default function ContactDossierClient({ initialContact }: { initialContac
               <option key={priority} value={priority}>{capitalize(priority)}</option>
             ))}
           </select>
-          <button type="submit" disabled={savingSection === 'follow-up'} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
-            {savingSection === 'follow-up' ? 'Saving…' : 'Add'}
-          </button>
+          <div className="flex gap-2">
+            <button type="submit" disabled={savingSection === 'follow-up'} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+              {savingSection === 'follow-up' ? 'Saving…' : 'Add'}
+            </button>
+            <button type="button" onClick={() => setShowFollowUpForm(false)} className="rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-stone-700">Cancel</button>
+          </div>
         </form>
+        )}
 
         {completedFollowUps.length > 0 && (
           <div className="border-t border-stone-200 pt-4">
@@ -426,7 +437,10 @@ export default function ContactDossierClient({ initialContact }: { initialContac
           </div>
         </div>
 
-        <form onSubmit={submitInteraction} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 lg:grid-cols-2">
+        {!showInteractionForm ? (
+          <button type="button" onClick={() => setShowInteractionForm(true)} className="w-full rounded-xl border-2 border-dashed border-stone-300 py-3 text-sm font-medium text-stone-500 hover:border-indigo-300 hover:text-indigo-600 transition">+ Log interaction</button>
+        ) : (
+        <form onSubmit={(e) => { submitInteraction(e); setShowInteractionForm(false) }} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 lg:grid-cols-2">
           <select value={interactionForm.type} onChange={(e) => setInteractionForm((current) => ({ ...current, type: e.target.value }))} className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm">
             {interactionTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
@@ -434,14 +448,16 @@ export default function ContactDossierClient({ initialContact }: { initialContac
           </select>
           <input type="datetime-local" value={interactionForm.occurredAt} onChange={(e) => setInteractionForm((current) => ({ ...current, occurredAt: e.target.value }))} className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
           <input value={interactionForm.subject} onChange={(e) => setInteractionForm((current) => ({ ...current, subject: e.target.value }))} placeholder="Subject or topic" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
-          <input value={interactionForm.emailId} onChange={(e) => setInteractionForm((current) => ({ ...current, emailId: e.target.value }))} placeholder="Email ID (optional)" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
+{/* emailId is populated programmatically by Mildred, not shown in the UI */}
           <textarea value={interactionForm.summary} onChange={(e) => setInteractionForm((current) => ({ ...current, summary: e.target.value }))} placeholder="Brief summary" rows={3} className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm lg:col-span-2" />
-          <div className="lg:col-span-2 flex justify-end">
+          <div className="lg:col-span-2 flex justify-end gap-2">
+            <button type="button" onClick={() => setShowInteractionForm(false)} className="rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-stone-700">Cancel</button>
             <button type="submit" disabled={savingSection === 'interaction'} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
               {savingSection === 'interaction' ? 'Saving…' : 'Add interaction'}
             </button>
           </div>
         </form>
+        )}
 
         <div className="space-y-4">
           {contact.interactions.length > 0 ? contact.interactions.map((interaction) => {
@@ -485,17 +501,24 @@ export default function ContactDossierClient({ initialContact }: { initialContac
           </div>
         </div>
 
-        <form onSubmit={submitNote} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 lg:grid-cols-[180px,minmax(0,1fr),auto]">
+        {!showNoteForm ? (
+          <button type="button" onClick={() => setShowNoteForm(true)} className="w-full rounded-xl border-2 border-dashed border-stone-300 py-3 text-sm font-medium text-stone-500 hover:border-indigo-300 hover:text-indigo-600 transition">+ Add note</button>
+        ) : (
+        <form onSubmit={(e) => { submitNote(e); setShowNoteForm(false) }} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 lg:grid-cols-[180px,minmax(0,1fr),auto]">
           <select value={noteForm.category} onChange={(e) => setNoteForm((current) => ({ ...current, category: e.target.value }))} className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm">
             {noteCategoryOptions.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
             ))}
           </select>
           <input value={noteForm.content} onChange={(e) => setNoteForm((current) => ({ ...current, content: e.target.value }))} placeholder="Add a note" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
-          <button type="submit" disabled={savingSection === 'note'} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
-            {savingSection === 'note' ? 'Saving…' : 'Add note'}
-          </button>
+          <div className="flex gap-2">
+            <button type="submit" disabled={savingSection === 'note'} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+              {savingSection === 'note' ? 'Saving…' : 'Add'}
+            </button>
+            <button type="button" onClick={() => setShowNoteForm(false)} className="rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-stone-700">Cancel</button>
+          </div>
         </form>
+        )}
 
         <div className="space-y-3">
           {filteredNotes.length > 0 ? filteredNotes.map((note) => (
@@ -512,23 +535,29 @@ export default function ContactDossierClient({ initialContact }: { initialContac
         </div>
       </section>
 
+      <div className="grid gap-6 lg:grid-cols-2">
+
       <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm space-y-5">
         <div>
           <h2 className="text-lg font-semibold text-stone-900">Connections</h2>
           <p className="text-sm text-stone-500">Who this person knows and how they connect.</p>
         </div>
 
-        <form onSubmit={submitConnection} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 lg:grid-cols-2">
-          <input value={connectionForm.name} onChange={(e) => setConnectionForm((current) => ({ ...current, name: e.target.value }))} placeholder="Name" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
-          <input value={connectionForm.relationship} onChange={(e) => setConnectionForm((current) => ({ ...current, relationship: e.target.value }))} placeholder="Relationship" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
-          <input value={connectionForm.connectedId} onChange={(e) => setConnectionForm((current) => ({ ...current, connectedId: e.target.value }))} placeholder="Connected contact ID (optional)" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
-          <input value={connectionForm.notes} onChange={(e) => setConnectionForm((current) => ({ ...current, notes: e.target.value }))} placeholder="Notes (optional)" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
-          <div className="lg:col-span-2 flex justify-end">
+        {!showConnectionForm ? (
+          <button type="button" onClick={() => setShowConnectionForm(true)} className="w-full rounded-xl border-2 border-dashed border-stone-300 py-3 text-sm font-medium text-stone-500 hover:border-indigo-300 hover:text-indigo-600 transition">+ Add connection</button>
+        ) : (
+        <form onSubmit={(e) => { submitConnection(e); setShowConnectionForm(false) }} className="grid gap-3 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 sm:grid-cols-2">
+          <input value={connectionForm.name} onChange={(e) => setConnectionForm((current) => ({ ...current, name: e.target.value }))} placeholder="Person's name" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
+          <input value={connectionForm.relationship} onChange={(e) => setConnectionForm((current) => ({ ...current, relationship: e.target.value }))} placeholder="Relationship (e.g. spouse, agent, collaborator)" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm" />
+          <input value={connectionForm.notes} onChange={(e) => setConnectionForm((current) => ({ ...current, notes: e.target.value }))} placeholder="Notes (optional)" className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm sm:col-span-2" />
+          <div className="sm:col-span-2 flex justify-end gap-2">
+            <button type="button" onClick={() => setShowConnectionForm(false)} className="rounded-lg px-3 py-2 text-sm text-stone-500 hover:text-stone-700">Cancel</button>
             <button type="submit" disabled={savingSection === 'connection'} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
-              {savingSection === 'connection' ? 'Saving…' : 'Add connection'}
+              {savingSection === 'connection' ? 'Saving…' : 'Add'}
             </button>
           </div>
         </form>
+        )}
 
         <div className="space-y-3">
           {contact.connections.length > 0 ? contact.connections.map((connection) => (
@@ -552,7 +581,7 @@ export default function ContactDossierClient({ initialContact }: { initialContac
         </div>
       </section>
 
-      <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm lg:self-start">
         <h2 className="mb-4 text-lg font-semibold text-stone-900">Tags</h2>
         {contact.tags.length > 0 ? (
           <div className="flex flex-wrap gap-2">
@@ -566,6 +595,8 @@ export default function ContactDossierClient({ initialContact }: { initialContac
           <p className="text-sm text-stone-500">No tags assigned.</p>
         )}
       </section>
+
+      </div>{/* end two-column grid */}
 
       <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-stone-900">Campaign history</h2>
