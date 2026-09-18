@@ -13,6 +13,7 @@ export async function GET(
       id: true,
       status: true,
       sentAt: true,
+      completedAt: true,
       createdAt: true,
     },
   })
@@ -21,28 +22,29 @@ export async function GET(
     return NextResponse.json({ error: 'Campaign not found' }, { status: 404 })
   }
 
-  // Count recipient stats
-  const totalRecipients = await prisma.campaignRecipient.count({
-    where: { campaignId: id },
-  })
-
-  const sent = await prisma.campaignRecipient.count({
-    where: {
-      campaignId: id,
-      sentAt: { not: null },
-    },
-  })
-
-  // Failed = total minus sent (only meaningful when campaign is done or sending)
-  const failed =
-    campaign.status === 'SENT' ? totalRecipients - sent : 0
+  const [totalRecipients, queued, sending, accepted, delivered, failed, suppressed, unknown] = await Promise.all([
+    prisma.campaignRecipient.count({ where: { campaignId: id } }),
+    prisma.campaignRecipient.count({ where: { campaignId: id, status: 'QUEUED' } }),
+    prisma.campaignRecipient.count({ where: { campaignId: id, status: 'SENDING' } }),
+    prisma.campaignRecipient.count({ where: { campaignId: id, status: 'ACCEPTED' } }),
+    prisma.campaignRecipient.count({ where: { campaignId: id, status: 'DELIVERED' } }),
+    prisma.campaignRecipient.count({ where: { campaignId: id, status: 'FAILED' } }),
+    prisma.campaignRecipient.count({ where: { campaignId: id, status: 'SUPPRESSED' } }),
+    prisma.campaignRecipient.count({ where: { campaignId: id, status: 'UNKNOWN' } }),
+  ])
 
   return NextResponse.json({
     status: campaign.status,
     totalRecipients,
-    sent,
+    queued,
+    sending,
+    accepted,
+    delivered,
     failed,
+    suppressed,
+    unknown,
+    sent: accepted + delivered,
     startedAt: campaign.createdAt.toISOString(),
-    completedAt: campaign.sentAt?.toISOString() ?? null,
+    completedAt: campaign.completedAt?.toISOString() ?? campaign.sentAt?.toISOString() ?? null,
   })
 }

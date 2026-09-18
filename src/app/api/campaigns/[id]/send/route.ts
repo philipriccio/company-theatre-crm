@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-import { startBackgroundCampaignSend } from '@/lib/campaign-sender'
+import { enqueueCampaign } from '@/lib/email/queue'
 
 export async function POST(
   request: NextRequest,
@@ -8,7 +8,7 @@ export async function POST(
 ) {
   const { id } = await params
   const body = await request.json()
-  const { mode, tagIds, scheduledAt } = body
+  const { mode, tagIds, scheduledAt, approvalName, approvalNote } = body
 
   // Get campaign
   const campaign = await prisma.campaign.findUnique({
@@ -23,88 +23,27 @@ export async function POST(
     return NextResponse.json({ error: 'Campaign already sent' }, { status: 400 })
   }
 
-  // Get recipients based on mode
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const whereClause: any = {
-    solicitation: true,
-    unsubscribedAt: null,
+  if (!approvalName || typeof approvalName !== 'string') {
+    return NextResponse.json({ error: 'Approval name is required before enqueueing a production audience' }, { status: 400 })
   }
 
-  if (mode === 'tags' && tagIds?.length > 0) {
-    whereClause.tags = {
-      some: { tagId: { in: tagIds } },
-    }
-  }
-
-  const contacts = await prisma.contact.findMany({
-    where: whereClause,
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      fullName: true,
-    },
-  })
-
-  if (contacts.length === 0) {
-    return NextResponse.json({ error: 'No recipients found' }, { status: 400 })
-  }
-
-  // If scheduling, queue recipients and set scheduled status
-  if (scheduledAt) {
-    const scheduledTime = new Date(scheduledAt)
-    
-    // Create recipient records for all contacts
-    await prisma.campaignRecipient.createMany({
-      data: contacts.map((contact: { id: string }) => ({
-        campaignId: id,
-        contactId: contact.id,
-      })),
-      skipDuplicates: true,
-    })
-
-    // Update campaign to scheduled
-    await prisma.campaign.update({
-      where: { id },
-      data: { 
-        status: 'SCHEDULED',
-        scheduledAt: scheduledTime,
-      },
+  try {
+    const result = await enqueueCampaign(id, {
+      mode: mode === 'tags' ? 'tags' : 'all',
+      tagIds: mode === 'tags' ? tagIds || [] : [],
+      scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+      approvedBy: approvalName,
+      approvalNote,
     })
 
     return NextResponse.json({
       success: true,
-      scheduled: true,
-      scheduledAt: scheduledTime.toISOString(),
-      recipientCount: contacts.length,
+      queued: !result.scheduledAt,
+      scheduled: !!result.scheduledAt,
+      scheduledAt: result.scheduledAt?.toISOString() ?? null,
+      recipientCount: result.recipientCount,
     })
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to enqueue campaign' }, { status: 400 })
   }
-
-  // Send immediately — create recipients, set status, start background processing
-
-  // Create all recipient records upfront
-  await prisma.campaignRecipient.createMany({
-    data: contacts.map((contact: { id: string }) => ({
-      campaignId: id,
-      contactId: contact.id,
-    })),
-    skipDuplicates: true,
-  })
-
-  // Update campaign status to SENDING
-  await prisma.campaign.update({
-    where: { id },
-    data: { status: 'SENDING' },
-  })
-
-  // Start background email processing (fire-and-forget)
-  startBackgroundCampaignSend(id, contacts)
-
-  // Return immediately
-  return NextResponse.json({
-    success: true,
-    queued: true,
-    recipientCount: contacts.length,
-  })
 }

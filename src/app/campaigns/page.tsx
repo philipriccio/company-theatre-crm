@@ -75,16 +75,18 @@ export default async function CampaignsPage({
             <option value="">All Statuses</option>
             <option value="DRAFT">Draft</option>
             <option value="SCHEDULED">Scheduled</option>
+            <option value="QUEUED">Queued</option>
             <option value="SENDING">Sending</option>
-            <option value="SENT">Sent</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="COMPLETED_WITH_FAILURES">Completed with failures</option>
           </select>
           <button type="submit" className="btn btn-primary btn-sm">
             Filter
           </button>
           {statusFilter && (
-            <a href="/campaigns" className="text-sm text-stone-500 hover:text-stone-700">
+            <Link href="/campaigns" className="text-sm text-stone-500 hover:text-stone-700">
               Clear
-            </a>
+            </Link>
           )}
         </form>
       </div>
@@ -147,7 +149,7 @@ export default async function CampaignsPage({
                 </div>
 
                 {/* Stats (only for sent campaigns) */}
-                {campaign.status === 'SENT' && total > 0 && (
+                {['SENT', 'COMPLETED', 'COMPLETED_WITH_FAILURES'].includes(campaign.status) && total > 0 && (
                   <div className="flex items-center gap-8 flex-shrink-0">
                     <div className="text-center">
                       <p className="text-2xl font-semibold text-stone-900">{total.toLocaleString()}</p>
@@ -204,9 +206,14 @@ function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { class: string; label: string }> = {
     DRAFT: { class: 'badge-neutral', label: 'Draft' },
     SCHEDULED: { class: 'badge-info', label: 'Scheduled' },
+    QUEUED: { class: 'badge-info', label: 'Queued' },
     SENDING: { class: 'badge-warning', label: 'Sending' },
+    PAUSED: { class: 'badge-warning', label: 'Paused' },
+    COMPLETED: { class: 'badge-success', label: 'Completed' },
+    COMPLETED_WITH_FAILURES: { class: 'badge-warning', label: 'Completed with failures' },
     SENT: { class: 'badge-success', label: 'Sent' },
     CANCELLED: { class: 'badge-error', label: 'Cancelled' },
+    FAILED: { class: 'badge-error', label: 'Failed' },
   }
   const { class: className, label } = config[status] || config.DRAFT
 

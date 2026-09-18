@@ -20,6 +20,11 @@ interface SendProgress {
   totalRecipients: number
   sent: number
   failed: number
+  queued: number
+  accepted: number
+  delivered: number
+  suppressed: number
+  unknown: number
   completedAt: string | null
 }
 
@@ -32,6 +37,8 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   const [scheduledDate, setScheduledDate] = useState('')
   const [scheduledTime, setScheduledTime] = useState('')
   const [confirmText, setConfirmText] = useState('')
+  const [approvalName, setApprovalName] = useState('')
+  const [approvalNote, setApprovalNote] = useState('')
   const [progress, setProgress] = useState<SendProgress | null>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -58,7 +65,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
       const data: SendProgress = await res.json()
       setProgress(data)
 
-      if (data.status === 'SENT') {
+      if (['COMPLETED', 'COMPLETED_WITH_FAILURES', 'CANCELLED', 'FAILED'].includes(data.status)) {
         // Stop polling — sending is complete
         if (pollRef.current) {
           clearInterval(pollRef.current)
@@ -87,6 +94,8 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
       const body: Record<string, unknown> = {
         mode,
         tagIds: mode === 'tags' ? selectedTags : undefined,
+        approvalName,
+        approvalNote,
       }
 
       if (sendMode === 'schedule' && scheduledDate && scheduledTime) {
@@ -117,8 +126,13 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
         setProgress({
           status: 'SENDING',
           totalRecipients: result.recipientCount,
+          queued: result.recipientCount,
+          accepted: 0,
+          delivered: 0,
           sent: 0,
           failed: 0,
+          suppressed: 0,
+          unknown: 0,
           completedAt: null,
         })
 
@@ -147,7 +161,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
       progress.totalRecipients > 0
         ? Math.round((progress.sent / progress.totalRecipients) * 100)
         : 0
-    const isDone = progress.status === 'SENT'
+    const isDone = ['COMPLETED', 'COMPLETED_WITH_FAILURES'].includes(progress.status)
 
     return (
       <div className="space-y-6">
@@ -174,7 +188,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
                   Campaign Sent!
                 </h2>
                 <p className="text-gray-600 mt-2">
-                  {progress.sent.toLocaleString()} emails sent
+                  {progress.accepted.toLocaleString()} accepted, {progress.delivered.toLocaleString()} delivered
                   {progress.failed > 0 && (
                     <span className="text-red-600">
                       , {progress.failed.toLocaleString()} failed
@@ -209,8 +223,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
                   Sending Campaign...
                 </h2>
                 <p className="text-gray-600 mt-2">
-                  {progress.sent.toLocaleString()} of{' '}
-                  {progress.totalRecipients.toLocaleString()} emails sent
+                  {progress.queued.toLocaleString()} queued, {progress.accepted.toLocaleString()} accepted, {progress.unknown.toLocaleString()} unknown
                 </p>
               </>
             )}
@@ -226,6 +239,13 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
             />
           </div>
           <p className="text-sm text-gray-500 text-center">{percent}%</p>
+          <div className="grid grid-cols-5 gap-2 text-center text-xs text-gray-600 mt-4">
+            <span>Queued {progress.queued.toLocaleString()}</span>
+            <span>Accepted {progress.accepted.toLocaleString()}</span>
+            <span>Delivered {progress.delivered.toLocaleString()}</span>
+            <span>Suppressed {progress.suppressed.toLocaleString()}</span>
+            <span>Unknown {progress.unknown.toLocaleString()}</span>
+          </div>
 
           {isDone && (
             <button
@@ -443,11 +463,27 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
             className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-lg font-mono focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-colors"
           />
 
+          <input
+            type="text"
+            value={approvalName}
+            onChange={(e) => setApprovalName(e.target.value)}
+            placeholder="Approver name"
+            className="w-full mt-3 px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
+          />
+
+          <textarea
+            value={approvalNote}
+            onChange={(e) => setApprovalNote(e.target.value)}
+            placeholder="Approval note"
+            className="w-full mt-3 px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
+            rows={2}
+          />
+
           <button
             onClick={handleConfirmedSend}
-            disabled={!isConfirmed || sending || selectedCount === 0}
+            disabled={!isConfirmed || !approvalName.trim() || sending || selectedCount === 0}
             className={`w-full mt-4 px-4 py-3 rounded-lg font-medium transition-colors ${
-              isConfirmed && !sending
+              isConfirmed && approvalName.trim() && !sending
                 ? 'bg-red-600 text-white hover:bg-red-700'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}

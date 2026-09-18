@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
-import { sendBulkCampaign } from '@/lib/sendgrid'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,69 +21,18 @@ export async function GET() {
       return NextResponse.json({ processed: 0, message: 'No campaigns due' })
     }
 
-    const results: Array<{
-      campaignId: string
-      sent?: number
-      status: string
-      error?: string
-    }> = []
+    const results: Array<{ campaignId: string; status: string }> = []
 
     for (const campaign of dueCampaigns) {
       try {
-        // Mark as sending
         await prisma.campaign.update({
           where: { id: campaign.id },
-          data: { status: 'SENDING' },
+          data: { status: 'QUEUED' },
         })
-
-        // Get recipients that were queued for this campaign
-        const recipients = await prisma.campaignRecipient.findMany({
-          where: { campaignId: campaign.id },
-          include: { contact: true },
-        })
-
-        if (recipients.length === 0) {
-          // No recipients queued - mark as sent (empty)
-          await prisma.campaign.update({
-            where: { id: campaign.id },
-            data: { status: 'SENT', sentAt: now },
-          })
-          results.push({ campaignId: campaign.id, sent: 0, status: 'completed_empty' })
-          continue
-        }
-
-        // Send emails
-        const contacts = recipients.map(r => ({
-          id: r.contact.id,
-          email: r.contact.email,
-          firstName: r.contact.firstName,
-          lastName: r.contact.lastName,
-          fullName: r.contact.fullName,
-        }))
-
-        await sendBulkCampaign(campaign, contacts)
-
-        // Mark as sent
-        await prisma.campaign.update({
-          where: { id: campaign.id },
-          data: { status: 'SENT', sentAt: now },
-        })
-
-        results.push({ campaignId: campaign.id, sent: contacts.length, status: 'completed' })
+        results.push({ campaignId: campaign.id, status: 'queued_for_worker' })
       } catch (error) {
         console.error(`Failed to send campaign ${campaign.id}:`, error)
-        
-        // Revert to scheduled status so it can be retried
-        await prisma.campaign.update({
-          where: { id: campaign.id },
-          data: { status: 'SCHEDULED' },
-        })
-        
-        results.push({ 
-          campaignId: campaign.id, 
-          status: 'failed', 
-          error: error instanceof Error ? error.message : 'Unknown error' 
-        })
+        results.push({ campaignId: campaign.id, status: 'failed_to_queue' })
       }
     }
 

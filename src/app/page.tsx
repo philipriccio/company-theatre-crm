@@ -48,7 +48,7 @@ export default async function Dashboard() {
           Dashboard
         </h1>
         <p className="text-stone-500 mt-1">
-          Welcome back. Here's what's happening with your audience.
+          Welcome back. Here&apos;s what&apos;s happening with your audience.
         </p>
       </div>
       

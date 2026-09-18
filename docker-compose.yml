@@ -3,13 +3,38 @@ version: '3.8'
 
 services:
   crm:
-    build: .
+    build:
+      context: .
+      target: runner
     ports:
       - "3000:3000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
       - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL:-http://localhost:3000}
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # Disabled unless explicitly started with: docker compose --profile email-worker up -d
+  # Keep EMAIL_PROVIDER=disabled until the SES handoff and seed tests are complete.
+  email-worker:
+    profiles: ["email-worker"]
+    build:
+      context: .
+      target: worker
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - EMAIL_PROVIDER=${EMAIL_PROVIDER:-disabled}
+      - EMAIL_TOKEN_SECRET=${EMAIL_TOKEN_SECRET}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - AWS_SES_REGION=${AWS_SES_REGION:-ca-central-1}
+      - AWS_SES_CONFIGURATION_SET=${AWS_SES_CONFIGURATION_SET:-company-theatre-campaigns}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - EMAIL_WORKER_BATCH_SIZE=${EMAIL_WORKER_BATCH_SIZE:-10}
+      - EMAIL_WORKER_LEASE_SECONDS=${EMAIL_WORKER_LEASE_SECONDS:-300}
+      - EMAIL_WORKER_IDLE_MS=${EMAIL_WORKER_IDLE_MS:-5000}
     depends_on:
       - db
     restart: unless-stopped

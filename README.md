@@ -1,102 +1,73 @@
 # Company Theatre CRM
 
-Custom email CRM for The Company Theatre, built to replace Brevo with better control and lower costs.
+Company Theatre-owned contact and campaign system with durable, provider-neutral email delivery.
 
-## Features
+## Capabilities
 
-- **Contact Management**: Import, search, and manage 14,000+ contacts
-- **Tagging System**: 87 tags for segmentation (show attendance, mailing lists, donors)
-- **Campaign Builder**: Drag-and-drop email template editor with 8 block types
-- **Scheduling**: Send immediately or schedule for later
-- **Tracking**: Open rates, click tracking, and engagement history
-- **Compliance**: CASL/CAN-SPAM compliant with one-click unsubscribe
+- Contact import, search, tags, notes, relationships, and follow-ups
+- Campaign and template builder
+- Frozen, approved campaign audiences
+- Postgres-backed delivery queue with a separate worker
+- Recipient leases, transient retries, unknown-outcome quarantine, pause/resume/cancel/retry
+- Durable attempts, provider message IDs, normalized events, suppressions, and consent snapshots
+- Signed unsubscribe and click tracking with RFC 8058 one-click unsubscribe
+- Amazon SES v2 adapter plus signed SNS event ingestion
 
-## Tech Stack
+## Safety state
 
-- **Frontend**: Next.js 16 + TypeScript + Tailwind CSS v4
-- **Database**: PostgreSQL with Prisma ORM
-- **Email**: SendGrid API
-- **Deployment**: Docker / Railway / Fly.io
+The durable queue and SES integration are local and **not deployed**. Production must keep `EMAIL_PROVIDER=disabled` until the migration, AWS/DNS configuration, seed tests, and deployment are explicitly approved. See `PROJECT.md`, `TESTING.md`, and `SES-HANDOFF.md`.
 
-## Local Development
+## Stack
+
+- Next.js 16, React 19, TypeScript, Tailwind CSS
+- PostgreSQL and Prisma
+- Amazon SES v2 provider adapter
+- Docker/Coolify
+
+## Local development
 
 ```bash
-# Install dependencies
 npm install
-
-# Set up environment
 cp .env.example .env
-# Edit .env with your database and SendGrid credentials
-
-# Run database migrations
 npx prisma migrate dev
-
-# Start dev server
 npm run dev
 ```
 
-## Production Deployment
+Never put credentials in Git or command arguments. Use local ignored environment files and protected production secret entry.
 
-### Docker
+## Verification
 
 ```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# Run migrations
-docker-compose exec crm npx prisma migrate deploy
+npm test
+npx prisma validate
+npx tsc --noEmit
+npm run lint
+npm run build
+git diff --check
 ```
 
-### Railway / Fly.io
+## Worker
 
-1. Connect your repository
-2. Set environment variables:
-   - `DATABASE_URL`
-   - `SENDGRID_API_KEY`
-   - `NEXT_PUBLIC_APP_URL`
-3. Deploy
+Run the worker separately from the web process:
 
-## SendGrid Setup
-
-1. Create a SendGrid account
-2. Verify your sender domain or email address
-3. Generate an API key with full access
-4. (Optional) Set up Event Webhook for bounce handling:
-   - URL: `https://your-domain.com/api/webhooks/sendgrid`
-   - Events: delivered, open, click, bounce, dropped, spamreport, unsubscribe
-
-## DNS Records
-
-For email deliverability, add these DNS records:
-
-| Type | Host | Value |
-|------|------|-------|
-| CNAME | em5541 | u27917687.wl183.sendgrid.net |
-| TXT | _dmarc | v=DMARC1; p=none; rua=mailto:dmarc@companytheatre.ca |
-
-Note: Skip DKIM records if using Google Workspace (to avoid conflicts).
-
-## Scheduled Campaigns
-
-A cron job runs every minute to process scheduled campaigns. In Docker, this is handled by the `cron` service. For Railway/Fly.io, set up an external cron to hit:
-
-```
-GET /api/cron/send-scheduled
+```bash
+npm run email-worker
 ```
 
-## API Routes
+For a local, non-delivering acceptance test use `EMAIL_PROVIDER=mock`. Production remains inert with `EMAIL_PROVIDER=disabled`.
 
-- `GET/POST /api/contacts` - Contact management
-- `POST /api/contacts/import` - CSV import
-- `GET/POST /api/campaigns` - Campaign management
-- `POST /api/campaigns/[id]/send` - Send or schedule campaign
-- `POST /api/campaigns/[id]/test` - Send test email
-- `GET /api/cron/send-scheduled` - Process scheduled campaigns
-- `POST /api/webhooks/sendgrid` - SendGrid event webhooks
-- `GET /api/track/open/[id]` - Open tracking pixel
-- `GET /api/track/click/[id]` - Click tracking redirect
-- `GET /api/unsubscribe/[token]` - Unsubscribe handler
+## Key routes
+
+- `POST /api/campaigns/[id]/send` — freeze approval/audience and enqueue
+- `GET /api/campaigns/[id]/status` — recipient delivery-state counts
+- `POST /api/campaigns/[id]/pause|resume|cancel|retry` — operational controls
+- `POST /api/campaigns/[id]/test` — provider-backed test send
+- `GET /api/cron/send-scheduled` — release due scheduled campaigns to the worker
+- `POST /api/webhooks/ses` — signed SNS/SES event ingestion
+- `POST /api/unsubscribe/[token]` — signed one-click unsubscribe
+- `GET /api/track/open/[id]` — open pixel
+- `GET /api/track/click/[id]?t=...` — signed click redirect
 
 ## License
 
-Private - The Company Theatre
+Private — The Company Theatre

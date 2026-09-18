@@ -88,7 +88,7 @@ async function main() {
   // Import contacts
   console.log('\n👥 Importing contacts...')
   let imported = 0
-  let skipped = 0
+  const skipped = 0
   let errors = 0
 
   for (const record of contactsWithEmail) {

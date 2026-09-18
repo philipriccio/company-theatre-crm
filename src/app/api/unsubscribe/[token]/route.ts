@@ -1,33 +1,21 @@
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-// Simple token encoding/decoding (in production, use proper encryption)
-function decodeToken(token: string): string | null {
-  try {
-    return Buffer.from(token, 'base64url').toString('utf-8')
-  } catch {
-    return null
-  }
-}
-
-export function encodeUnsubscribeToken(email: string): string {
-  return Buffer.from(email).toString('base64url')
-}
+import { verifyUnsubscribeToken } from '@/lib/email/tokens'
+import { recordSuppression } from '@/lib/email/events'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params
-  const email = decodeToken(token)
+  const verified = verifyUnsubscribeToken(token)
   
-  if (!email) {
+  if (!verified.ok) {
     return NextResponse.json({ error: 'Invalid token' }, { status: 400 })
   }
 
-  // Check if contact exists
   const contact = await prisma.contact.findUnique({
-    where: { email },
+    where: { id: verified.contactId },
     select: { id: true, email: true, unsubscribedAt: true },
   })
 
@@ -46,16 +34,24 @@ export async function POST(
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params
-  const email = decodeToken(token)
+  const verified = verifyUnsubscribeToken(token)
   
-  if (!email) {
+  if (!verified.ok) {
     return NextResponse.json({ error: 'Invalid token' }, { status: 400 })
   }
 
-  // Unsubscribe the contact
+  const now = new Date()
   const contact = await prisma.contact.update({
-    where: { email },
-    data: { unsubscribedAt: new Date() },
+    where: { id: verified.contactId },
+    data: { unsubscribedAt: now, solicitation: false },
+  })
+
+  await recordSuppression({
+    email: contact.email,
+    reason: 'unsubscribe',
+    source: 'signed_unsubscribe',
+    contactId: contact.id,
+    metadata: { unsubscribedAt: now.toISOString() },
   })
 
   return NextResponse.json({

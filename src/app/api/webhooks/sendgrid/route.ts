@@ -19,6 +19,16 @@ interface SendGridEvent {
 
 export async function POST(request: NextRequest) {
   try {
+    if (process.env.ENABLE_LEGACY_SENDGRID_WEBHOOK !== 'true') {
+      return NextResponse.json({ error: 'Legacy SendGrid webhook disabled' }, { status: 410 })
+    }
+
+    const expectedSignature = process.env.SENDGRID_WEBHOOK_SIGNATURE
+    const receivedSignature = request.headers.get('x-company-theatre-sendgrid-signature')
+    if (!expectedSignature || receivedSignature !== expectedSignature) {
+      return NextResponse.json({ error: 'Unauthorized webhook' }, { status: 401 })
+    }
+
     const events: SendGridEvent[] = await request.json()
 
     for (const event of events) {

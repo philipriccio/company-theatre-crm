@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 import { wrapInTemplate, personalizeContent } from '@/lib/email-template'
-import { sendEmail } from '@/lib/sendgrid'
+import { getEmailProvider } from '@/lib/email/providers'
+import { createUnsubscribeToken } from '@/lib/email/tokens'
 
 export async function POST(
   request: NextRequest,
@@ -44,10 +45,11 @@ export async function POST(
         fullName: 'Friend',
       }
 
-  // Generate unsubscribe URL (won't work for test, but shows formatting)
+  const tokenContactId = realContact ? 'test-contact' : 'test-contact'
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-  const unsubscribeToken = Buffer.from(email).toString('base64url')
+  const unsubscribeToken = createUnsubscribeToken(tokenContactId)
   const unsubscribeUrl = `${appUrl}/unsubscribe/${unsubscribeToken}`
+  const oneClickUrl = `${appUrl}/api/unsubscribe/${unsubscribeToken}`
 
   // Personalize content
   const personalizedContent = personalizeContent(campaign.content, testContact)
@@ -60,19 +62,22 @@ export async function POST(
   })
 
   // Send test email
-  const success = await sendEmail({
-    to: email,
-    from: {
-      email: campaign.fromEmail,
-      name: campaign.fromName,
-    },
+  const provider = getEmailProvider()
+  const result = await provider.send({
+    to: { email },
+    from: { email: campaign.fromEmail, name: campaign.fromName },
+    replyTo: { email: campaign.fromEmail, name: campaign.fromName },
     subject: `[TEST] ${campaign.subject}`,
     html,
+    headers: {
+      'List-Unsubscribe': `<${oneClickUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    },
   })
 
-  if (!success) {
-    return NextResponse.json({ error: 'Failed to send test email' }, { status: 500 })
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error.message, code: result.error.code }, { status: 500 })
   }
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true, provider: result.provider, messageId: result.messageId })
 }

@@ -4,25 +4,28 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "email-worker": "tsx scripts/email-worker.ts",
+    "test": "tsx --test tests/*.test.ts",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.1135.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@prisma/adapter-pg": "^6.8.2",
-    "@prisma/client": "^6.8.2",
+    "@prisma/adapter-pg": "^6.19.3",
+    "@prisma/client": "^6.19.3",
     "@sendgrid/mail": "^8.1.6",
-    "csv-parse": "^6.1.0",
+    "csv-parse": "^7.0.2",
     "dotenv": "^17.3.1",
-    "next": "16.1.6",
+    "next": "^16.3.5",
     "pg": "^8.18.0",
-    "prisma": "^6.8.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "uuid": "^13.0.0"
+    "tsx": "^4.21.0",
+    "uuid": "^13.0.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -31,10 +34,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "^16.3.5",
+    "prisma": "^6.19.3",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
-    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

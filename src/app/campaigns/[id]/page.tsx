@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { TestSendButton } from './TestSendButton'
 import { CancelCampaignButton } from './CancelCampaignButton'
 import { DuplicateCampaignButton } from './DuplicateCampaignButton'
+import { CampaignControls } from './CampaignControls'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,6 +24,7 @@ export default async function CampaignDetailPage({
           openedAt: true,
           clickedAt: true,
           bouncedAt: true,
+          status: true,
         },
       },
     },
@@ -37,6 +39,11 @@ export default async function CampaignDetailPage({
   const opened = campaign.recipients.filter(r => r.openedAt).length
   const clicked = campaign.recipients.filter(r => r.clickedAt).length
   const bounced = campaign.recipients.filter(r => r.bouncedAt).length
+  const accepted = campaign.recipients.filter(r => r.status === 'ACCEPTED').length
+  const delivered = campaign.recipients.filter(r => r.status === 'DELIVERED').length
+  const failed = campaign.recipients.filter(r => r.status === 'FAILED').length
+  const suppressed = campaign.recipients.filter(r => r.status === 'SUPPRESSED').length
+  const unknown = campaign.recipients.filter(r => r.status === 'UNKNOWN').length
 
   return (
     <div className="p-8">
@@ -57,13 +64,15 @@ export default async function CampaignDetailPage({
         </div>
       </div>
 
-      {/* Stats (only show if sent) */}
-      {campaign.status === 'SENT' && total > 0 && (
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          <StatCard label="Sent" value={total} />
+      {total > 0 && (
+        <div className="grid grid-cols-2 lg:grid-cols-7 gap-4 mb-8">
+          <StatCard label="Accepted" value={accepted} />
+          <StatCard label="Delivered" value={delivered} />
           <StatCard label="Opened" value={opened} percent={(opened / total) * 100} />
           <StatCard label="Clicked" value={clicked} percent={(clicked / total) * 100} />
           <StatCard label="Bounced" value={bounced} percent={(bounced / total) * 100} color="red" />
+          <StatCard label="Suppressed" value={suppressed} color="red" />
+          <StatCard label="Unknown" value={unknown + failed} color="red" />
         </div>
       )}
 
@@ -109,15 +118,16 @@ export default async function CampaignDetailPage({
                 </Link>
               </div>
             </div>
-          ) : campaign.status === 'SENT' ? (
+          ) : ['SENT', 'COMPLETED', 'COMPLETED_WITH_FAILURES'].includes(campaign.status) ? (
             <>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Campaign Sent</h2>
               <p className="text-gray-500 text-sm">
-                Sent on {campaign.sentAt ? new Date(campaign.sentAt).toLocaleString() : 'Unknown'}
+                Completed on {campaign.completedAt ? new Date(campaign.completedAt).toLocaleString() : campaign.sentAt ? new Date(campaign.sentAt).toLocaleString() : 'Unknown'}
               </p>
               <p className="text-gray-500 text-sm mt-2">
-                {total.toLocaleString()} recipients
+                {(campaign.frozenRecipientCount || total).toLocaleString()} frozen recipients
               </p>
+              <div className="mt-4"><CampaignControls campaignId={campaign.id} status={campaign.status} /></div>
             </>
           ) : campaign.status === 'SCHEDULED' && campaign.scheduledAt ? (
             <>
@@ -127,6 +137,7 @@ export default async function CampaignDetailPage({
                 scheduledAt={campaign.scheduledAt}
                 recipientCount={total}
               />
+              <div className="mt-4"><CampaignControls campaignId={campaign.id} status={campaign.status} /></div>
             </>
           ) : (
             <>
@@ -134,6 +145,15 @@ export default async function CampaignDetailPage({
               <p className="text-gray-500 text-sm">
                 {campaign.scheduledAt && `Scheduled for ${new Date(campaign.scheduledAt).toLocaleString()}`}
               </p>
+              <p className="text-gray-500 text-sm mt-2">
+                Frozen recipients: {(campaign.frozenRecipientCount || total).toLocaleString()}
+              </p>
+              {campaign.approvedAt && (
+                <p className="text-gray-500 text-sm mt-2">
+                  Approved by {campaign.approvedBy || 'Unknown'} on {new Date(campaign.approvedAt).toLocaleString()}
+                </p>
+              )}
+              <div className="mt-4"><CampaignControls campaignId={campaign.id} status={campaign.status} /></div>
             </>
           )}
         </div>
@@ -146,9 +166,14 @@ function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     DRAFT: 'bg-gray-100 text-gray-800',
     SCHEDULED: 'bg-blue-100 text-blue-800',
+    QUEUED: 'bg-blue-100 text-blue-800',
     SENDING: 'bg-yellow-100 text-yellow-800',
+    PAUSED: 'bg-yellow-100 text-yellow-800',
+    COMPLETED: 'bg-green-100 text-green-800',
+    COMPLETED_WITH_FAILURES: 'bg-orange-100 text-orange-800',
     SENT: 'bg-green-100 text-green-800',
     CANCELLED: 'bg-red-100 text-red-800',
+    FAILED: 'bg-red-100 text-red-800',
   }
   return (
     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${styles[status]}`}>

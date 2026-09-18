@@ -132,10 +132,21 @@ model Campaign {
   status      CampaignStatus      @default(DRAFT)
   scheduledAt DateTime?
   sentAt      DateTime?
+  completedAt DateTime?
+  pausedAt    DateTime?
+  cancelledAt DateTime?
+  audienceMode String?
+  audienceTagIds String[]          @default([])
+  approvedAt  DateTime?
+  approvedBy  String?
+  approvalNote String?
+  frozenRecipientCount Int?
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
   links       CampaignLink[]
   recipients  CampaignRecipient[]
+  attempts    EmailDeliveryAttempt[]
+  providerEvents EmailProviderEvent[]
 
   @@index([status])
   @@index([scheduledAt])
@@ -145,29 +156,127 @@ model CampaignRecipient {
   id          String    @id @default(cuid())
   campaignId  String
   contactId   String
+  email       String
+  firstName   String?
+  lastName    String?
+  fullName    String?
+  status      CampaignRecipientStatus @default(QUEUED)
+  queuedAt    DateTime @default(now())
+  acceptedAt  DateTime?
   sentAt      DateTime?
   deliveredAt DateTime?
   openedAt    DateTime?
   clickedAt   DateTime?
   bouncedAt   DateTime?
   bounceType  String?
+  suppressedAt DateTime?
+  failedAt    DateTime?
+  unknownAt   DateTime?
+  attemptCount Int @default(0)
+  nextAttemptAt DateTime?
+  leasedUntil DateTime?
+  leaseOwner  String?
+  provider    String?
+  providerMessageId String?
+  lastErrorClass String?
+  lastErrorCode String?
+  lastErrorMessage String?
+  metadata    Json?
   campaign    Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   contact     Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  attempts    EmailDeliveryAttempt[]
+  providerEvents EmailProviderEvent[]
 
   @@unique([campaignId, contactId])
+  @@unique([campaignId, email])
   @@index([campaignId])
   @@index([contactId])
+  @@index([status, nextAttemptAt])
+  @@index([leasedUntil])
+  @@index([providerMessageId])
 }
 
 model CampaignLink {
   id          String   @id @default(cuid())
   campaignId  String
   originalUrl String
+  targetToken String?  @unique
   clickCount  Int      @default(0)
   createdAt   DateTime @default(now())
   campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@index([campaignId])
+}
+
+model EmailDeliveryAttempt {
+  id          String   @id @default(cuid())
+  campaignId  String
+  recipientId String
+  provider    String
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  outcome     EmailAttemptOutcome
+  errorClass  String?
+  errorCode   String?
+  errorMessage String?
+  providerMessageId String?
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  recipient   CampaignRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([recipientId])
+  @@index([providerMessageId])
+}
+
+model EmailProviderEvent {
+  id          String   @id @default(cuid())
+  provider    String
+  providerEventId String
+  providerMessageId String?
+  eventType   EmailProviderEventType
+  campaignId  String?
+  recipientId String?
+  emailHash   String?
+  occurredAt  DateTime
+  payload     Json
+  createdAt   DateTime @default(now())
+  campaign    Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  recipient   CampaignRecipient? @relation(fields: [recipientId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, providerEventId])
+  @@index([providerMessageId])
+  @@index([recipientId])
+  @@index([eventType])
+}
+
+model GlobalSuppression {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  emailHash   String   @unique
+  reason      String
+  source      String
+  contactId   String?
+  campaignId  String?
+  recipientId String?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+  metadata    Json?
+
+  @@index([reason])
+  @@index([contactId])
+}
+
+model ConsentEvidence {
+  id          String   @id @default(cuid())
+  contactId   String
+  email       String
+  source      String
+  status      String
+  recordedAt  DateTime @default(now())
+  metadata    Json?
+
+  @@index([contactId])
+  @@index([email])
 }
 
 model Template {
@@ -188,7 +297,44 @@ model Setting {
 enum CampaignStatus {
   DRAFT
   SCHEDULED
+  QUEUED
   SENDING
+  PAUSED
+  COMPLETED
+  COMPLETED_WITH_FAILURES
   SENT
   CANCELLED
+  FAILED
+}
+
+enum CampaignRecipientStatus {
+  QUEUED
+  SENDING
+  ACCEPTED
+  DELIVERED
+  FAILED
+  SUPPRESSED
+  UNKNOWN
+  CANCELLED
+}
+
+enum EmailAttemptOutcome {
+  ACCEPTED
+  TRANSIENT_FAILURE
+  PERMANENT_FAILURE
+  SUPPRESSED
+  UNKNOWN
+}
+
+enum EmailProviderEventType {
+  ACCEPTED
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  COMPLAINED
+  UNSUBSCRIBED
+  REJECTED
+  DROPPED
+  UNKNOWN
 }

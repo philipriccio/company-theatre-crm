@@ -1,15 +1,26 @@
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
+import { safeHttpUrl, verifyTrackingToken } from '@/lib/email/tokens'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const url = request.nextUrl.searchParams.get('url')
+  const token = request.nextUrl.searchParams.get('t')
 
-  if (!url) {
+  if (!token) {
     return NextResponse.json({ error: 'Missing URL' }, { status: 400 })
+  }
+
+  const verified = verifyTrackingToken(token)
+  if (!verified.ok || verified.recipientId !== id) {
+    return NextResponse.json({ error: 'Invalid tracking token' }, { status: 400 })
+  }
+
+  const target = safeHttpUrl(verified.url)
+  if (!target) {
+    return NextResponse.json({ error: 'Unsafe redirect target' }, { status: 400 })
   }
 
   // Record the click (don't await - redirect immediately)
@@ -22,8 +33,5 @@ export async function GET(
     // Silently ignore errors
   })
 
-  // Decode and redirect to the original URL
-  const decodedUrl = decodeURIComponent(url)
-  
-  return NextResponse.redirect(decodedUrl, { status: 302 })
+  return NextResponse.redirect(target.toString(), { status: 302 })
 }

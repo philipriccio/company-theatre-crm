@@ -15,26 +15,23 @@ export async function POST(
     return NextResponse.json({ error: 'Campaign not found' }, { status: 404 })
   }
 
-  if (campaign.status !== 'SCHEDULED') {
+  if (!['SCHEDULED', 'QUEUED', 'PAUSED'].includes(campaign.status)) {
     return NextResponse.json(
-      { error: 'Can only cancel scheduled campaigns' },
+      { error: 'Can only cancel campaigns before active sending has started or while paused' },
       { status: 400 }
     )
   }
 
-  // Delete queued recipients
-  await prisma.campaignRecipient.deleteMany({
-    where: { campaignId: id },
-  })
-
-  // Reset campaign to draft
-  await prisma.campaign.update({
-    where: { id },
-    data: {
-      status: 'DRAFT',
-      scheduledAt: null,
-    },
-  })
+  await prisma.$transaction([
+    prisma.campaignRecipient.updateMany({
+      where: { campaignId: id, status: { in: ['QUEUED', 'SENDING'] } },
+      data: { status: 'CANCELLED', leasedUntil: null, leaseOwner: null },
+    }),
+    prisma.campaign.update({
+      where: { id },
+      data: { status: 'CANCELLED', cancelledAt: new Date() },
+    }),
+  ])
 
   return NextResponse.json({ success: true })
 }
