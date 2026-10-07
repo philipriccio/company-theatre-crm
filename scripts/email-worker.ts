@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { getEmailProvider } from '../src/lib/email/providers'
 import { claimRecipients, processRecipient, recoverExpiredLeases, updateCampaignCompletions } from '../src/lib/email/queue'
 
 const workerId = process.env.EMAIL_WORKER_ID || `worker-${process.pid}`
@@ -11,16 +12,19 @@ async function sleep(ms: number) {
 }
 
 async function runOnce() {
+  const provider = getEmailProvider()
+  if (provider.name === 'disabled') return 0
   await recoverExpiredLeases()
   const recipients = await claimRecipients(workerId, batchSize, leaseSeconds)
   for (const recipient of recipients) {
-    await processRecipient(recipient.id)
+    await processRecipient(recipient.id, provider, workerId)
   }
   await updateCampaignCompletions()
   return recipients.length
 }
 
 async function main() {
+  if (!Number.isInteger(batchSize) || batchSize < 1 || batchSize > 100 || !Number.isInteger(leaseSeconds) || leaseSeconds < 30 || !Number.isFinite(idleMs) || idleMs < 100) throw new Error('Invalid worker batch, lease, or idle settings')
   const once = process.argv.includes('--once')
   do {
     const claimed = await runOnce()

@@ -24,7 +24,7 @@ export async function POST(
 
   await prisma.$transaction([
     prisma.campaignRecipient.updateMany({
-      where: { campaignId: id, status: { in: ['QUEUED', 'SENDING'] } },
+      where: { campaignId: id, status: 'QUEUED' },
       data: { status: 'CANCELLED', leasedUntil: null, leaseOwner: null },
     }),
     prisma.campaign.update({

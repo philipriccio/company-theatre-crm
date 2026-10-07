@@ -30,7 +30,7 @@ interface SendProgress {
 
 export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   const router = useRouter()
-  const [mode, setMode] = useState<'all' | 'tags'>('all')
+  const [mode, setMode] = useState<'' | 'all' | 'tags'>('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [sending, setSending] = useState(false)
   const [sendMode, setSendMode] = useState<'now' | 'schedule'>('now')
@@ -42,12 +42,18 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   const [progress, setProgress] = useState<SendProgress | null>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const selectedCount =
-    mode === 'all'
-      ? totalSubscribed
-      : tags
-          .filter((t) => selectedTags.includes(t.id))
-          .reduce((sum, t) => sum + t.count, 0)
+  const [audience, setAudience] = useState<{eligible:number;excluded:number}|null>(null)
+  const [error,setError] = useState('')
+  const [audienceError,setAudienceError] = useState('')
+  const [timezone,setTimezone] = useState('your browser timezone')
+  useEffect(()=>setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone),[])
+  useEffect(()=>{
+    const controller=new AbortController();setAudience(null);setAudienceError('');setConfirmText('')
+    if(!mode || (mode==='tags'&&!selectedTags.length)) return ()=>controller.abort()
+    fetch('/api/campaigns/audience',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode,tagIds:selectedTags}),signal:controller.signal}).then(async r=>{const data=await r.json();if(!r.ok)throw Error(data.error||'Could not count recipients');setAudience(data)}).catch(e=>{if(!controller.signal.aborted)setAudienceError(e.message)})
+    return ()=>controller.abort()
+  },[mode,selectedTags])
+  const selectedCount=audience?.eligible||0
 
   const handleTagToggle = (tagId: string) => {
     setSelectedTags((prev) =>
@@ -61,9 +67,10 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   const pollStatus = useCallback(async () => {
     try {
       const res = await fetch(`/api/campaigns/${campaignId}/status`)
-      if (!res.ok) return
+      if (!res.ok) throw Error('Status update unavailable. Your campaign may still be processing; do not submit it again.')
       const data: SendProgress = await res.json()
       setProgress(data)
+      setError('')
 
       if (['COMPLETED', 'COMPLETED_WITH_FAILURES', 'CANCELLED', 'FAILED'].includes(data.status)) {
         // Stop polling — sending is complete
@@ -73,7 +80,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
         }
       }
     } catch {
-      // Ignore poll errors, will retry
+      setError('Status update unavailable. Retrying automatically; do not submit this campaign again.')
     }
   }, [campaignId])
 
@@ -87,7 +94,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   }, [])
 
   const handleConfirmedSend = async () => {
-    if (confirmText.toUpperCase() !== 'SEND') return
+    if (confirmText.toUpperCase() !== 'SEND' || !audience || !mode) return
 
     setSending(true)
     try {
@@ -110,9 +117,8 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
         body: JSON.stringify(body),
       })
 
-      if (!res.ok) throw new Error('Failed to send')
-
       const result = await res.json()
+      if (!res.ok) throw new Error(result.error || 'Failed to queue campaign')
 
       if (result.scheduled) {
         // Scheduled — redirect immediately
@@ -139,10 +145,8 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
         // Start polling every 5 seconds
         pollRef.current = setInterval(pollStatus, 5000)
       }
-    } catch {
-      alert(
-        `Failed to ${sendMode === 'schedule' ? 'schedule' : 'send'} campaign`
-      )
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not queue campaign')
       setSending(false)
     }
   }
@@ -152,7 +156,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
     return now.toISOString().split('T')[0]
   }
 
-  const canSchedule = sendMode === 'now' || (scheduledDate && scheduledTime)
+  const canSchedule = sendMode === 'now' || (scheduledDate && scheduledTime && new Date(`${scheduledDate}T${scheduledTime}`).getTime()>Date.now())
   const isConfirmed = confirmText.toUpperCase() === 'SEND'
 
   // If we're showing progress, render the progress view
@@ -165,6 +169,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
 
     return (
       <div className="space-y-6">
+        {error && <p role="alert" className="p-4 bg-red-50 text-red-800">{error}</p>}
         <div className="bg-white rounded-xl shadow-sm p-8">
           <div className="text-center mb-6">
             {isDone ? (
@@ -185,7 +190,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
                   </svg>
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900">
-                  Campaign Sent!
+                  Queue processing complete
                 </h2>
                 <p className="text-gray-600 mt-2">
                   {progress.accepted.toLocaleString()} accepted, {progress.delivered.toLocaleString()} delivered
@@ -220,7 +225,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
                   </svg>
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900">
-                  Sending Campaign...
+                  Campaign processing
                 </h2>
                 <p className="text-gray-600 mt-2">
                   {progress.queued.toLocaleString()} queued, {progress.accepted.toLocaleString()} accepted, {progress.unknown.toLocaleString()} unknown
@@ -239,7 +244,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
             />
           </div>
           <p className="text-sm text-gray-500 text-center">{percent}%</p>
-          <div className="grid grid-cols-5 gap-2 text-center text-xs text-gray-600 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs text-gray-600 mt-4">
             <span>Queued {progress.queued.toLocaleString()}</span>
             <span>Accepted {progress.accepted.toLocaleString()}</span>
             <span>Delivered {progress.delivered.toLocaleString()}</span>
@@ -265,6 +270,9 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
 
   return (
     <div className="space-y-8">
+      {error && <p role="alert" className="p-4 bg-red-50 text-red-800">{error}</p>}
+      {audienceError && <p role="alert" className="p-4 bg-red-50 text-red-800">{audienceError}</p>}
+      <p className="text-sm text-stone-600">Choose an audience deliberately. Counts exclude unsubscribed, suppressed and duplicate addresses. Every test requires Philip’s approval; successful Philip/Janice tests must precede separate bulk approval.</p>
       {/* Recipient Selection */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -348,7 +356,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
                   : 'text-gray-400'
             }`}
           >
-            {selectedCount.toLocaleString()}
+            {audience ? selectedCount.toLocaleString() : mode ? 'Choose tags / loading…' : 'Choose an audience'}
           </p>
           <p
             className={`text-sm mt-1 ${
@@ -388,12 +396,13 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
 
         {selectedCount > 0 && selectedCount <= 20 && (
           <p className="text-sm text-green-800 mt-3 text-center">
-            You are sending to {selectedCount.toLocaleString()}{' '}
+            Selected audience: {selectedCount.toLocaleString()}{' '}
             {selectedCount === 1 ? 'person' : 'people'}.
           </p>
         )}
       </div>
 
+      <p role="status" className="text-sm">{audience ? `${audience.excluded} excluded. Eligibility is checked again at approval and before delivery.` : "No audience confirmed yet."}</p>
       {/* When to Send */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -423,9 +432,11 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
           </label>
         </div>
 
+        <p className="text-sm text-stone-500 mb-3">Schedule timezone: {timezone}. The time below is in this timezone.</p>
         {sendMode === 'schedule' && (
           <div className="flex gap-3 mt-2">
             <input
+              aria-label="Scheduled date"
               type="date"
               value={scheduledDate}
               onChange={(e) => setScheduledDate(e.target.value)}
@@ -433,6 +444,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
             />
             <input
+              aria-label="Scheduled time"
               type="time"
               value={scheduledTime}
               onChange={(e) => setScheduledTime(e.target.value)}
@@ -459,6 +471,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
             type="text"
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
+            aria-label="Type SEND to confirm"
             placeholder="Type SEND to confirm"
             className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-lg font-mono focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-colors"
           />
@@ -467,6 +480,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
             type="text"
             value={approvalName}
             onChange={(e) => setApprovalName(e.target.value)}
+            aria-label="Approver name"
             placeholder="Approver name"
             className="w-full mt-3 px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
           />
@@ -474,6 +488,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
           <textarea
             value={approvalNote}
             onChange={(e) => setApprovalNote(e.target.value)}
+            aria-label="Approval note"
             placeholder="Approval note"
             className="w-full mt-3 px-4 py-3 border border-gray-300 rounded-lg text-sm focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
             rows={2}

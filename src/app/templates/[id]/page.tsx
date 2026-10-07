@@ -17,6 +17,7 @@ export default function EditTemplatePage() {
   const id = params.id as string
 
   const [template, setTemplate] = useState<EmailTemplate | null>(null)
+  const [legacy, setLegacy] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function EditTemplatePage() {
             },
           })
         } catch {
+          setLegacy(true)
           // Legacy format - content is HTML
           setTemplate({
             id: data.id,
@@ -97,6 +99,8 @@ export default function EditTemplatePage() {
       </div>
     )
   }
+
+  if (legacy) return <div className="p-8"><h1 className="text-2xl font-semibold">Legacy HTML template</h1><p className="mt-4">This template is preserved as HTML. Use it from the campaign editor to make a draft; it cannot be safely converted into visual blocks automatically.</p><button className="btn btn-primary btn-md mt-4" onClick={()=>router.push("/campaigns/new")}>Create campaign</button></div>
 
   return (
     <div className="h-screen flex flex-col">

@@ -19,7 +19,7 @@ model Contact {
   state              String?
   country            String?
   totalDonations     Float?              @default(0)
-  solicitation       Boolean             @default(true)
+  solicitation       Boolean             @default(false)
   unsubscribedAt     DateTime?
   externalId         String?
   metadata           Json?
@@ -128,6 +128,8 @@ model Campaign {
   fromName    String              @default("The Company Theatre")
   fromEmail   String              @default("hello@companytheatre.ca")
   content     String
+  replyToEmail String?
+  design      Json?
   previewText String?
   status      CampaignStatus      @default(DRAFT)
   scheduledAt DateTime?
@@ -337,4 +339,33 @@ enum EmailProviderEventType {
   REJECTED
   DROPPED
   UNKNOWN
+}
+
+// Deliberately independent of contact deletion: entry and consent audit evidence survive.
+model ScratchEntry {
+  id               String   @id @default(cuid())
+  submissionId     String   @unique
+  promotionId      String
+  email            String
+  fullName         String?
+  contactId        String
+  payloadHash      String
+  marketingConsent Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  @@index([promotionId])
+  @@index([contactId])
+}
+
+model CampaignReview {
+  id String @id @default(cuid())
+  campaignId String
+  contentHash String
+  action String
+  author String
+  note String
+  snapshot Json?
+  createdAt DateTime @default(now())
+
+  @@index([campaignId, createdAt])
 }

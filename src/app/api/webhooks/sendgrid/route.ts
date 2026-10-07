@@ -30,6 +30,9 @@ export async function POST(request: NextRequest) {
     }
 
     const events: SendGridEvent[] = await request.json()
+    if (events.some(event => event.event === 'group_resubscribe')) {
+      return NextResponse.json({ error: 'Legacy resubscribe cannot clear CRM suppression; explicit consent review required' }, { status: 422 })
+    }
 
     for (const event of events) {
       const email = event.email?.toLowerCase()
@@ -122,16 +125,7 @@ export async function POST(request: NextRequest) {
           }).catch(() => {})
           break
 
-        case 'group_resubscribe':
-          // User resubscribed
-          await prisma.contact.update({
-            where: { email },
-            data: { 
-              unsubscribedAt: null,
-              solicitation: true,
-            },
-          }).catch(() => {})
-          break
+
       }
     }
 

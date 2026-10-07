@@ -1,6 +1,6 @@
 # Amazon SES handoff — Company Theatre CRM
 
-The application-side SES work is complete locally. Do not enable sending until every gate below is verified.
+The SES adapter and durable queue have local regression proof, not live delivery proof. See `reports/JT-CAMPAIGN-READINESS-2026-10-07.md` for current source/build/content/access-control blockers. Do not enable sending until every gate below is verified.
 
 ## Philip's first required step
 
@@ -13,7 +13,7 @@ Create or select a Company Theatre-owned AWS account with billing and MFA, then 
 3. Create configuration set `company-theatre-campaigns`.
 4. Create an SNS topic in `ca-central-1` for SES events and subscribe the HTTPS endpoint:
    `https://crm.companytheatre.ca/api/webhooks/ses`
-5. Publish at least delivery, bounce, complaint, reject, open, and click events from the configuration set to the SNS topic.
+5. Publish at least send/acceptance, delivery, bounce, complaint, reject, open, and click events from the configuration set to the SNS topic.
 6. Complete the SNS subscription confirmation in AWS. The CRM deliberately refuses to follow confirmation URLs automatically.
 7. Request SES production access for **Marketing** email. State that the list is Company Theatre's own consent-based audience, hard bounces and complaints are immediately suppressed, every message has visible and RFC 8058 one-click unsubscribe, and sending will ramp from an internal seed list.
 8. Request a daily recipient quota above the current solicitable audience plus test traffic. Use shared IPs; a dedicated IP is not justified at this volume.

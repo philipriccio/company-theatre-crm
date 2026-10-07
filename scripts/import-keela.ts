@@ -97,7 +97,7 @@ async function main() {
     try {
       // Determine solicitation status
       const tags = record['Tags']?.split(';').map(t => t.trim()).filter(Boolean) || []
-      const noSolicitation = tags.includes('No Solicitation') || record['Solicitation'] === 'No'
+      const noSolicitation = tags.some(tag => tag.toLowerCase() === 'no solicitation') || record['Solicitation']?.trim().toLowerCase() === 'no'
       
       // Parse total donations
       const totalDonations = parseFloat(record['Total Donations']?.replace(/[^0-9.]/g, '') || '0') || 0
@@ -115,7 +115,8 @@ async function main() {
           state: record['Primary Address - State/Province'] || null,
           country: record['Primary Address - Country'] || null,
           totalDonations,
-          solicitation: !noSolicitation,
+          // A CSV may withdraw permission, never silently reactivate a contact.
+          ...(noSolicitation ? { solicitation: false } : {}),
           externalId: record['Contact ID'] || null,
         },
         create: {
@@ -129,7 +130,8 @@ async function main() {
           state: record['Primary Address - State/Province'] || null,
           country: record['Primary Address - Country'] || null,
           totalDonations,
-          solicitation: !noSolicitation,
+          // Imported flags alone are not reviewed consent evidence for a new identity.
+          solicitation: false,
           externalId: record['Contact ID'] || null,
         },
       })
@@ -171,6 +173,7 @@ async function main() {
   console.log(`   Imported: ${imported}`)
   console.log(`   Skipped: ${skipped}`)
   console.log(`   Errors: ${errors}`)
+  if (errors > 0) process.exitCode = 1
 
   // Print summary
   const contactCount = await prisma.contact.count()
@@ -184,7 +187,7 @@ async function main() {
 }
 
 main()
-  .catch(console.error)
+  .catch(() => { console.error("Import failed"); process.exitCode = 1 })
   .finally(async () => {
     await prisma.$disconnect()
     await pool.end()

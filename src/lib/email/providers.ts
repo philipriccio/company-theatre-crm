@@ -38,21 +38,38 @@ export class SesEmailProvider implements EmailProvider {
   private readonly client: SESv2Client
 
   constructor(client?: SESv2Client) {
-    this.client = client || new SESv2Client({ region: process.env.AWS_SES_REGION || 'ca-central-1' })
+    this.client = client || new SESv2Client({ region: process.env.AWS_SES_REGION || 'ca-central-1', maxAttempts: 1 })
   }
 
   async send(message: EmailMessage): Promise<EmailProviderResult> {
+    // Seed-only safety boundary; an allowlisted recipient is not send approval.
+    const entries = (process.env.EMAIL_SES_RECIPIENT_ALLOWLIST || '').split(',').map(normalizeSeedEmail)
+    if (entries.some(email => email === null)) {
+      return {
+        ok: false,
+        provider: this.name,
+        error: { class: 'configuration', code: 'ses_recipient_allowlist_invalid', message: 'SES requires a nonempty comma-separated allowlist of exact email addresses.' },
+      }
+    }
+    const recipient = normalizeSeedEmail(message.to.email)
+    if (!recipient || !entries.includes(recipient)) {
+      return {
+        ok: false,
+        provider: this.name,
+        error: { class: 'configuration', code: 'ses_recipient_not_allowlisted', message: 'SES recipient is not an exact allowlisted test address.' },
+      }
+    }
     const configurationSetName = process.env.AWS_SES_CONFIGURATION_SET
 
     try {
       const response = await this.client.send(new SendEmailCommand({
         FromEmailAddress: formatAddress(message.from),
-        Destination: { ToAddresses: [message.to.email] },
+        Destination: { ToAddresses: [recipient] },
         ReplyToAddresses: message.replyTo ? [formatAddress(message.replyTo)] : undefined,
         ConfigurationSetName: configurationSetName || undefined,
         EmailTags: Object.entries(message.metadata || {})
-          .filter(([name]) => /^[A-Za-z0-9_-]{1,256}$/.test(name))
-          .map(([Name, value]) => ({ Name, Value: value.slice(0, 256) })),
+          .filter(([name, value]) => /^[A-Za-z0-9_-]{1,256}$/.test(name) && /^[A-Za-z0-9_-]{1,256}$/.test(value))
+          .map(([Name, Value]) => ({ Name, Value })),
         Content: {
           Simple: {
             Subject: { Data: message.subject, Charset: 'UTF-8' },
@@ -75,6 +92,21 @@ export class SesEmailProvider implements EmailProvider {
       return { ok: false, provider: this.name, error: classifyProviderError(error) }
     }
   }
+}
+
+// Intentionally conservative: bare ASCII mailboxes only, not display names,
+// header syntax, wildcards, quoted local parts, or domain-wide patterns.
+function normalizeSeedEmail(value: string): string | null {
+  if ([...value].some(character => character.charCodeAt(0) < 32 || character.charCodeAt(0) > 126)) return null
+  const email = value.trim().toLowerCase()
+  if (email.length > 254) return null
+  const parts = email.split('@')
+  if (parts.length !== 2) return null
+  const [local, domain] = parts
+  if (local.length > 64 || !/^[a-z0-9_+-]+(?:\.[a-z0-9_+-]+)*$/.test(local)) return null
+  const labels = domain.split('.')
+  if (labels.length < 2 || labels.some(label => !/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label))) return null
+  return email
 }
 
 function formatAddress(address: { email: string; name?: string }): string {

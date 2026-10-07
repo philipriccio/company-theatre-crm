@@ -1,27 +1,24 @@
-import { prisma } from '@/lib/db'
-import { NextRequest, NextResponse } from 'next/server'
-
+import { prisma } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+import { draftData } from "@/lib/campaign-draft";
 export async function GET() {
-  const campaigns = await prisma.campaign.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
-  return NextResponse.json(campaigns)
+  return NextResponse.json(
+    await prisma.campaign.findMany({ orderBy: { createdAt: "desc" } }),
+  );
 }
-
 export async function POST(request: NextRequest) {
-  const body = await request.json()
-  
-  const campaign = await prisma.campaign.create({
-    data: {
-      name: body.name,
-      subject: body.subject,
-      fromName: body.fromName || 'The Company Theatre',
-      fromEmail: body.fromEmail || 'philip@companytheatre.ca',
-      previewText: body.previewText || null,
-      content: body.content,
-      status: body.status || 'DRAFT',
-    },
-  })
-  
-  return NextResponse.json(campaign)
+  try {
+    const data = draftData(await request.json());
+    return NextResponse.json(
+      await prisma.campaign.create({ data: { ...data, status: "DRAFT" } }),
+      { status: 201 },
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Unable to save draft",
+      },
+      { status: 400 },
+    );
+  }
 }

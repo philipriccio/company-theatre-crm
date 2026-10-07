@@ -1,3 +1,4 @@
+import { reviewHash, reviewState } from '@/lib/campaign-review'
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { Campaign, CampaignStatus } from '@prisma/client'
@@ -44,6 +45,8 @@ export default async function CampaignsPage({
     orderBy: { createdAt: 'desc' },
   }) as CampaignWithStats[]
 
+  const reviews = await prisma.campaignReview.findMany({where:{campaignId:{in:campaigns.filter(c=>c.status==='DRAFT').map(c=>c.id)}},orderBy:[{createdAt:'desc'},{id:'desc'}],select:{campaignId:true,action:true,contentHash:true}})
+  const reviewLabels = new Map(campaigns.filter(c=>c.status==='DRAFT').map(c=>[c.id,reviewState(reviews.filter(r=>r.campaignId===c.id),reviewHash(c))]))
   return (
     <div className="p-8 page-enter">
       {/* Header */}
@@ -51,7 +54,7 @@ export default async function CampaignsPage({
         <div>
           <h1 className="text-3xl font-semibold text-stone-900 tracking-tight">Campaigns</h1>
           <p className="text-stone-500 mt-1">
-            Create and manage email campaigns
+            Review drafts from Mildred, leave notes, and keep approved designs.
           </p>
         </div>
         <Link
@@ -59,7 +62,7 @@ export default async function CampaignsPage({
           className="btn btn-primary btn-md"
         >
           <PlusIcon className="w-4 h-4" />
-          New Campaign
+          New draft
         </Link>
       </div>
 
@@ -141,7 +144,7 @@ export default async function CampaignsPage({
                     <h3 className="font-semibold text-stone-900 truncate">
                       {campaign.name}
                     </h3>
-                    <StatusBadge status={campaign.status} />
+                    {campaign.status==='DRAFT'?<span className="rounded-full px-3 py-1 text-xs bg-amber-50 text-amber-900">{reviewLabels.get(campaign.id)}</span>:<StatusBadge status={campaign.status} />}
                   </div>
                   <p className="text-sm text-stone-500 truncate">
                     {campaign.subject}

@@ -1,3 +1,4 @@
+import { selectAudience } from './audience'
 import { prisma } from '@/lib/db'
 import { CampaignRecipientStatus } from '@prisma/client'
 import { canRetry, nextAttemptAt } from './retry'
@@ -15,26 +16,26 @@ export interface AudienceSelection {
 }
 
 export async function enqueueCampaign(campaignId: string, selection: AudienceSelection) {
+  if (!['all', 'tags'].includes(selection.mode)) throw new Error('Invalid audience mode')
+  if (!selection.approvedBy?.trim()) throw new Error('Approval name is required')
+  if (selection.scheduledAt && (!Number.isFinite(selection.scheduledAt.getTime()) || selection.scheduledAt <= new Date())) throw new Error('Schedule must be a valid future date')
   const now = new Date()
   const campaign = await prisma.campaign.findUnique({ where: { id: campaignId } })
   if (!campaign) throw new Error('Campaign not found')
+  if (!campaign.subject.trim() || !campaign.content.trim()) throw new Error('Add a subject and email content before approval')
   if (campaign.status !== 'DRAFT') throw new Error('Campaign is not in draft status')
   if (selection.mode === 'tags' && !selection.tagIds?.length) {
     throw new Error('Select at least one tag before enqueueing a tagged audience')
   }
 
-  const whereClause = selection.mode === 'tags' && selection.tagIds?.length
-    ? { solicitation: true, unsubscribedAt: null, tags: { some: { tagId: { in: selection.tagIds } } } }
-    : { solicitation: true, unsubscribedAt: null }
-
-  const contacts = await prisma.contact.findMany({
-    where: whereClause,
-    select: { id: true, email: true, firstName: true, lastName: true, fullName: true },
-  })
+  const { contacts } = await selectAudience(selection.mode, selection.tagIds)
 
   if (contacts.length === 0) throw new Error('No recipients found')
 
   await prisma.$transaction(async (tx) => {
+    // Atomic draft claim: concurrent approvals cannot refreeze the audience.
+    const claimed = await tx.campaign.updateMany({ where: { id: campaignId, status: 'DRAFT' }, data: { status: 'QUEUED' } })
+    if (claimed.count !== 1) throw new Error('Campaign is no longer a draft')
     await tx.campaignRecipient.createMany({
       data: contacts.map((contact) => ({
         campaignId,
@@ -96,11 +97,11 @@ export async function claimRecipients(workerId: string, limit: number, leaseSeco
       FROM "CampaignRecipient" cr
       JOIN "Campaign" c ON c."id" = cr."campaignId"
       WHERE cr."status" = 'QUEUED'::"CampaignRecipientStatus"
-        AND (cr."nextAttemptAt" IS NULL OR cr."nextAttemptAt" <= now())
-        AND (cr."leasedUntil" IS NULL OR cr."leasedUntil" <= now())
+        AND (cr."nextAttemptAt" IS NULL OR cr."nextAttemptAt" <= timezone('UTC', now()))
+        AND (cr."leasedUntil" IS NULL OR cr."leasedUntil" <= timezone('UTC', now()))
         AND c."status" IN ('QUEUED'::"CampaignStatus", 'SCHEDULED'::"CampaignStatus", 'SENDING'::"CampaignStatus")
         AND c."approvedAt" IS NOT NULL
-        AND (c."scheduledAt" IS NULL OR c."scheduledAt" <= now())
+        AND (c."scheduledAt" IS NULL OR c."scheduledAt" <= timezone('UTC', now()))
       ORDER BY cr."queuedAt" ASC
       FOR UPDATE SKIP LOCKED
       LIMIT ${limit}
@@ -108,7 +109,7 @@ export async function claimRecipients(workerId: string, limit: number, leaseSeco
     UPDATE "CampaignRecipient" cr
     SET "status" = 'SENDING'::"CampaignRecipientStatus",
         "leaseOwner" = ${workerId},
-        "leasedUntil" = now() + (${leaseSeconds}::text || ' seconds')::interval
+        "leasedUntil" = timezone('UTC', now()) + (${leaseSeconds}::text || ' seconds')::interval
     FROM due
     WHERE cr."id" = due."id"
     RETURNING cr."id", cr."campaignId", cr."contactId", cr."email", cr."firstName", cr."lastName", cr."fullName"
@@ -122,12 +123,22 @@ export async function recoverExpiredLeases() {
   })
 }
 
-export async function processRecipient(recipientId: string, provider: EmailProvider = getEmailProvider()) {
+export async function processRecipient(recipientId: string, provider: EmailProvider = getEmailProvider(), workerId?: string) {
   const recipient = await prisma.campaignRecipient.findUnique({
     where: { id: recipientId },
     include: { campaign: true, contact: true },
   })
-  if (!recipient || recipient.status !== 'SENDING') return
+  if (!recipient || recipient.status !== 'SENDING' || (workerId && recipient.leaseOwner !== workerId)) return
+  if (!recipient.leasedUntil || recipient.leasedUntil <= new Date()) return
+  if (provider.name === 'disabled') return
+  if (!recipient.campaign.approvedAt || !['QUEUED', 'SCHEDULED', 'SENDING'].includes(recipient.campaign.status)
+    || (recipient.campaign.scheduledAt && recipient.campaign.scheduledAt > new Date())) {
+    await prisma.campaignRecipient.updateMany({
+      where: { id: recipient.id, status: 'SENDING', leaseOwner: recipient.leaseOwner },
+      data: { status: recipient.campaign.status === 'CANCELLED' ? 'CANCELLED' : 'QUEUED', leasedUntil: null, leaseOwner: null },
+    })
+    return
+  }
 
   const now = new Date()
   const suppressed = await prisma.globalSuppression.findUnique({ where: { email: recipient.email.toLowerCase() } })
@@ -147,8 +158,10 @@ export async function processRecipient(recipientId: string, provider: EmailProvi
   if (result.ok) {
     await prisma.$transaction([
       prisma.emailDeliveryAttempt.create({ data: { campaignId: recipient.campaignId, recipientId: recipient.id, provider: result.provider, completedAt: result.acceptedAt, outcome: 'ACCEPTED', providerMessageId: result.messageId } }),
-      prisma.campaignRecipient.update({ where: { id: recipient.id }, data: { status: 'ACCEPTED', acceptedAt: result.acceptedAt, sentAt: result.acceptedAt, attemptCount, provider: result.provider, providerMessageId: result.messageId, leasedUntil: null, leaseOwner: null } }),
-      prisma.campaign.update({ where: { id: recipient.campaignId }, data: { status: 'SENDING' } }),
+      // Preserve acceptance evidence even if a signed delivery/complaint won the race.
+      prisma.campaignRecipient.update({ where: { id: recipient.id }, data: { acceptedAt: result.acceptedAt, sentAt: result.acceptedAt, attemptCount, provider: result.provider, providerMessageId: result.messageId, leasedUntil: null, leaseOwner: null } }),
+      prisma.campaignRecipient.updateMany({ where: { id: recipient.id, status: { in: ['SENDING', 'UNKNOWN'] } }, data: { status: 'ACCEPTED' } }),
+      prisma.campaign.updateMany({ where: { id: recipient.campaignId, status: { in: ['QUEUED', 'SCHEDULED', 'SENDING'] } }, data: { status: 'SENDING' } }),
     ])
     return
   }
@@ -159,8 +172,8 @@ export async function processRecipient(recipientId: string, provider: EmailProvi
 
   await prisma.$transaction([
     prisma.emailDeliveryAttempt.create({ data: { campaignId: recipient.campaignId, recipientId: recipient.id, provider: result.provider, completedAt: now, outcome: retry ? 'TRANSIENT_FAILURE' : result.error.class === 'unknown' ? 'UNKNOWN' : result.error.class === 'suppressed' ? 'SUPPRESSED' : 'PERMANENT_FAILURE', errorClass: result.error.class, errorCode: result.error.code, errorMessage: result.error.message } }),
-    prisma.campaignRecipient.update({
-      where: { id: recipient.id },
+    prisma.campaignRecipient.updateMany({
+      where: { id: recipient.id, status: 'SENDING', leaseOwner: recipient.leaseOwner },
       data: { status, attemptCount, nextAttemptAt: nextAt, failedAt: status === 'FAILED' ? now : null, unknownAt: status === 'UNKNOWN' ? now : null, suppressedAt: status === 'SUPPRESSED' ? now : null, lastErrorClass: result.error.class, lastErrorCode: result.error.code, lastErrorMessage: result.error.message, leasedUntil: null, leaseOwner: null },
     }),
   ])
@@ -175,6 +188,6 @@ export async function updateCampaignCompletions() {
     const remaining = await prisma.campaignRecipient.count({ where: { campaignId: campaign.id, status: { notIn: terminal } } })
     if (remaining > 0) continue
     const failures = await prisma.campaignRecipient.count({ where: { campaignId: campaign.id, status: { in: ['FAILED', 'SUPPRESSED', 'UNKNOWN', 'CANCELLED'] } } })
-    await prisma.campaign.update({ where: { id: campaign.id }, data: { status: failures > 0 ? 'COMPLETED_WITH_FAILURES' : 'COMPLETED', completedAt: new Date(), sentAt: new Date() } })
+    await prisma.campaign.updateMany({ where: { id: campaign.id, status: { in: ['QUEUED', 'SCHEDULED', 'SENDING'] } }, data: { status: failures > 0 ? 'COMPLETED_WITH_FAILURES' : 'COMPLETED', completedAt: new Date(), sentAt: new Date() } })
   }
 }

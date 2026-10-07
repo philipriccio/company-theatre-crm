@@ -10,6 +10,10 @@ export async function POST(
   const body = await request.json()
   const { mode, tagIds, scheduledAt, approvalName, approvalNote } = body
 
+  if (!['all', 'tags'].includes(mode) || (mode === 'tags' && (!Array.isArray(tagIds) || !tagIds.length || !tagIds.every((id: unknown) => typeof id === 'string' && id.length > 0)))) {
+    return NextResponse.json({ error: 'Explicit valid audience mode and tag IDs are required' }, { status: 400 })
+  }
+
   // Get campaign
   const campaign = await prisma.campaign.findUnique({
     where: { id },
@@ -23,7 +27,7 @@ export async function POST(
     return NextResponse.json({ error: 'Campaign already sent' }, { status: 400 })
   }
 
-  if (!approvalName || typeof approvalName !== 'string') {
+  if (!approvalName || typeof approvalName !== 'string' || !approvalName.trim()) {
     return NextResponse.json({ error: 'Approval name is required before enqueueing a production audience' }, { status: 400 })
   }
 

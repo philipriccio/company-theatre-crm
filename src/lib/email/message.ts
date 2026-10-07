@@ -7,6 +7,7 @@ interface CampaignData {
   subject: string
   fromName: string
   fromEmail: string
+  replyToEmail?: string | null
   content: string
   previewText?: string | null
 }
@@ -47,7 +48,7 @@ export function buildCampaignEmail(campaign: CampaignData, recipient: RecipientD
   return {
     to: { email: recipient.email },
     from: { email: campaign.fromEmail, name: campaign.fromName },
-    replyTo: { email: campaign.fromEmail, name: campaign.fromName },
+    replyTo: { email: campaign.replyToEmail || campaign.fromEmail, name: campaign.fromName },
     subject: campaign.subject,
     html: wrapInTemplate({
       content: personalizedContent,

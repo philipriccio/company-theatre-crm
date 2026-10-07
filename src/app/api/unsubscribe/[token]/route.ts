@@ -41,18 +41,19 @@ export async function POST(
   }
 
   const now = new Date()
-  const contact = await prisma.contact.update({
-    where: { id: verified.contactId },
-    data: { unsubscribedAt: now, solicitation: false },
+  const contact = await prisma.$transaction(async tx => {
+    const existing = await tx.contact.findUnique({ where: { id: verified.contactId } })
+    if (!existing) return null
+    const updated = await tx.contact.update({
+      where: { id: existing.id }, data: { unsubscribedAt: existing.unsubscribedAt || now, solicitation: false },
+    })
+    await recordSuppression({
+      email: updated.email, reason: 'unsubscribe', source: 'signed_unsubscribe', contactId: updated.id,
+      metadata: { unsubscribedAt: updated.unsubscribedAt!.toISOString() },
+    }, tx)
+    return updated
   })
-
-  await recordSuppression({
-    email: contact.email,
-    reason: 'unsubscribe',
-    source: 'signed_unsubscribe',
-    contactId: contact.id,
-    metadata: { unsubscribedAt: now.toISOString() },
-  })
+  if (!contact) return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
 
   return NextResponse.json({
     success: true,

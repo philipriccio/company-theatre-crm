@@ -45,10 +45,13 @@ export async function ingestSesNotification(envelope: SnsEnvelope) {
   )
   const recipientEmail = recipient?.email || payload.bounce?.bouncedRecipients?.[0]?.emailAddress
     || payload.complaint?.complainedRecipients?.[0]?.emailAddress || payload.mail?.destination?.[0]
-  const recipientData: Prisma.CampaignRecipientUncheckedUpdateInput = {}
+  const recipientData: Prisma.CampaignRecipientUncheckedUpdateManyInput = {
+    ...(messageId ? { provider: 'ses', providerMessageId: messageId } : {}),
+  }
   let suppressReason: string | null = null
 
-  if (eventType === 'DELIVERED') Object.assign(recipientData, { status: 'DELIVERED', deliveredAt: occurredAt })
+  if (eventType === 'ACCEPTED') Object.assign(recipientData, { status: 'ACCEPTED', acceptedAt: occurredAt, sentAt: occurredAt, leasedUntil: null, leaseOwner: null })
+  if (eventType === 'DELIVERED') Object.assign(recipientData, { status: 'DELIVERED', deliveredAt: occurredAt, leasedUntil: null, leaseOwner: null })
   if (eventType === 'OPENED') Object.assign(recipientData, { openedAt: occurredAt })
   if (eventType === 'CLICKED') Object.assign(recipientData, { clickedAt: occurredAt })
   if (eventType === 'BOUNCED') {
@@ -77,7 +80,12 @@ export async function ingestSesNotification(envelope: SnsEnvelope) {
         },
       })
       if (recipient && Object.keys(recipientData).length) {
-        await tx.campaignRecipient.update({ where: { id: recipient.id }, data: recipientData })
+        // Late acceptance/delivery must not overwrite complaint, bounce, or suppression.
+        const allowedStatuses = eventType === 'ACCEPTED' ? ['SENDING', 'UNKNOWN', 'QUEUED', 'ACCEPTED'] as const
+          : eventType === 'DELIVERED' ? ['SENDING', 'UNKNOWN', 'QUEUED', 'ACCEPTED', 'DELIVERED'] as const : null
+        await tx.campaignRecipient.updateMany({
+          where: { id: recipient.id, ...(allowedStatuses ? { status: { in: [...allowedStatuses] } } : {}) }, data: recipientData,
+        })
       }
       if (suppressReason && recipientEmail) {
         const email = recipientEmail.trim().toLowerCase()

@@ -12,7 +12,7 @@ export async function POST(
   const body = await request.json()
   const { email } = body
 
-  if (!email) {
+  if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return NextResponse.json({ error: 'Email required' }, { status: 400 })
   }
 
@@ -27,25 +27,16 @@ export async function POST(
 
   // Look up real contact data if they exist in the CRM, otherwise use fallback
   const realContact = await prisma.contact.findFirst({
-    where: { email: { equals: email, mode: 'insensitive' } },
-    select: { firstName: true, lastName: true, fullName: true, email: true },
+    where: { email: { equals: email.trim(), mode: 'insensitive' } },
+    select: { id: true, firstName: true, lastName: true, fullName: true, email: true, solicitation: true, unsubscribedAt: true },
   })
 
+  const suppression = await prisma.globalSuppression.findUnique({ where: { email: email.trim().toLowerCase() } })
+  if (!realContact || suppression || !realContact.solicitation || realContact.unsubscribedAt) {
+    return NextResponse.json({ error: 'Test recipient must be an existing eligible, unsuppressed contact' }, { status: 400 })
+  }
   const testContact = realContact
-    ? {
-        email: realContact.email,
-        firstName: realContact.firstName,
-        lastName: realContact.lastName,
-        fullName: realContact.fullName,
-      }
-    : {
-        email,
-        firstName: 'Friend',
-        lastName: '',
-        fullName: 'Friend',
-      }
-
-  const tokenContactId = realContact ? 'test-contact' : 'test-contact'
+  const tokenContactId = realContact.id
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   const unsubscribeToken = createUnsubscribeToken(tokenContactId)
   const unsubscribeUrl = `${appUrl}/unsubscribe/${unsubscribeToken}`
@@ -64,9 +55,9 @@ export async function POST(
   // Send test email
   const provider = getEmailProvider()
   const result = await provider.send({
-    to: { email },
+    to: { email: realContact.email },
     from: { email: campaign.fromEmail, name: campaign.fromName },
-    replyTo: { email: campaign.fromEmail, name: campaign.fromName },
+    replyTo: { email: campaign.replyToEmail || campaign.fromEmail, name: campaign.fromName },
     subject: `[TEST] ${campaign.subject}`,
     html,
     headers: {

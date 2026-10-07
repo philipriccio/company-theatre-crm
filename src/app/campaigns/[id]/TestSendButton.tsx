@@ -1,71 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-interface Props {
-  campaignId: string
-}
-
-export function TestSendButton({ campaignId }: Props) {
+export function TestSendButton({ campaignId }: { campaignId: string }) {
   const [testEmail, setTestEmail] = useState('')
-  const [sendingTest, setSendingTest] = useState(false)
-  const [testSuccess, setTestSuccess] = useState(false)
+  const [approved, setApproved] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [provider, setProvider] = useState<string | null>(null)
+  const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
 
-  const handleSendTest = async () => {
-    if (!testEmail) return
-    setSendingTest(true)
-    setTestSuccess(false)
+  useEffect(() => {
+    let active = true
+    fetch('/api/settings', { cache: 'no-store' }).then(async response => {
+      if (!response.ok) throw new Error()
+      const data = await response.json()
+      if (active) setProvider(data.delivery.provider)
+    }).catch(() => { if (active) setError('Delivery status could not be checked. Reload before testing.') })
+    return () => { active = false }
+  }, [])
+
+  async function send(event: React.FormEvent) {
+    event.preventDefault()
+    if (!approved || provider !== 'ses' || sending) return
+    setSending(true)
+    setError('')
+    setNotice('')
     try {
-      const res = await fetch(`/api/campaigns/${campaignId}/test`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(`/api/campaigns/${campaignId}/test`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: testEmail }),
       })
-      if (!res.ok) throw new Error('Failed to send test')
-      setTestSuccess(true)
-      setTimeout(() => setTestSuccess(false), 5000)
-    } catch {
-      alert('Failed to send test email')
-    } finally {
-      setSendingTest(false)
-    }
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'The test could not be sent.')
+      setNotice('Accepted by the email provider. Check the approved inbox to confirm delivery and appearance.')
+    } catch (failure) {
+      setError(failure instanceof Error ? failure.message : 'The test could not be sent.')
+    } finally { setSending(false); setApproved(false) }
   }
 
-  return (
-    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-        <span className="font-semibold text-blue-900">Send Test Email</span>
-      </div>
-      <p className="text-sm text-blue-700 mb-3">
-        Send a test to yourself before sending to your list.
-      </p>
-      <div className="flex gap-2">
-        <input
-          type="email"
-          value={testEmail}
-          onChange={(e) => setTestEmail(e.target.value)}
-          placeholder="your@email.com"
-          className="flex-1 px-3 py-2 border border-blue-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
-        <button
-          onClick={handleSendTest}
-          disabled={sendingTest || !testEmail}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium"
-        >
-          {sendingTest ? 'Sending...' : 'Send Test'}
-        </button>
-      </div>
-      {testSuccess && (
-        <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-          Test email sent! Check your inbox.
-        </p>
-      )}
-    </div>
-  )
+  return <form onSubmit={send} className="rounded-xl border border-stone-200 bg-stone-50 p-4 space-y-3 min-w-0">
+    <h3 className="font-semibold text-stone-900">Approved inbox test</h3>
+    <p className="text-sm text-stone-600">Each test sends one email. Tests are limited to Philip and Janice and need Philip’s approval for this content and recipient.</p>
+    {provider !== 'ses' && <p role="status" className="text-sm font-medium text-stone-700">{provider === null ? 'Checking delivery status…' : 'Sending is off. You can still review the preview.'}</p>}
+    <label className="block text-sm font-medium">Approved test recipient
+      <input type="email" required value={testEmail} onChange={event => { setTestEmail(event.target.value); setApproved(false); setNotice('') }} className="input mt-2 w-full min-w-0" placeholder="Philip or Janice’s approved inbox" disabled={sending || provider !== 'ses'} />
+    </label>
+    <label className="flex gap-2 text-sm text-stone-700 items-start"><input type="checkbox" className="mt-1" checked={approved} onChange={event => setApproved(event.target.checked)} disabled={sending || provider !== 'ses'} />Philip has approved this one-email test now.</label>
+    <button type="submit" disabled={sending || !approved || !testEmail || provider !== 'ses'} className="btn btn-primary btn-md w-full">{sending ? 'Sending…' : 'Send approved test'}</button>
+    {error && <p role="alert" className="text-sm text-red-800">{error}</p>}
+    {notice && <p role="status" className="text-sm text-green-800">{notice}</p>}
+  </form>
 }

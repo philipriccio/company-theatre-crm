@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "Company Theatre CRM",
@@ -19,11 +13,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <div className="flex h-screen bg-stone-100/50">
+    <html lang="en" data-scroll-behavior="smooth">
+      <body className="font-sans antialiased">
+        <div className="flex flex-col md:flex-row h-dvh bg-stone-100/50">
           <Sidebar />
-          <main className="flex-1 overflow-auto">
+          <main
+            id="main-content"
+            className="flex-1 min-w-0 min-h-0 overflow-auto"
+          >
             {children}
           </main>
         </div>

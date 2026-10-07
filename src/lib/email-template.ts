@@ -14,7 +14,7 @@ export function wrapInTemplate({
   content,
   previewText,
   unsubscribeUrl,
-  physicalAddress = 'Toronto, ON, Canada',
+  physicalAddress = '',
 }: TemplateOptions): string {
   // If the content is already a full HTML document (has its own DOCTYPE or <html> tag),
   // just replace the unsubscribe placeholder and return it as-is — don't double-wrap.
@@ -111,7 +111,9 @@ export function wrapInTemplate({
       </div>
       <div class="footer">
         <p>© ${new Date().getFullYear()} The Company Theatre</p>
-        <p>${physicalAddress}</p>
+        ${physicalAddress ? `<p>${physicalAddress.replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]!))}</p>` : ''}
+        <p><a href="https://companytheatre.ca">companytheatre.ca</a> · <a href="https://jackpottwins.ca">jackpottwins.ca</a></p>
+        <p><a href="mailto:hello@companytheatre.ca">hello@companytheatre.ca</a></p>
         <p>
           <a href="${unsubscribeUrl}">Unsubscribe</a>
         </p>
@@ -135,9 +137,15 @@ export function personalizeContent(
     fullName?: string | null
   }
 ): string {
-  return content
-    .replace(/\{\{email\}\}/g, contact.email)
-    .replace(/\{\{firstName\}\}/g, contact.firstName || 'there')
-    .replace(/\{\{lastName\}\}/g, contact.lastName || '')
-    .replace(/\{\{fullName\}\}/g, contact.fullName || contact.firstName || 'Friend')
+  const values: Record<string, string> = {
+    email: contact.email,
+    firstName: contact.firstName || 'there',
+    lastName: contact.lastName || '',
+    fullName: contact.fullName || contact.firstName || 'Friend',
+  }
+  const escape = (value: string) => value.replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[char]!)
+  // One pass and a callback avoid HTML injection, recursive placeholders and $& expansion.
+  return content.replace(/\{\{(email|firstName|lastName|fullName)\}\}/g, (_match, key: string) => escape(values[key]))
 }

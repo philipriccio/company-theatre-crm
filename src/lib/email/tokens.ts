@@ -29,7 +29,9 @@ export function createUnsubscribeToken(contactId: string, validForSeconds = 180 
 }
 
 export function verifyUnsubscribeToken(token: string, now = new Date()): { ok: true; contactId: string } | { ok: false; reason: string } {
-  const [version, payload, signature] = token.split('.')
+  const parts = token.split('.')
+  if (parts.length !== 3) return { ok: false, reason: 'malformed' }
+  const [version, payload, signature] = parts
   if (version !== VERSION || !payload || !signature) return { ok: false, reason: 'malformed' }
   const expected = sign(payload)
   if (Buffer.byteLength(signature) !== Buffer.byteLength(expected)) return { ok: false, reason: 'tampered' }
@@ -55,7 +57,9 @@ export function createTrackingToken(recipientId: string, targetUrl: string): str
 }
 
 export function verifyTrackingToken(token: string): { ok: true; recipientId: string; url: string } | { ok: false; reason: string } {
-  const [version, payload, signature] = token.split('.')
+  const parts = token.split('.')
+  if (parts.length !== 3) return { ok: false, reason: 'malformed' }
+  const [version, payload, signature] = parts
   if (version !== VERSION || !payload || !signature) return { ok: false, reason: 'malformed' }
   const expected = sign(payload)
   if (Buffer.byteLength(signature) !== Buffer.byteLength(expected)) return { ok: false, reason: 'tampered' }

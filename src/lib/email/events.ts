@@ -10,9 +10,9 @@ export async function recordSuppression(params: {
   campaignId?: string | null
   recipientId?: string | null
   metadata?: Record<string, unknown>
-}) {
+}, db: Pick<Prisma.TransactionClient, 'globalSuppression'> = prisma) {
   const normalized = params.email.trim().toLowerCase()
-  await prisma.globalSuppression.upsert({
+  await db.globalSuppression.upsert({
     where: { email: normalized },
     update: {
       reason: params.reason,

@@ -37,9 +37,9 @@ export function shouldRetry(errorClass: EmailErrorClass): boolean {
 
 export function classifyProviderError(error: unknown): EmailProviderError {
   if (error && typeof error === 'object') {
-    const maybe = error as { statusCode?: number; code?: string; message?: string }
-    const status = maybe.statusCode
-    if (status === 429 || (status && status >= 500)) {
+    const maybe = error as { statusCode?: number; $metadata?: { httpStatusCode?: number }; name?: string; code?: string; message?: string }
+    const status = maybe.$metadata?.httpStatusCode ?? maybe.statusCode
+    if (status === 429 || maybe.name === 'TooManyRequestsException' || (status && status >= 500)) {
       return { class: 'transient', code: String(status), message: maybe.message || 'Provider transient failure' }
     }
     if (status && status >= 400) {
