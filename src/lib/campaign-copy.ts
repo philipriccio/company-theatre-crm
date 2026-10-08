@@ -1,8 +1,8 @@
-import { parse, parseFragment, type DefaultTreeAdapterMap } from 'parse5'
+import { parse, parseFragment, serialize, type DefaultTreeAdapterMap } from 'parse5'
 
 type Node = DefaultTreeAdapterMap['node']
 type Run = { start:number; end:number; text:string; br:boolean }
-type Block = { id:string; label:string; text:string; runs:Run[]; preheader:boolean }
+type Block = { id:string; label:string; text:string; runs:Run[]; preheader:boolean; elementStart:number }
 export type CopyField = { id:string; label:string; text:string }
 const escape = (s:string) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')
 const tag = (n:Node) => 'tagName' in n ? n.tagName : ''
@@ -31,7 +31,7 @@ function blocks(html:string):Block[] {
    const text=runs.map(r=>r.text).join('')
    const editableEmpty=/^(p|h[1-6]|li)$/.test(tag(n)) || preheader
    if(!runs.length && editableEmpty && n.sourceCodeLocation && 'startTag' in n.sourceCodeLocation && n.sourceCodeLocation.startTag) { const at=n.sourceCodeLocation.startTag.endOffset;runs.push({start:at,end:at,text:'',br:false}) }
-   if(runs.length && (text.trim() || editableEmpty))result.push({id:`text-${runs[0].start}`,label:preheader?'Inbox preview':/^h/.test(tag(n))?'Headline':tag(n)==='a'?'Button or link':`Text ${result.filter(b=>!b.preheader).length+1}`,text,runs,preheader})
+   if(runs.length && (text.trim() || editableEmpty))result.push({id:`text-${runs[0].start}`,label:preheader?'Inbox preview':/^h/.test(tag(n))?'Headline':tag(n)==='a'?'Button or link':`Text ${result.filter(b=>!b.preheader).length+1}`,text,runs,preheader,elementStart:n.sourceCodeLocation?.startOffset ?? -1})
   } else children(n).forEach(c=>visit(c,invisible))
  }
  visit(tree)
@@ -69,4 +69,20 @@ export function patchCopy(content:string, edits:unknown, previewText:string) {
  let updated=content
  for(const patch of patches.sort((a,b)=>b.start-a.start)) updated=updated.slice(0,patch.start)+patch.text+updated.slice(patch.end)
  return updated
+}
+
+// IDs come from the original source, before template wrapping or serialization.
+export function markCopyFields(content:string):string {
+ const known=new Map(blocks(content).filter(b=>!b.preheader).map(b=>[b.elementStart,b.id]))
+ const tree=/<html[\s>]/i.test(content) ? parse(content,{sourceCodeLocationInfo:true}) : parseFragment(content,{sourceCodeLocationInfo:true})
+ function visit(n:Node) {
+  if('attrs' in n) {
+   n.attrs=n.attrs.filter(a=>a.name!=='data-crm-copy')
+   const id=known.get(n.sourceCodeLocation?.startOffset ?? -1)
+   if(id)n.attrs.push({name:'data-crm-copy',value:id})
+  }
+  children(n).forEach(visit)
+ }
+ visit(tree)
+ return serialize(tree)
 }
