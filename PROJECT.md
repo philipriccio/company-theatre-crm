@@ -1,5 +1,9 @@
 # Company Theatre CRM — Project Overview
 
+## October 10: email staging preparation — local only
+
+From audience release `2b6f103`: worker Compose allowlist forwarding, explicit web disabled-provider setting, clean disabled-CLI smoke, and conservative campaign holds for five exact historical negative tags in selection and final worker recheck. No contact permission/global suppression changes, production actions or sends. Rollout specification and limitations: `reports/email-readiness-2026-10-10/REVIEW.md`. Historical deployment statements below are not fresh evidence.
+
 *Last updated: 2026-10-07 (local readiness preparation only)*
 
 ## Local readiness update — 2026-10-07

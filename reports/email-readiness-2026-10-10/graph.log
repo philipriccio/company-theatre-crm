@@ -1,0 +1,17 @@
+
+📊 Knowledge Graph Builder
+   Project: crm-email-readiness-20261010
+   Path: /Users/mildred/.openclaw/workspace/projects/crm-email-readiness-20261010
+
+   Found 112 source files
+
+   ✅ Parsed 112 files (0 errors)
+   📦 451 nodes, 3552 edges
+      Files: 112
+      Functions: 276
+      Classes: 5
+      Types: 21
+      Import edges: 318
+
+   📄 Output: /Users/mildred/.openclaw/workspace/projects/crm-email-readiness-20261010/knowledge-graph.json
+

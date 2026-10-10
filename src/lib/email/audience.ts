@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { LEGACY_NEGATIVE_TAGS } from './legacy-exclusions';
 export async function selectAudience(mode: string, tagIds: string[] = []) {
   if (
     !["all", "tags"].includes(mode) ||
@@ -21,6 +22,7 @@ export async function selectAudience(mode: string, tagIds: string[] = []) {
         fullName: true,
         solicitation: true,
         unsubscribedAt: true,
+        tags: { where: { tag: { name: { in: LEGACY_NEGATIVE_TAGS } } }, select: { tagId: true } },
       },
     }),
   ]);
@@ -31,6 +33,7 @@ export async function selectAudience(mode: string, tagIds: string[] = []) {
     if (
       !c.solicitation ||
       c.unsubscribedAt ||
+      c.tags.length > 0 ||
       blocked.has(email) ||
       seen.has(email)
     )

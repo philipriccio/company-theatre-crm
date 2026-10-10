@@ -1,5 +1,9 @@
 # Testing
 
+## October 10: disabled-worker staging and historical campaign holds
+
+`node scripts/test-disabled-worker.mjs` runs the actual disabled CLI in a clean environment against unreachable localhost; it must exit successfully without database or AWS access. `./scripts/test-readiness-local.sh` additionally proves exact historical unsubscribe/hard-bounce tag exclusion during all/tag campaign selection and late worker recheck, without modifying Contact permissions or creating global suppression. The web Compose provider is explicitly disabled; the worker receives the mandatory exact-recipient allowlist. See `reports/email-readiness-2026-10-10/REVIEW.md` for the no-send staging specification and remaining container/AWS/inbox gates. These local checks do not authorize any sends.
+
 ## 2026-10-07 local readiness proof (safe entry point)
 
 Use `./scripts/test-readiness-local.sh` for DB-backed regression proof. It creates a fresh temporary PostgreSQL 16 cluster, sets an explicit test-only role and Unix socket (no TCP listener), applies all migrations, checks for schema drift, runs intake/queue/suppression/retry/event tests plus the actual mock worker CLI, then stops/removes the cluster. It sets `DOTENV_CONFIG_PATH=/dev/null` and its own `DATABASE_URL`; it never uses the project `.env` database. The server deliberately uses `America/Toronto` to verify UTC queue comparisons. Override `PG_BIN` only to point to installed PostgreSQL 16 binaries.

@@ -353,6 +353,43 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
       assert.equal(await prisma.campaignReview.count({where:{campaignId:copied.id}}),0)
       await assert.rejects(recordReview(c.id,{action:'CHANGES',author:'Philip',note:'',contentHash:reviewHash(changed)}),/notes/)
     })
+    await t.test('exact legacy negative tags exclude all/tagged audiences and late worker sends without permission writes', async () => {
+      const { LEGACY_NEGATIVE_TAGS } = await import('../src/lib/email/legacy-exclusions')
+      const { selectAudience } = await import('../src/lib/email/audience')
+      const group = await prisma.tag.create({ data: { name: 'legacy-hold-fixtures' } })
+      const beforeSends = sends
+      const beforeSuppressions = await prisma.globalSuppression.count()
+      const beforeEvidence = await prisma.consentEvidence.count()
+      const heldIds: string[] = []
+      for (const [index, name] of LEGACY_NEGATIVE_TAGS.entries()) {
+        const fixture = await makeRecipient(`legacy-hold-${index}`)
+        heldIds.push(fixture.contact.id)
+        // Recipient already exists: negative evidence arrives after enqueue.
+        const tag = await prisma.tag.upsert({ where: { name }, update: {}, create: { name } })
+        await prisma.contactTag.createMany({ data: [tag.id, group.id].map(tagId => ({ contactId: fixture.contact.id, tagId })) })
+        await queue.processRecipient(fixture.recipient.id, accepted, 'proof')
+        const row = await prisma.campaignRecipient.findUniqueOrThrow({ where: { id: fixture.recipient.id } })
+        assert.equal(row.status, 'SUPPRESSED')
+        assert.equal(row.lastErrorCode, 'legacy_negative_tag_review')
+        assert.equal(row.attemptCount, 0)
+        assert.equal(await prisma.emailDeliveryAttempt.count({ where: { recipientId: row.id } }), 0)
+        const contact = await prisma.contact.findUniqueOrThrow({ where: { id: fixture.contact.id } })
+        assert.equal(contact.solicitation, true)
+        assert.equal(contact.unsubscribedAt, null)
+      }
+      const near = await prisma.contact.create({ data: { email: 'legacy-near@example.com', solicitation: true } })
+      const nearTag = await prisma.tag.create({ data: { name: 'HARD BOUNCE - reviewed fixture' } })
+      await prisma.contactTag.createMany({ data: [nearTag.id, group.id].map(tagId => ({ contactId: near.id, tagId })) })
+      const tagged = await selectAudience('tags', [group.id])
+      assert.equal(tagged.matched, 6)
+      assert.equal(tagged.excluded, 5)
+      assert.deepEqual(tagged.contacts.map(c => c.id), [near.id])
+      const all = await selectAudience('all')
+      assert.ok(all.contacts.every(c => !heldIds.includes(c.id)))
+      assert.equal(sends, beforeSends)
+      assert.equal(await prisma.globalSuppression.count(), beforeSuppressions)
+      assert.equal(await prisma.consentEvidence.count(), beforeEvidence)
+    })
   } finally {
     await prisma.$disconnect()
     const shared = globalThis as unknown as { pool?: { end(): Promise<void> } }
