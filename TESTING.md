@@ -113,3 +113,6 @@ Blocked until AWS access and DNS change approval exist:
 
 ## Product workflow proof — October 7
 Local visual workflow evidence is in `reports/ux-review-2026-10-07/REVIEW.md`. Ordinary unit runner: 17 pass/1 isolated DB skip; fresh isolated harness: 21 pass. Browser proved draft save/edit/reopen, template reuse, sender-default persistence and save failures, accurate overlapping-tag counts, and responsive local layouts with delivery disabled. Browser previews are not inbox rendering proof. The new campaign design/reply-to migration has not been applied to production. Earlier multi-inbox seed suggestions do not override Philip’s explicit Philip/Janice-only testing rule.
+
+## October 10: both audience websites
+`CRM_BROWSER_PROOF=1 ./scripts/test-website-signup-local.sh` creates/destroys its own isolated DB and starts local production-build website servers. Requires sibling `ct-signup-release` and `jt-signup-release` worktrees built first, PostgreSQL 16, installed Chrome and existing agent-browser Playwright dependency. No production config/.env is used. The test-only preload rewrites only CRM intake fetches to loopback. See `reports/signup-2026-10-10/REVIEW.md` for proof, config names and rollout dependencies.

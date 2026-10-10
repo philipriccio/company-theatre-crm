@@ -1,0 +1,176 @@
+
+> company-theatre-crm@0.1.0 test
+> tsx --test tests/*.test.ts
+
+TAP version 13
+# Subtest: visual email renderer escapes editable text and attributes, includes social and nested legacy blocks without scripts
+ok 1 - visual email renderer escapes editable text and attributes, includes social and nested legacy blocks without scripts
+  ---
+  duration_ms: 1.288667
+  type: 'test'
+  ...
+# Subtest: legacy HTML is preserved and design JSON is never treated as outgoing HTML
+ok 2 - legacy HTML is preserved and design JSON is never treated as outgoing HTML
+  ---
+  duration_ms: 0.4745
+  type: 'test'
+  ...
+# Subtest: chosen heading levels, sizes and multiline content survive HTML export
+ok 3 - chosen heading levels, sizes and multiline content survive HTML export
+  ---
+  duration_ms: 0.1135
+  type: 'test'
+  ...
+# Subtest: copy edit keeps template bytes and emphasis while escaping text and preserving links
+ok 4 - copy edit keeps template bytes and emphasis while escaping text and preserving links
+  ---
+  duration_ms: 8.844917
+  type: 'test'
+  ...
+# Subtest: line breaks, entities, empty text and unsupported field IDs
+ok 5 - line breaks, entities, empty text and unsupported field IDs
+  ---
+  duration_ms: 1.121375
+  type: 'test'
+  ...
+# Subtest: real review email retains assets, style, links and synchronized hidden preview
+ok 6 - real review email retains assets, style, links and synchronized hidden preview
+  ---
+  duration_ms: 12.753292
+  type: 'test'
+  ...
+# Subtest: cleared paragraphs remain editable and nested hidden content is never exposed
+ok 7 - cleared paragraphs remain editable and nested hidden content is never exposed
+  ---
+  duration_ms: 0.644208
+  type: 'test'
+  ...
+# Subtest: sender defaults reject header injection, multiple addresses and configuration secrets
+ok 8 - sender defaults reject header injection, multiple addresses and configuration secrets
+  ---
+  duration_ms: 1.501209
+  type: 'test'
+  ...
+# Subtest: unsubscribe tokens do not expose raw email and reject tampering
+ok 9 - unsubscribe tokens do not expose raw email and reject tampering
+  ---
+  duration_ms: 1.266083
+  type: 'test'
+  ...
+# Subtest: unsubscribe token expiry is enforced
+ok 10 - unsubscribe token expiry is enforced
+  ---
+  duration_ms: 0.123917
+  type: 'test'
+  ...
+# Subtest: unsafe redirects are rejected
+ok 11 - unsafe redirects are rejected
+  ---
+  duration_ms: 0.075583
+  type: 'test'
+  ...
+# Subtest: tracking tokens bind recipient and target
+ok 12 - tracking tokens bind recipient and target
+  ---
+  duration_ms: 0.099916
+  type: 'test'
+  ...
+# Subtest: retry classification retries only transient failures
+ok 13 - retry classification retries only transient failures
+  ---
+  duration_ms: 0.0995
+  type: 'test'
+  ...
+# Subtest: SNS certificate URLs reject SSRF and non-AWS hosts
+ok 14 - SNS certificate URLs reject SSRF and non-AWS hosts
+  ---
+  duration_ms: 0.13975
+  type: 'test'
+  ...
+# Subtest: SNS notification canonicalization follows AWS field order
+ok 15 - SNS notification canonicalization follows AWS field order
+  ---
+  duration_ms: 0.083334
+  type: 'test'
+  ...
+# Subtest: tokens reject appended unsigned segments
+ok 16 - tokens reject appended unsigned segments
+  ---
+  duration_ms: 0.113291
+  type: 'test'
+  ...
+# Subtest: SES SDK v3 errors use metadata status; network uncertainty stays nonretryable
+ok 17 - SES SDK v3 errors use metadata status; network uncertainty stays nonretryable
+  ---
+  duration_ms: 6.928333
+  type: 'test'
+  ...
+# Subtest: SES adapter excludes signed unsubscribe URLs from restricted SES tags and preserves unsubscribe header
+ok 18 - SES adapter excludes signed unsubscribe URLs from restricted SES tags and preserves unsubscribe header
+  ---
+  duration_ms: 48.847458
+  type: 'test'
+  ...
+# Subtest: SNS signature verification rejects wrong topics and tampered payloads without external fetches
+ok 19 - SNS signature verification rejects wrong topics and tampered payloads without external fetches
+  ---
+  duration_ms: 50.998125
+  type: 'test'
+  ...
+# Subtest: contact personalization cannot inject HTML or recursively substitute template tokens
+ok 20 - contact personalization cannot inject HTML or recursively substitute template tokens
+  ---
+  duration_ms: 5.689167
+  type: 'test'
+  ...
+# Subtest: inline markers map to original source fields, including quoted > and empty paragraphs
+ok 21 - inline markers map to original source fields, including quoted > and empty paragraphs
+  ---
+  duration_ms: 7.376375
+  type: 'test'
+  ...
+# Subtest: preview removes executable and navigation surfaces and forged field markers
+ok 22 - preview removes executable and navigation surfaces and forged field markers
+  ---
+  duration_ms: 2.627541
+  type: 'test'
+  ...
+# Subtest: real draft mapping preserves image/design and text-only saving preserves source
+ok 23 - real draft mapping preserves image/design and text-only saving preserves source
+  ---
+  duration_ms: 14.426792
+  type: 'test'
+  ...
+# Subtest: isolated PostgreSQL readiness proof
+ok 24 - isolated PostgreSQL readiness proof # SKIP
+  ---
+  duration_ms: 0.303625
+  type: 'test'
+  ...
+# Subtest: SES exact-recipient guard fails closed before SDK send and permits only normalized seed addresses
+ok 25 - SES exact-recipient guard fails closed before SDK send and permits only normalized seed addresses
+  ---
+  duration_ms: 3.555208
+  type: 'test'
+  ...
+# Subtest: auth and consent fail closed before database access
+ok 26 - auth and consent fail closed before database access
+  ---
+  duration_ms: 28.394833
+  type: 'test'
+  ...
+# Subtest: isolated real HTTP website proxy → CRM route → PostgreSQL
+ok 27 - isolated real HTTP website proxy → CRM route → PostgreSQL # SKIP
+  ---
+  duration_ms: 0.089792
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 2
+# todo 0
+# duration_ms 480.923083

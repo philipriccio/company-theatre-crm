@@ -1,0 +1,8 @@
+
+/Users/mildred/.openclaw/workspace/projects/jt-signup-release/app/page.tsx
+  214:34  warning  '_type' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  352:9   warning  'revealCard' is assigned a value but never used                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  809:21  warning  The ref value 'fleckTimeouts.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'fleckTimeouts.current' to a variable inside the effect, and use that variable in the cleanup function                react-hooks/exhaustive-deps
+  874:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+✖ 4 problems (0 errors, 4 warnings)

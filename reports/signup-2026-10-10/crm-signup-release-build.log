@@ -1,0 +1,92 @@
+
+> company-theatre-crm@0.1.0 build
+> prisma generate && next build
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v6.19.3) to ./node_modules/@prisma/client in 99ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 112ms
+- Experiments (use with caution):
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1412ms
+  Skipping validation of types
+  Finished TypeScript config validation in 7ms ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/20) ...
+  Generating static pages using 9 workers (5/20)
+  Generating static pages using 9 workers (10/20)
+  Generating static pages using 9 workers (15/20)
+✓ Generating static pages using 9 workers (20/20) in 201ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/campaigns
+├ ƒ /api/campaigns/[id]
+├ ƒ /api/campaigns/[id]/cancel
+├ ƒ /api/campaigns/[id]/copy
+├ ƒ /api/campaigns/[id]/duplicate
+├ ƒ /api/campaigns/[id]/pause
+├ ƒ /api/campaigns/[id]/resume
+├ ƒ /api/campaigns/[id]/retry
+├ ƒ /api/campaigns/[id]/review
+├ ƒ /api/campaigns/[id]/send
+├ ƒ /api/campaigns/[id]/status
+├ ƒ /api/campaigns/[id]/test
+├ ƒ /api/campaigns/audience
+├ ƒ /api/contacts
+├ ƒ /api/contacts/[id]
+├ ƒ /api/contacts/[id]/connections
+├ ƒ /api/contacts/[id]/follow-ups
+├ ƒ /api/contacts/[id]/interactions
+├ ƒ /api/contacts/[id]/notes
+├ ƒ /api/contacts/[id]/tags
+├ ƒ /api/contacts/export
+├ ƒ /api/contacts/import
+├ ƒ /api/contacts/search
+├ ƒ /api/contacts/tag
+├ ƒ /api/contacts/untag
+├ ƒ /api/cron/send-scheduled
+├ ƒ /api/intake/scratch
+├ ƒ /api/settings
+├ ƒ /api/templates
+├ ƒ /api/templates/[id]
+├ ƒ /api/track/click/[id]
+├ ƒ /api/track/open/[id]
+├ ƒ /api/unsubscribe/[token]
+├ ƒ /api/webhooks/sendgrid
+├ ƒ /api/webhooks/ses
+├ ƒ /api/website-signups
+├ ƒ /campaigns
+├ ƒ /campaigns/[id]
+├ ƒ /campaigns/[id]/edit
+├ ƒ /campaigns/[id]/preview
+├ ƒ /campaigns/[id]/references/[referenceId]
+├ ƒ /campaigns/[id]/send
+├ ○ /campaigns/new
+├ ƒ /contacts
+├ ƒ /contacts/[id]
+├ ƒ /contacts/[id]/edit
+├ ○ /contacts/import
+├ ○ /settings
+├ ƒ /tags
+├ ƒ /templates
+├ ƒ /templates/[id]
+├ ○ /templates/new
+└ ƒ /unsubscribe/[token]
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
