@@ -13,6 +13,7 @@ interface ContactResult {
 
 export default function AddToTagSearch({ tagName }: { tagName: string }) {
   const router = useRouter()
+  const [error, setError] = useState('')
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<ContactResult[]>([])
   const [loading, setLoading] = useState(false)
@@ -49,6 +50,7 @@ export default function AddToTagSearch({ tagName }: { tagName: string }) {
           `/api/contacts/search?q=${encodeURIComponent(value)}&excludeTag=${encodeURIComponent(tagName)}`,
           { headers: { Authorization: 'Basic ' + btoa('Philip:Riccio') } }
         )
+        if (!res.ok) throw new Error('Search unavailable')
         const data = await res.json()
         setResults(data)
         setOpen(true)
@@ -61,20 +63,21 @@ export default function AddToTagSearch({ tagName }: { tagName: string }) {
   }
 
   async function handleAdd(contact: ContactResult) {
+    setError('')
     setAdding(contact.id)
     try {
-      await fetch('/api/contacts/tag', {
+      const response = await fetch('/api/contacts/tag', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Basic ' + btoa('Philip:Riccio'),
         },
         body: JSON.stringify({ contactId: contact.id, tagName }),
       })
+      if (!response.ok) throw new Error('Tag not saved')
       // Remove from results
       setResults(prev => prev.filter(c => c.id !== contact.id))
       router.refresh()
-    } finally {
+    } catch {setError('Could not add tag. Please try again.')} finally {
       setAdding(null)
     }
   }
@@ -85,7 +88,7 @@ export default function AddToTagSearch({ tagName }: { tagName: string }) {
   }
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-md">
+    <div ref={wrapperRef} className="relative w-full max-w-md">{error && <p role="alert" className="text-xs text-red-700">{error}</p>}
       <div className="relative">
         <svg
           className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"
@@ -102,6 +105,7 @@ export default function AddToTagSearch({ tagName }: { tagName: string }) {
           value={query}
           onChange={e => handleSearch(e.target.value)}
           onFocus={() => results.length > 0 && setOpen(true)}
+          aria-label="Search people to add to this tag"
           placeholder="Search contacts to add..."
           className="w-full pl-10 pr-4 py-2.5 text-sm border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff3b1d]/20 focus:border-[#ff3b1d] bg-white"
         />

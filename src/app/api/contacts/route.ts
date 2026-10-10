@@ -4,77 +4,21 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, firstName, lastName, fullName, tags } = body
-
-    if (!email) {
-      return NextResponse.json(
-        { error: 'Email is required' },
-        { status: 400 }
-      )
-    }
-
-    // Check if contact already exists
-    const existing = await prisma.contact.findFirst({
-      where: { email: { equals: email, mode: 'insensitive' } },
-      include: { tags: true },
+    if (!body || typeof body !== 'object' || Array.isArray(body)) return NextResponse.json({error:'Invalid contact details'}, {status:400})
+    const email=typeof body.email==='string'?body.email.trim().toLowerCase():''
+    if(email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || /[\r\n]/.test(email)) return NextResponse.json({error:'Enter a valid email address'}, {status:400})
+    for(const key of ['firstName','lastName','fullName','organization','context']) if(body[key] != null && (typeof body[key]!=='string'||body[key].length>500)) return NextResponse.json({error:'Invalid contact details'}, {status:400})
+    if(body.tags!==undefined && (!Array.isArray(body.tags)||body.tags.length>50||body.tags.some((t:unknown)=>typeof t!=='string'||!t.trim()||t.length>100))) return NextResponse.json({error:'Invalid tags'}, {status:400})
+    const result=await prisma.$transaction(async tx=>{
+      await tx.$executeRaw`LOCK TABLE "Contact" IN SHARE ROW EXCLUSIVE MODE`
+      const existing=await tx.contact.findFirst({where:{email:{equals:email,mode:'insensitive'}}})
+      if(existing) return {duplicate:true,contact:existing}
+      const contact=await tx.contact.create({data:{email,firstName:body.firstName?.trim()||null,lastName:body.lastName?.trim()||null,fullName:body.fullName?.trim()||[body.firstName?.trim(),body.lastName?.trim()].filter(Boolean).join(' ')||null,organization:body.organization?.trim()||null,context:body.context?.trim()||null,solicitation:false}})
+      for(const name of [...new Set<string>((body.tags||[]).map((t:string)=>t.trim()))]) {const tag=await tx.tag.upsert({where:{name},update:{},create:{name}});await tx.contactTag.create({data:{contactId:contact.id,tagId:tag.id}})}
+      return {duplicate:false,contact:await tx.contact.findUnique({where:{id:contact.id},include:{tags:{include:{tag:true}}}})}
     })
-
-    if (existing) {
-      return NextResponse.json(
-        { error: 'Contact already exists', contact: existing },
-        { status: 409 }
-      )
-    }
-
-    // Build the contact name
-    const contactName = fullName || 
-      (firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName || email.split('@')[0])
-
-    // Create the contact first
-    const contact = await prisma.contact.create({
-      data: {
-        email: email.toLowerCase(),
-        fullName: contactName,
-        firstName: firstName || null,
-        lastName: lastName || null,
-
-      },
-    })
-
-    // Add tags if provided
-    if (tags && tags.length > 0) {
-      for (const tagName of tags) {
-        // Find or create the tag
-        const tag = await prisma.tag.upsert({
-          where: { name: tagName },
-          update: {},
-          create: { name: tagName },
-        })
-        
-        // Create the ContactTag relation
-        await prisma.contactTag.create({
-          data: {
-            contactId: contact.id,
-            tagId: tag.id,
-          },
-        })
-      }
-    }
-
-    // Fetch the contact with tags
-    const contactWithTags = await prisma.contact.findUnique({
-      where: { id: contact.id },
-      include: { tags: { include: { tag: true } } },
-    })
-
-    return NextResponse.json(contactWithTags, { status: 201 })
-  } catch (error) {
-    console.error('Error creating contact:', error)
-    return NextResponse.json(
-      { error: 'Failed to create contact' },
-      { status: 500 }
-    )
-  }
+    return result.duplicate?NextResponse.json({error:'A person with this email already exists.',contact:result.contact},{status:409}):NextResponse.json(result.contact,{status:201})
+  } catch {return NextResponse.json({error:'Could not create this person. Please try again.'},{status:500})}
 }
 
 export async function GET(request: NextRequest) {

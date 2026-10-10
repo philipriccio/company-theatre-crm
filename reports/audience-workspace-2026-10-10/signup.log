@@ -1,0 +1,101 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "crm_readiness_test", schema "public" at "localhost:55439"
+
+6 migrations found in prisma/migrations
+
+Applying migration `20260217131013_init`
+Applying migration `20260403152338_relationship_engine`
+Applying migration `20260917120000_durable_email_queue`
+Applying migration `20261007120000_scratch_intake`
+Applying migration `20261007200000_campaign_design`
+Applying migration `20261007210000_campaign_review`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260217131013_init/
+    └─ migration.sql
+  └─ 20260403152338_relationship_engine/
+    └─ migration.sql
+  └─ 20260917120000_durable_email_queue/
+    └─ migration.sql
+  └─ 20261007120000_scratch_intake/
+    └─ migration.sql
+  └─ 20261007200000_campaign_design/
+    └─ migration.sql
+  └─ 20261007210000_campaign_review/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+Loaded Prisma config from prisma.config.ts.
+
+No difference detected.
+
+TAP version 13
+# Subtest: auth and consent fail closed before database access
+ok 1 - auth and consent fail closed before database access
+  ---
+  duration_ms: 6.255416
+  type: 'test'
+  ...
+# Subtest: isolated real HTTP website proxy → CRM route → PostgreSQL
+    # Subtest: concurrent and case-normalized submissions are one contact, durable evidence
+    ok 1 - concurrent and case-normalized submissions are one contact, durable evidence
+      ---
+      duration_ms: 41.068875
+      type: 'test'
+      ...
+    # Subtest: both real proxy implementations: source, tags, fail-closed downstream
+    ok 2 - both real proxy implementations: source, tags, fail-closed downstream
+      ---
+      duration_ms: 26.328041
+      type: 'test'
+      ...
+    # Subtest: legacy no-solicitation, unsubscribe, global suppression remain blocked
+    ok 3 - legacy no-solicitation, unsubscribe, global suppression remain blocked
+      ---
+      duration_ms: 20.939584
+      type: 'test'
+      ...
+    # Subtest: colliding legacy case identities refuse without partial evidence
+    ok 4 - colliding legacy case identities refuse without partial evidence
+      ---
+      duration_ms: 3.666209
+      type: 'test'
+      ...
+    # Subtest: real desktop/mobile forms → HTTP → isolated DB and truthful review/error UI
+    ok 5 - real desktop/mobile forms → HTTP → isolated DB and truthful review/error UI # SKIP
+      ---
+      duration_ms: 0.029292
+      type: 'test'
+      ...
+    # Subtest: late evidence failure rolls back contact and tag transaction
+    ok 6 - late evidence failure rolls back contact and tag transaction
+      ---
+      duration_ms: 17.924959
+      type: 'test'
+      ...
+    # Subtest: proxy canonical origins, input limits and bounded burst protection
+    ok 7 - proxy canonical origins, input limits and bounded burst protection
+      ---
+      duration_ms: 3.941667
+      type: 'test'
+      ...
+    1..7
+ok 2 - isolated real HTTP website proxy → CRM route → PostgreSQL
+  ---
+  duration_ms: 121.702166
+  type: 'test'
+  ...
+1..2
+# tests 9
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 316.442667

@@ -1,0 +1,16 @@
+
+📊 Knowledge Graph Builder
+   Project: crm-audience-release
+   Path: /Users/mildred/.openclaw/workspace/projects/crm-audience-release
+
+   Found 112 source files
+
+   ✅ Parsed 112 files (0 errors)
+   📦 450 nodes, 3526 edges
+      Files: 112
+      Functions: 275
+      Classes: 5
+      Types: 21
+      Import edges: 318
+
+   📄 Output: /Users/mildred/.openclaw/workspace/projects/crm-audience-release/knowledge-graph.json

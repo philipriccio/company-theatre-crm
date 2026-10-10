@@ -1,0 +1,188 @@
+
+> company-theatre-crm@0.1.0 test
+> tsx --test tests/*.test.ts
+
+TAP version 13
+# Subtest: audience inputs are bounded; URLs and spreadsheet cells stay literal
+ok 1 - audience inputs are bounded; URLs and spreadsheet cells stay literal
+  ---
+  duration_ms: 1.412
+  type: 'test'
+  ...
+# Subtest: isolated audience workspace
+ok 2 - isolated audience workspace # SKIP
+  ---
+  duration_ms: 3.543291
+  type: 'test'
+  ...
+# Subtest: visual email renderer escapes editable text and attributes, includes social and nested legacy blocks without scripts
+ok 3 - visual email renderer escapes editable text and attributes, includes social and nested legacy blocks without scripts
+  ---
+  duration_ms: 2.264833
+  type: 'test'
+  ...
+# Subtest: legacy HTML is preserved and design JSON is never treated as outgoing HTML
+ok 4 - legacy HTML is preserved and design JSON is never treated as outgoing HTML
+  ---
+  duration_ms: 0.3755
+  type: 'test'
+  ...
+# Subtest: chosen heading levels, sizes and multiline content survive HTML export
+ok 5 - chosen heading levels, sizes and multiline content survive HTML export
+  ---
+  duration_ms: 0.110042
+  type: 'test'
+  ...
+# Subtest: copy edit keeps template bytes and emphasis while escaping text and preserving links
+ok 6 - copy edit keeps template bytes and emphasis while escaping text and preserving links
+  ---
+  duration_ms: 6.291875
+  type: 'test'
+  ...
+# Subtest: line breaks, entities, empty text and unsupported field IDs
+ok 7 - line breaks, entities, empty text and unsupported field IDs
+  ---
+  duration_ms: 1.909542
+  type: 'test'
+  ...
+# Subtest: real review email retains assets, style, links and synchronized hidden preview
+ok 8 - real review email retains assets, style, links and synchronized hidden preview
+  ---
+  duration_ms: 9.380084
+  type: 'test'
+  ...
+# Subtest: cleared paragraphs remain editable and nested hidden content is never exposed
+ok 9 - cleared paragraphs remain editable and nested hidden content is never exposed
+  ---
+  duration_ms: 0.558875
+  type: 'test'
+  ...
+# Subtest: sender defaults reject header injection, multiple addresses and configuration secrets
+ok 10 - sender defaults reject header injection, multiple addresses and configuration secrets
+  ---
+  duration_ms: 1.089917
+  type: 'test'
+  ...
+# Subtest: unsubscribe tokens do not expose raw email and reject tampering
+ok 11 - unsubscribe tokens do not expose raw email and reject tampering
+  ---
+  duration_ms: 2.452833
+  type: 'test'
+  ...
+# Subtest: unsubscribe token expiry is enforced
+ok 12 - unsubscribe token expiry is enforced
+  ---
+  duration_ms: 0.299041
+  type: 'test'
+  ...
+# Subtest: unsafe redirects are rejected
+ok 13 - unsafe redirects are rejected
+  ---
+  duration_ms: 1.536834
+  type: 'test'
+  ...
+# Subtest: tracking tokens bind recipient and target
+ok 14 - tracking tokens bind recipient and target
+  ---
+  duration_ms: 0.534084
+  type: 'test'
+  ...
+# Subtest: retry classification retries only transient failures
+ok 15 - retry classification retries only transient failures
+  ---
+  duration_ms: 0.218916
+  type: 'test'
+  ...
+# Subtest: SNS certificate URLs reject SSRF and non-AWS hosts
+ok 16 - SNS certificate URLs reject SSRF and non-AWS hosts
+  ---
+  duration_ms: 0.317333
+  type: 'test'
+  ...
+# Subtest: SNS notification canonicalization follows AWS field order
+ok 17 - SNS notification canonicalization follows AWS field order
+  ---
+  duration_ms: 0.152916
+  type: 'test'
+  ...
+# Subtest: tokens reject appended unsigned segments
+ok 18 - tokens reject appended unsigned segments
+  ---
+  duration_ms: 0.274958
+  type: 'test'
+  ...
+# Subtest: SES SDK v3 errors use metadata status; network uncertainty stays nonretryable
+ok 19 - SES SDK v3 errors use metadata status; network uncertainty stays nonretryable
+  ---
+  duration_ms: 5.763708
+  type: 'test'
+  ...
+# Subtest: SES adapter excludes signed unsubscribe URLs from restricted SES tags and preserves unsubscribe header
+ok 20 - SES adapter excludes signed unsubscribe URLs from restricted SES tags and preserves unsubscribe header
+  ---
+  duration_ms: 54.06375
+  type: 'test'
+  ...
+# Subtest: SNS signature verification rejects wrong topics and tampered payloads without external fetches
+ok 21 - SNS signature verification rejects wrong topics and tampered payloads without external fetches
+  ---
+  duration_ms: 64.715625
+  type: 'test'
+  ...
+# Subtest: contact personalization cannot inject HTML or recursively substitute template tokens
+ok 22 - contact personalization cannot inject HTML or recursively substitute template tokens
+  ---
+  duration_ms: 2.677041
+  type: 'test'
+  ...
+# Subtest: inline markers map to original source fields, including quoted > and empty paragraphs
+ok 23 - inline markers map to original source fields, including quoted > and empty paragraphs
+  ---
+  duration_ms: 4.998375
+  type: 'test'
+  ...
+# Subtest: preview removes executable and navigation surfaces and forged field markers
+ok 24 - preview removes executable and navigation surfaces and forged field markers
+  ---
+  duration_ms: 2.022417
+  type: 'test'
+  ...
+# Subtest: real draft mapping preserves image/design and text-only saving preserves source
+ok 25 - real draft mapping preserves image/design and text-only saving preserves source
+  ---
+  duration_ms: 15.112666
+  type: 'test'
+  ...
+# Subtest: isolated PostgreSQL readiness proof
+ok 26 - isolated PostgreSQL readiness proof # SKIP
+  ---
+  duration_ms: 0.351541
+  type: 'test'
+  ...
+# Subtest: SES exact-recipient guard fails closed before SDK send and permits only normalized seed addresses
+ok 27 - SES exact-recipient guard fails closed before SDK send and permits only normalized seed addresses
+  ---
+  duration_ms: 2.724041
+  type: 'test'
+  ...
+# Subtest: auth and consent fail closed before database access
+ok 28 - auth and consent fail closed before database access
+  ---
+  duration_ms: 8.235959
+  type: 'test'
+  ...
+# Subtest: isolated real HTTP website proxy → CRM route → PostgreSQL
+ok 29 - isolated real HTTP website proxy → CRM route → PostgreSQL # SKIP
+  ---
+  duration_ms: 0.080584
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 3
+# todo 0
+# duration_ms 393.091167

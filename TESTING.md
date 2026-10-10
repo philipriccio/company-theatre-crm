@@ -116,3 +116,6 @@ Local visual workflow evidence is in `reports/ux-review-2026-10-07/REVIEW.md`. O
 
 ## October 10: both audience websites
 `CRM_BROWSER_PROOF=1 ./scripts/test-website-signup-local.sh` creates/destroys its own isolated DB and starts local production-build website servers. Requires sibling `ct-signup-release` and `jt-signup-release` worktrees built first, PostgreSQL 16, installed Chrome and existing agent-browser Playwright dependency. No production config/.env is used. The test-only preload rewrites only CRM intake fetches to loopback. See `reports/signup-2026-10-10/REVIEW.md` for proof, config names and rollout dependencies.
+
+## Audience workspace local proof — October 10
+`CRM_BROWSER_PROOF=1 ./scripts/test-audience-local.sh` creates and destroys an isolated Unix-socket-only PostgreSQL database and starts the existing production build on loopback port 3047. Requires locally installed Chrome and agent-browser's Playwright runtime. It validates shared filters/count/export, permission precedence, safe creation and dossier mutation behavior at 14k synthetic contacts, then exercises real browser journeys at 1440/390/320. Never uses project `.env`; no real email provider. See `reports/audience-workspace-2026-10-10/REVIEW.md`.

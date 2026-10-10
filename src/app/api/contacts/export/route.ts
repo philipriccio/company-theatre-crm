@@ -1,86 +1,14 @@
-import { prisma } from '@/lib/db'
-import { NextRequest, NextResponse } from 'next/server'
-
-export const dynamic = 'force-dynamic'
-
-function escapeCsv(value: string): string {
-  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-    return `"${value.replace(/"/g, '""')}"`
-  }
-  return value
-}
-
+import { NextRequest, NextResponse } from 'next/server';
+import { audienceRows, csvCell, parseAudience, permissionLabels } from '@/lib/audience-workspace';
+export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams
-    const search = searchParams.get('search') || ''
-    const tagFilter = searchParams.get('tag') || ''
-    const statusFilter = searchParams.get('status') || ''
-
-    const where = {
-      AND: [
-        search ? {
-          OR: [
-            { email: { contains: search, mode: 'insensitive' as const } },
-            { firstName: { contains: search, mode: 'insensitive' as const } },
-            { lastName: { contains: search, mode: 'insensitive' as const } },
-            { fullName: { contains: search, mode: 'insensitive' as const } },
-          ],
-        } : {},
-        tagFilter ? {
-          tags: { some: { tag: { name: tagFilter } } },
-        } : {},
-        statusFilter === 'subscribed' ? {
-          unsubscribedAt: null,
-          solicitation: true,
-        } : statusFilter === 'unsubscribed' ? {
-          OR: [
-            { unsubscribedAt: { not: null } },
-            { solicitation: false },
-          ],
-        } : {},
-      ],
+    try {
+        const contacts = await audienceRows(parseAudience(Object.fromEntries(request.nextUrl.searchParams)));
+        const headers = ['email', 'firstName', 'lastName', 'fullName', 'organization', 'context', 'city', 'state', 'country', 'solicitation', 'permission', 'source', 'vip', 'tags', 'createdAt'];
+        const rows = contacts.map(c => [c.email, c.firstName, c.lastName, c.fullName, c.organization, c.context, c.city, c.state, c.country, c.solicitation, permissionLabels[c.permission], c.latestSource, c.vip, c.tags.map(t => t.tag.name).join(', '), c.createdAt.toISOString()].map(csvCell).join(','));
+        return new NextResponse([headers.join(','), ...rows].join('\r\n'), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="audience-export.csv"', 'Cache-Control': 'no-store' } });
     }
-
-    const contacts = await prisma.contact.findMany({
-      where,
-      include: {
-        tags: { include: { tag: true } },
-      },
-      orderBy: [
-        { lastName: { sort: 'asc', nulls: 'last' } },
-        { firstName: { sort: 'asc', nulls: 'last' } },
-      ],
-    })
-
-    const headers = ['email', 'firstName', 'lastName', 'fullName', 'city', 'state', 'country', 'solicitation', 'tags', 'createdAt']
-    const rows = contacts.map(contact => [
-      escapeCsv(contact.email),
-      escapeCsv(contact.firstName || ''),
-      escapeCsv(contact.lastName || ''),
-      escapeCsv(contact.fullName || ''),
-      escapeCsv(contact.city || ''),
-      escapeCsv(contact.state || ''),
-      escapeCsv(contact.country || ''),
-      contact.solicitation ? 'true' : 'false',
-      escapeCsv(contact.tags.map(t => t.tag.name).join(', ')),
-      contact.createdAt.toISOString(),
-    ])
-
-    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
-
-    return new NextResponse(csv, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename="contacts-export-${new Date().toISOString().split('T')[0]}.csv"`,
-      },
-    })
-  } catch (error) {
-    console.error('Error exporting contacts:', error)
-    return NextResponse.json(
-      { error: 'Failed to export contacts' },
-      { status: 500 }
-    )
-  }
+    catch {
+        return NextResponse.json({ error: 'Could not export audience. Please try again.' }, { status: 500 });
+    }
 }

@@ -52,9 +52,10 @@ const noteCategoryOptions = [
 const followUpPriorityOptions = ['low', 'normal', 'high', 'urgent']
 const relationshipHealthOptions = ['', 'active', 'warm', 'cooling', 'cold', 'dormant']
 
-export default function ContactDossierClient({ initialContact }: { initialContact: ContactWithRelations }) {
+export default function ContactDossierClient({ initialContact, permissionPanel }: { initialContact: ContactWithRelations; permissionPanel?: React.ReactNode }) {
   const [contact, setContact] = useState(initialContact)
   const [personalNotesDraft, setPersonalNotesDraft] = useState(initialContact.personalNotes || '')
+  const [notesError, setNotesError] = useState('')
   const [savingPersonalNotes, setSavingPersonalNotes] = useState(false)
   const [savingHeader, setSavingHeader] = useState(false)
   const [noteFilter, setNoteFilter] = useState<NoteCategoryFilter>('all')
@@ -82,7 +83,7 @@ export default function ContactDossierClient({ initialContact }: { initialContac
     const response = await fetch(`/api/contacts/${contact.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...contact, ...patch }),
+      body: JSON.stringify(patch),
     })
 
     if (!response.ok) {
@@ -97,11 +98,11 @@ export default function ContactDossierClient({ initialContact }: { initialContac
   async function handlePersonalNotesBlur() {
     if (personalNotesDraft === (contact.personalNotes || '')) return
     setSavingPersonalNotes(true)
+    setNotesError('')
     try {
       await updateContact({ personalNotes: personalNotesDraft || null })
     } catch {
-      alert('Failed to save personal notes')
-      setPersonalNotesDraft(contact.personalNotes || '')
+      setNotesError('Could not save. Your changes are still here; please try again.')
     } finally {
       setSavingPersonalNotes(false)
     }
@@ -330,7 +331,8 @@ export default function ContactDossierClient({ initialContact }: { initialContac
         </div>
       </section>
 
-      <section className="card rounded-xl border border-stone-200 bg-gradient-to-r from-indigo-50 to-white p-6 shadow-sm">
+      {permissionPanel}
+      <section className="card rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
         <div className="mb-3 flex items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold text-stone-900">Personal notes</h2>
@@ -341,11 +343,13 @@ export default function ContactDossierClient({ initialContact }: { initialContac
         <textarea
           value={personalNotesDraft}
           onChange={(e) => setPersonalNotesDraft(e.target.value)}
-          onBlur={() => void handlePersonalNotesBlur()}
+          aria-label="Personal notes"
           rows={4}
-          placeholder="Married to Susan. Two kids. Loves jazz. Hates early mornings."
+          placeholder="Useful context for your next conversation…"
           className="w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-sm text-stone-700 shadow-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
         />
+        <div className="audience-actions mt-3"><button className="btn btn-primary btn-sm" disabled={savingPersonalNotes || personalNotesDraft === (contact.personalNotes || '')} onClick={() => void handlePersonalNotesBlur()}>Save notes</button><button className="btn btn-secondary btn-sm" disabled={savingPersonalNotes} onClick={() => {setPersonalNotesDraft(contact.personalNotes || '');setNotesError('')}}>Cancel</button></div>
+        {notesError && <p role="alert" className="text-sm text-red-700 mt-2">{notesError}</p>}
       </section>
 
       <section className="card rounded-xl border border-stone-200 bg-white p-5 shadow-sm space-y-4">

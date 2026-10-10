@@ -51,6 +51,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: contactId } = await params
   const body = await request.json()
 
   if (!body.id) {
@@ -62,10 +63,11 @@ export async function PATCH(
     return NextResponse.json({ error: 'Invalid completedAt' }, { status: 400 })
   }
 
-  const followUp = await prisma.contactFollowUp.update({
-    where: { id: body.id },
+  const result = await prisma.contactFollowUp.updateMany({
+    where: { id: body.id, contactId },
     data: { completedAt },
   })
 
-  return NextResponse.json(followUp)
+  if (!result.count) return NextResponse.json({error: 'Follow-up not found for this contact'}, {status:404})
+  return NextResponse.json(await prisma.contactFollowUp.findUnique({where:{id:body.id}}))
 }

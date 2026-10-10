@@ -112,3 +112,6 @@ Prioritize a clear review view, straightforward feedback/revision handoff and vi
 
 ## October 10: audience signup repair — local only
 Both public site signup paths now have an isolated, tested release candidate against live code bases. Dedicated authenticated CRM intake records source/versioned consent transactionally and preserves unsubscribe/global suppression/ambiguous legacy no-solicitation. Real local browser → website proxy → CRM HTTP → isolated DB proof passed. Report: `reports/signup-2026-10-10/REVIEW.md`. NOT deployed; protected site edge auth/dedicated token and edge abuse throttling plus authorized production proof still required. No emails or production contact changes.
+
+## October 10: audience workspace — local release candidate
+New admin shell, useful audience overview/presets, shared directory/count/CSV filters, read-only consent evidence, safe default-off Add Person, and dossier/tag reliability repairs are locally verified. No schema migration, production change or sending change. Existing historical production statements above are not current deployment evidence. See `reports/audience-workspace-2026-10-10/REVIEW.md` for scope, synthetic browser proof and rollout boundaries.
