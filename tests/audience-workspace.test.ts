@@ -39,7 +39,7 @@ test('isolated audience workspace', { skip: process.env.CRM_ISOLATED_PROOF !== '
             assert.equal(await audienceCount(parseAudience({ review: '1' })), 4);
             assert.equal(await audienceCount(parseAudience({ review: '1', status: 'suppressed' })), 1);
             const segments = await audiencePresets();
-            assert.equal(segments.find(s => s.label === 'Jackpot Twins')?.count, 1);
+            assert.equal(segments.find(s => s.label === 'JT website')?.count, 1);
         });
         await t.test('count/list/export use same organization, source, VIP and tag predicates', async () => {
             for (const f of [{ search: 'Arts & friends #1' }, { source: 'jackpottwins.ca', vip: '1' }, { tag: 'Jackpot Website' }, { review: '1', status: 'dnc' }]) {
@@ -54,6 +54,34 @@ test('isolated audience workspace', { skip: process.env.CRM_ISOLATED_PROOF !== '
                     assert.ok(text.includes(r.email));
             }
             assert.equal(await audienceCount(parseAudience({ search: "' OR true --" })), 0);
+        });
+        await t.test('resolved latest evidence clears review without weakening suppression precedence', async () => {
+            const resolved = await prisma.consentEvidence.create({data:{contactId:by('review').id,email:by('review').email,source:'jackpottwins.ca',status:'express_opt_in_recorded',recordedAt:new Date(Date.now()+1000)}});
+            const blocked = await prisma.consentEvidence.create({data:{contactId:by('suppressed').id,email:by('suppressed').email,source:'jackpottwins.ca',status:'express_opt_in_recorded',recordedAt:new Date(Date.now()+1000)}});
+            const oldAddress = await prisma.consentEvidence.create({data:{contactId:by('review').id,email:'old-address@example.com',source:'jackpottwins.ca',status:'express_opt_in_needs_review',recordedAt:new Date(Date.now()+2000)}});
+            try {
+                assert.equal(await audienceCount(parseAudience({review:'1'})),2);
+                assert.equal(await audiencePermission(by('review').id),'recorded');
+                assert.equal(await audiencePermission(by('suppressed').id),'suppressed');
+                assert.equal(await audienceCount(parseAudience({review:'1',status:'suppressed'})),0);
+            } finally {await prisma.consentEvidence.deleteMany({where:{id:{in:[resolved.id,blocked.id,oldAddress.id]}}});}
+        });
+        await t.test('quality filters count/list/export only real missing fields, including whitespace', async () => {
+            const fixtures = await Promise.all([
+                prisma.contact.create({data:{email:'quality-blank@example.com',fullName:'  ',firstName:'\t',lastName:null,city:' '}}),
+                prisma.contact.create({data:{email:'quality-first@example.com',firstName:'Real',city:'Toronto'}}),
+                prisma.contact.create({data:{email:'quality-full@example.com',fullName:'Real Person',city:null}}),
+            ]);
+            try {
+                for (const [quality, expected] of [['missing_name',1],['missing_city',2]] as const) {
+                    const filters=parseAudience({search:'quality-',quality});
+                    assert.equal(await audienceCount(filters),expected);
+                    const rows=await audienceRows(filters,1);assert.equal(rows.length,expected);
+                    const response=await exportCsv(new NextRequest(audienceUrl(filters,'http://localhost/api/contacts/export')));
+                    const csv=await response.text();assert.equal(csv.split('\r\n').length,expected+1);
+                    for(const row of rows)assert.ok(csv.includes(row.email));
+                }
+            } finally {await prisma.contact.deleteMany({where:{id:{in:fixtures.map(f=>f.id)}}});}
         });
         await t.test('creation validates, is case-insensitive and never opts anyone in', async () => {
             assert.equal((await create(req({ email: 'invalid' }))).status, 400);

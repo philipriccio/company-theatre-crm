@@ -6,9 +6,9 @@ Local implementation and proof only. Based on production commit `44ff4a4`; branc
 ## Delivered
 - Warm editorial cream/ink/Company-red shell; compact responsive navigation, skip link, mobile menu, reduced-motion support, serif editorial headings. Styles scoped to the admin workspace; subscriber pages retain their separate shell.
 - Truthful overview: real counts, actual existing tagged groups, current drafts rather than misleading historic send counts, open/overdue follow-ups, recorded recent signup requests. No invented growth, purchases or attendance. Historic tags are explicitly not independently verified attendance/permission.
-- Audience directory with URL-persistent text (name/email/organisation/context), tag, recorded-source, permission, VIP and ordering filters; removable chips, clear-all, stable bounded pagination, honest empty state. Full responsive person cards replace horizontal tables on narrow screens.
+- Audience directory with URL-persistent text (name/email/organisation/context), tag, recorded-source, permission, VIP, missing-name/city data-quality and ordering filters; removable chips, clear-all, stable bounded pagination, honest empty state. Full responsive person cards replace horizontal tables on narrow screens.
 - Preset views for all people, existing Jackpot/Company website tags, VIP, recorded opt-in requests needing review, unknown evidence, unsubscribed and suppressed. These are presets, not pretend saved custom segments.
-- Shared parameterized SQL projection/predicates/order for list, counts and CSV. Suppression (case-insensitive email) → unsubscribe → no-solicitation → current matching-email consent evidence → unknown. A mailing flag alone is never displayed as proof of consent. Pending opt-in-request discovery is separate from precedence, so blocked requests remain discoverable.
+- Shared parameterized SQL projection/predicates/order for list, counts and CSV. Suppression (case-insensitive email) → unsubscribe → no-solicitation → current matching-email consent evidence → unknown. A mailing flag alone is never displayed as proof of consent. Pending opt-in-request discovery is separate from precedence, so blocked requests remain discoverable; only the latest evidence matching the current email controls that pending state, so older resolved requests do not linger.
 - CSV exports the entire matching audience in matching order, not merely the page. All cells quoted and spreadsheet formula-leading values neutralized; query links encoded with URLSearchParams. Export failures return explicit errors.
 - Contact header and existing dossier preserved, with read-only matching/current status and up to 50 most recent consent records; older records remain retained. Personal notes have explicit Save/Cancel; failed saves retain edits and show an inline error. Notes/VIP updates send only changed fields, avoiding stale mailing-flag overwrite. Follow-up completion is scoped to the URL contact.
 - Functional Add Person: input validation, case-normalized concurrent duplicate handling and atomic tag writes. Mailing permission always starts off, regardless of submitted flag; no consent is invented and no email is sent.
@@ -19,14 +19,20 @@ Local implementation and proof only. Based on production commit `44ff4a4`; branc
 - Independent `tsc --noEmit`: PASS (`typecheck.log`). Build alone is insufficient because existing Next configuration ignores type errors.
 - Scoped ESLint on every changed TS/TSX file plus new test: PASS, no warnings (`lint.log`).
 - Offline full suite: **26 passed / 3 DB-gated skips** (`unit.log`). Gated suites run separately below.
-- `CRM_BROWSER_PROOF=1 ./scripts/test-audience-local.sh`: **8 passed / 0 skipped** (`audience-proof.log`). Fresh Unix-socket-only PostgreSQL with existing migrations and zero schema drift; completely torn down afterward.
-- Fixture proof: precedence and evidence gaps; blocked opt-in-review discoverability; count/list/CSV predicate parity; SQL-like query text treated literally; creation validation/concurrency/default-off; stale-field preservation; cross-contact follow-up rejection; stable pagination on 14,107 synthetic people. Preset counts plus two list pages measured **62 ms locally** in the final run; not a production performance guarantee.
+- `CRM_BROWSER_PROOF=1 ./scripts/test-audience-local.sh`: **10 passed / 0 skipped** (`audience-proof.log`). Fresh Unix-socket-only PostgreSQL with existing migrations and zero schema drift; completely torn down afterward.
+- Fixture proof: precedence and evidence gaps; blocked opt-in-review discoverability; count/list/CSV predicate parity; SQL-like query text treated literally; creation validation/concurrency/default-off; stale-field preservation; cross-contact follow-up rejection; stable pagination on 14,107 synthetic people. Preset counts plus two list pages are timed in the proof log; local performance is not a production guarantee.
 - Real browser: 1440, 390 and 320 widths across overview/directory/dossier/create; zero document overflow and zero page errors. Actual filter/reload/CSV, Add Person → DB, retained notes on injected HTTP500 → retry → reload, viewport-contained tag picker, mobile navigation tested. Fourteen screenshots saved; desktop and narrow layouts visually inspected.
 - Existing campaign inline Subject save → reload works in actual browser; draft remains DRAFT with zero recipients. 1440/320 campaign layouts have no overflow. Invalid unsubscribe page has no admin sidebar (`campaign-inline-*.png`).
 - Existing delivery/readiness isolated regression: **23 passed** (`readiness.log`). No real provider used.
 - Existing website signup HTTP/DB regression: **8 passed, 1 browser check skipped** (`signup.log`). The website browser proof was established by the prior signup release; this run does not re-claim fresh public-site browser proof. Intake/proxy implementations are unchanged.
 - Knowledge graph rebuilt (`graph.log`); generated graph intentionally excluded from release commit.
 - `git diff --check`: PASS.
+
+## Parent-review follow-up
+- Added live “Complete the picture” links for missing names and cities, plus a persistent Record completeness filter sharing list/count/CSV predicates. Missing name requires all three name fields blank/null/whitespace; email stems are not inferred as names.
+- Latest current-email review evidence supersedes historical pending requests; tests cover later recorded opt-in, irrelevant old email evidence, and unchanged suppression precedence.
+- Website presets are explicitly “JT website” / “Company website”; source fallback is “No signup source recorded,” leaving historical tags meaningful.
+- Quality count/list/export fixture and real browser filter persistence pass; build/typecheck/scoped lint and full 10-check audience/browser proof rerun.
 
 ## Review / rollout boundaries
 - Release requires parent review and separate deployment approval. This work does not enable sending or change email configuration/approvals.

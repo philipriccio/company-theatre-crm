@@ -38,60 +38,72 @@ TAP version 13
 # Subtest: audience inputs are bounded; URLs and spreadsheet cells stay literal
 ok 1 - audience inputs are bounded; URLs and spreadsheet cells stay literal
   ---
-  duration_ms: 0.857291
+  duration_ms: 0.703667
   type: 'test'
   ...
 # Subtest: isolated audience workspace
     # Subtest: permission precedence, unknown evidence and blocked opt-in review remain distinct
     ok 1 - permission precedence, unknown evidence and blocked opt-in review remain distinct
       ---
-      duration_ms: 10.566875
+      duration_ms: 8.515667
       type: 'test'
       ...
     # Subtest: count/list/export use same organization, source, VIP and tag predicates
     ok 2 - count/list/export use same organization, source, VIP and tag predicates
       ---
-      duration_ms: 19.4535
+      duration_ms: 14.006458
+      type: 'test'
+      ...
+    # Subtest: resolved latest evidence clears review without weakening suppression precedence
+    ok 3 - resolved latest evidence clears review without weakening suppression precedence
+      ---
+      duration_ms: 3.293542
+      type: 'test'
+      ...
+    # Subtest: quality filters count/list/export only real missing fields, including whitespace
+    ok 4 - quality filters count/list/export only real missing fields, including whitespace
+      ---
+      duration_ms: 6.708041
       type: 'test'
       ...
     # Subtest: creation validates, is case-insensitive and never opts anyone in
-    ok 3 - creation validates, is case-insensitive and never opts anyone in
+    ok 5 - creation validates, is case-insensitive and never opts anyone in
       ---
-      duration_ms: 8.593917
+      duration_ms: 5.6435
       type: 'test'
       ...
     # Subtest: patch-only notes preserve concurrent permission; follow-up completion is contact scoped
-    ok 4 - patch-only notes preserve concurrent permission; follow-up completion is contact scoped
+    ok 6 - patch-only notes preserve concurrent permission; follow-up completion is contact scoped
       ---
-      duration_ms: 7.182292
+      duration_ms: 5.649625
       type: 'test'
       ...
-# 14k audience preset counts + two pages: 62ms
+# 14k audience preset counts + two pages: 71ms
     # Subtest: stable pagination and 14k-contact query timing
-    ok 5 - stable pagination and 14k-contact query timing
+    ok 7 - stable pagination and 14k-contact query timing
       ---
-      duration_ms: 457.603542
+      duration_ms: 423.553958
       type: 'test'
       ...
 # Browser proof: 14 responsive screenshots; filters/reload/export/create/error retention/save/mobile navigation/draft inline save/subscriber isolation passed
     # Subtest: real browser audience journeys
-    ok 6 - real browser audience journeys
+    ok 8 - real browser audience journeys
       ---
-      duration_ms: 11197.212375
+      duration_ms: 11992.915291
       type: 'test'
       ...
-    1..6
+    1..8
 ok 2 - isolated audience workspace
   ---
-  duration_ms: 11733.31875
+  duration_ms: 12490.174916
   type: 'test'
   ...
 1..2
-# tests 8
+# tests 10
 # suites 0
-# pass 8
+# pass 10
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 11944.289416
+# duration_ms 12681.025167

@@ -7,27 +7,27 @@ Loaded Prisma config from prisma.config.ts.
 Prisma config detected, skipping environment variable loading.
 Prisma schema loaded from prisma/schema.prisma
 
-✔ Generated Prisma Client (v6.19.3) to ./node_modules/@prisma/client in 81ms
+✔ Generated Prisma Client (v6.19.3) to ./node_modules/@prisma/client in 67ms
 
 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 
 Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
 
 ▲ Next.js 16.3.5 (Turbopack)
-✓ Running next.config.ts took 11ms
+✓ Running next.config.ts took 12ms
 - Experiments (use with caution):
   · serverActions
 
   Creating an optimized production build ...
-✓ Compiled successfully in 684ms
+✓ Compiled successfully in 694ms
   Skipping validation of types
-  Finished TypeScript config validation in 2ms ...
+  Finished TypeScript config validation in 3ms ...
   Collecting page data using 9 workers ...
   Generating static pages using 9 workers (0/21) ...
   Generating static pages using 9 workers (5/21)
   Generating static pages using 9 workers (10/21)
   Generating static pages using 9 workers (15/21)
-✓ Generating static pages using 9 workers (21/21) in 125ms
+✓ Generating static pages using 9 workers (21/21) in 130ms
   Finalizing page optimization ...
 
 Route (app)

@@ -7,7 +7,8 @@ export function parseAudience(params: AudienceParams) {
     const str = (key: string) => typeof params[key] === 'string' ? (params[key] as string).trim().slice(0, 200) : '';
     const status = str('status');
     const sort = str('sort');
-    return { search: str('search'), tag: str('tag'), source: str('source'), status: Object.hasOwn(permissionLabels, status) ? status : '', vip: str('vip') === '1' ? '1' : '', review: str('review') === '1' ? '1' : '', sort: ['name', 'oldest', 'recent'].includes(sort) ? sort : 'recent', page: /^\d{1,7}$/.test(str('page')) ? Math.max(1, Number(str('page'))) : 1 };
+    const quality = str('quality');
+    return { quality: ['missing_name','missing_city'].includes(quality) ? quality : '', search: str('search'), tag: str('tag'), source: str('source'), status: Object.hasOwn(permissionLabels, status) ? status : '', vip: str('vip') === '1' ? '1' : '', review: str('review') === '1' ? '1' : '', sort: ['name', 'oldest', 'recent'].includes(sort) ? sort : 'recent', page: /^\d{1,7}$/.test(str('page')) ? Math.max(1, Number(str('page'))) : 1 };
 }
 export type AudienceFilters = ReturnType<typeof parseAudience>;
 export function audienceUrl(filters: Partial<AudienceFilters>, base = '/contacts') {
@@ -25,7 +26,7 @@ const projection = Prisma.sql `SELECT c.*, CASE
  WHEN e.status='express_opt_in_recorded' THEN 'recorded'
  WHEN e.status IS NOT NULL THEN 'review'
  ELSE 'unknown' END AS permission,
- e.source AS "latestSource"
+ e.source AS "latestSource", e.status AS "latestConsentStatus"
  FROM "Contact" c LEFT JOIN LATERAL (SELECT status, source FROM "ConsentEvidence" WHERE "contactId"=c.id AND lower(email)=lower(c.email) ORDER BY "recordedAt" DESC,id DESC LIMIT 1) e ON true`;
 function predicate(f: AudienceFilters) {
     const parts: Prisma.Sql[] = [Prisma.sql `true`];
@@ -38,9 +39,13 @@ function predicate(f: AudienceFilters) {
     if (f.status)
         parts.push(Prisma.sql `a.permission=${f.status}`);
     if (f.review)
-        parts.push(Prisma.sql `EXISTS(SELECT 1 FROM "ConsentEvidence" ce WHERE ce."contactId"=a.id AND lower(ce.email)=lower(a.email) AND ce.status='express_opt_in_needs_review')`);
+        parts.push(Prisma.sql `a."latestConsentStatus"='express_opt_in_needs_review'`);
     if (f.vip)
         parts.push(Prisma.sql `a.vip=true`);
+    if (f.quality === 'missing_name')
+        parts.push(Prisma.sql `coalesce(a."fullName",'') ~ '^[[:space:]]*$' AND coalesce(a."firstName",'') ~ '^[[:space:]]*$' AND coalesce(a."lastName",'') ~ '^[[:space:]]*$'`);
+    if (f.quality === 'missing_city')
+        parts.push(Prisma.sql `coalesce(a.city,'') ~ '^[[:space:]]*$'`);
     return Prisma.join(parts, ' AND ');
 }
 export async function audienceCount(f: AudienceFilters) {
@@ -61,7 +66,7 @@ export async function audienceRows(f: AudienceFilters, page?: number) {
     return ids.flatMap(row => { const c = map.get(row.id); return c ? [{ ...c, ...row }] : []; });
 }
 export const presets = [
-    { label: 'All people', filters: {} }, { label: 'Jackpot Twins', filters: { tag: 'Jackpot Website' } }, { label: 'Company Theatre', filters: { tag: 'Website Signup' } }, { label: 'VIPs', filters: { vip: '1' } }, { label: 'Opt-in requests to review', filters: { review: '1' } }, { label: 'No recorded consent', filters: { status: 'unknown' } }, { label: 'Unsubscribed', filters: { status: 'unsubscribed' } }, { label: 'Suppressed', filters: { status: 'suppressed' } },
+    { label: 'All people', filters: {} }, { label: 'JT website', filters: { tag: 'Jackpot Website' } }, { label: 'Company website', filters: { tag: 'Website Signup' } }, { label: 'VIPs', filters: { vip: '1' } }, { label: 'Opt-in requests to review', filters: { review: '1' } }, { label: 'No recorded consent', filters: { status: 'unknown' } }, { label: 'Unsubscribed', filters: { status: 'unsubscribed' } }, { label: 'Suppressed', filters: { status: 'suppressed' } },
 ];
 export async function audiencePresets() { return Promise.all(presets.map(async (p) => ({ ...p, count: await audienceCount(parseAudience(p.filters)) }))); }
 export function csvCell(value: unknown) { const text = String(value ?? ''); const safe = /^[\s]*[=+@-]|^[\t\r\n]/.test(text) ? `'${text}` : text; return `"${safe.replaceAll('"', '""')}"`; }
