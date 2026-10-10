@@ -1,0 +1,20 @@
+{
+  "http": {
+    "routers": {
+      "crm-public-email": {
+        "entryPoints": [
+          "https"
+        ],
+        "rule": "Host(`crm.companytheatre.ca`) && (((Method(`GET`) || Method(`HEAD`)) && (PathRegexp(`^/unsubscribe/[A-Za-z0-9_.-]+$`) || PathPrefix(`/_next/static/`) || PathRegexp(`^/api/track/(open|click)/[A-Za-z0-9_.-]+$`))) || ((Method(`GET`) || Method(`POST`) || Method(`HEAD`)) && PathRegexp(`^/api/unsubscribe/[A-Za-z0-9_.-]+$`)) || (Method(`POST`) && Path(`/api/webhooks/ses`)))",
+        "priority": 1000,
+        "service": "https-0-xosc4kcg4g88s8s4s80gcgo4@docker",
+        "middlewares": [
+          "gzip@docker"
+        ],
+        "tls": {
+          "certResolver": "letsencrypt"
+        }
+      }
+    }
+  }
+}

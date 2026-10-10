@@ -3,7 +3,7 @@
 set -euo pipefail
 export LC_ALL=C
 export LANG=C
-cd /Users/mildred/.openclaw/workspace/projects/company-theatre-crm
+cd "$(dirname "$0")/.."
 PG_BIN="${PG_BIN:-/opt/homebrew/opt/postgresql@16/bin}"
 LOCAL_PROOF_ROOT="$(mktemp -d /tmp/company-crm-readiness.XXXXXX)"
 cleanup() {

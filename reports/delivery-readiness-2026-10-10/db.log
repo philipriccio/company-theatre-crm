@@ -1,0 +1,195 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "crm_readiness_test", schema "public" at "localhost:55439"
+
+6 migrations found in prisma/migrations
+
+Applying migration `20260217131013_init`
+Applying migration `20260403152338_relationship_engine`
+Applying migration `20260917120000_durable_email_queue`
+Applying migration `20261007120000_scratch_intake`
+Applying migration `20261007200000_campaign_design`
+Applying migration `20261007210000_campaign_review`
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 6.19.3 -> 8.0.0-rc.22                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260217131013_init/
+    └─ migration.sql
+  └─ 20260403152338_relationship_engine/
+    └─ migration.sql
+  └─ 20260917120000_durable_email_queue/
+    └─ migration.sql
+  └─ 20261007120000_scratch_intake/
+    └─ migration.sql
+  └─ 20261007200000_campaign_design/
+    └─ migration.sql
+  └─ 20261007210000_campaign_review/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+Loaded Prisma config from prisma.config.ts.
+
+No difference detected.
+
+TAP version 13
+# Subtest: isolated PostgreSQL readiness proof
+    # Subtest: auth fails closed before writes, including missing configuration
+    ok 1 - auth fails closed before writes, including missing configuration
+      ---
+      duration_ms: 56.118167
+      type: 'test'
+      ...
+    # Subtest: strict validation rejects coerced consent, unknown fields, unknown promotions and oversized bodies
+    ok 2 - strict validation rejects coerced consent, unknown fields, unknown promotions and oversized bodies
+      ---
+      duration_ms: 9.132083
+      type: 'test'
+      ...
+    # Subtest: contest-only intake normalizes identity; concurrent retries create one entry and evidence row
+    ok 3 - contest-only intake normalizes identity; concurrent retries create one entry and evidence row
+      ---
+      duration_ms: 143.078625
+      type: 'test'
+      ...
+    # Subtest: different submission IDs for the same normalized identity do not race-create contacts
+    ok 4 - different submission IDs for the same normalized identity do not race-create contacts
+      ---
+      duration_ms: 32.168625
+      type: 'test'
+      ...
+    # Subtest: failed evidence persistence rolls back the whole intake transaction
+    ok 5 - failed evidence persistence rolls back the whole intake transaction
+      ---
+      duration_ms: 51.180333
+      type: 'test'
+      ...
+    # Subtest: new schema default is nonmarketable; explicit consent has separate evidence
+    ok 6 - new schema default is nonmarketable; explicit consent has separate evidence
+      ---
+      duration_ms: 21.641875
+      type: 'test'
+      ...
+    # Subtest: intake preserves existing profiles, consent and all suppressions, including deleted contacts
+    ok 7 - intake preserves existing profiles, consent and all suppressions, including deleted contacts
+      ---
+      duration_ms: 64.562084
+      type: 'test'
+      ...
+    # Subtest: legacy resubscribe is explicitly refused even when the legacy webhook is enabled
+    ok 8 - legacy resubscribe is explicitly refused even when the legacy webhook is enabled
+      ---
+      duration_ms: 18.131167
+      type: 'test'
+      ...
+    # Subtest: actual Keela importer preserves opt-outs and creates unknown-consent identities as nonmarketable
+    ok 9 - actual Keela importer preserves opt-outs and creates unknown-consent identities as nonmarketable
+      ---
+      duration_ms: 332.696416
+      type: 'test'
+      ...
+    # Subtest: enqueue races freeze exactly one consent snapshot and exclude nonconsenting entrants
+    ok 10 - enqueue races freeze exactly one consent snapshot and exclude nonconsenting entrants
+      ---
+      duration_ms: 15.202792
+      type: 'test'
+      ...
+    # Subtest: worker honors suppression, absent consent, pause/cancel, wrong owner and expired leases without sends
+    ok 11 - worker honors suppression, absent consent, pause/cancel, wrong owner and expired leases without sends
+      ---
+      duration_ms: 41.688875
+      type: 'test'
+      ...
+    # Subtest: transient failures retry to a bounded limit; uncertain and permanent outcomes never auto-retry
+    ok 12 - transient failures retry to a bounded limit; uncertain and permanent outcomes never auto-retry
+      ---
+      duration_ms: 24.756041
+      type: 'test'
+      ...
+    # Subtest: concurrent claims are disjoint and exclude paused, unapproved and future campaigns
+    ok 13 - concurrent claims are disjoint and exclude paused, unapproved and future campaigns
+      ---
+      duration_ms: 10.860291
+      type: 'test'
+      ...
+    # Subtest: provider completion cannot undo a pause made during an in-flight send
+    ok 14 - provider completion cannot undo a pause made during an in-flight send
+      ---
+      duration_ms: 8.054792
+      type: 'test'
+      ...
+    # Subtest: signed unsubscribe persists both contact state and global suppression; test send cannot bypass it
+    ok 15 - signed unsubscribe persists both contact state and global suppression; test send cannot bypass it
+      ---
+      duration_ms: 4.969834
+      type: 'test'
+      ...
+    # Subtest: SES events reconcile UNKNOWN, deduplicate and never downgrade complaint with late delivery
+    ok 16 - SES events reconcile UNKNOWN, deduplicate and never downgrade complaint with late delivery
+      ---
+      duration_ms: 27.685042
+      type: 'test'
+      ...
+    # Subtest: hard bounces suppress and replay without duplicate provider events
+    ok 17 - hard bounces suppress and replay without duplicate provider events
+      ---
+      duration_ms: 8.903542
+      type: 'test'
+      ...
+    # Subtest: delivery event arriving before provider return is not overwritten by worker acceptance
+    ok 18 - delivery event arriving before provider return is not overwritten by worker acceptance
+      ---
+      duration_ms: 14.600791
+      type: 'test'
+      ...
+    # Subtest: mock worker CLI traverses approved tagged enqueue through durable acceptance and completion
+    ok 19 - mock worker CLI traverses approved tagged enqueue through durable acceptance and completion
+      ---
+      duration_ms: 10308.915541
+      type: 'test'
+      ...
+    # Subtest: visual draft save/reopen, immutable approved campaign, and audience parity
+    ok 20 - visual draft save/reopen, immutable approved campaign, and audience parity
+      ---
+      duration_ms: 33.68725
+      type: 'test'
+      ...
+    # Subtest: copy edits reject stale and non-draft saves and preserve approved references
+    ok 21 - copy edits reject stale and non-draft saves and preserve approved references
+      ---
+      duration_ms: 31.902208
+      type: 'test'
+      ...
+    # Subtest: review approval preserves immutable version, rejects stale approval, and copies safely
+    ok 22 - review approval preserves immutable version, rejects stale approval, and copies safely
+      ---
+      duration_ms: 11.1865
+      type: 'test'
+      ...
+    1..22
+ok 1 - isolated PostgreSQL readiness proof
+  ---
+  duration_ms: 11856.618166
+  type: 'test'
+  ...
+1..1
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12118.280375

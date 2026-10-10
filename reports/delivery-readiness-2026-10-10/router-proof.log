@@ -1,0 +1,75 @@
+PASS GET /unsubscribe/synthetic: 200
+PASS HEAD /unsubscribe/synthetic: 200
+PASS GET /api/unsubscribe/synthetic: 200
+PASS HEAD /api/unsubscribe/synthetic: 200
+PASS GET /api/track/open/synthetic: 200
+PASS HEAD /api/track/open/synthetic: 200
+PASS GET /api/track/click/synthetic: 200
+PASS HEAD /api/track/click/synthetic: 200
+PASS GET /_next/static/chunks/synthetic.js: 200
+PASS HEAD /_next/static/chunks/synthetic.js: 200
+PASS POST /api/unsubscribe/synthetic: 200
+PASS POST /api/webhooks/ses: 200
+PASS GET /: 401
+PASS POST /: 401
+PASS GET /contacts: 401
+PASS POST /contacts: 401
+PASS GET /campaigns: 401
+PASS POST /campaigns: 401
+PASS GET /settings: 401
+PASS POST /settings: 401
+PASS GET /api/contacts: 401
+PASS POST /api/contacts: 401
+PASS GET /api/campaigns/synthetic/send: 401
+PASS POST /api/campaigns/synthetic/send: 401
+PASS GET /api/campaigns/synthetic/test: 401
+PASS POST /api/campaigns/synthetic/test: 401
+PASS GET /api/intake/scratch: 401
+PASS POST /api/intake/scratch: 401
+PASS GET /api/cron/send-scheduled: 401
+PASS POST /api/cron/send-scheduled: 401
+PASS GET /api/webhooks/sendgrid: 401
+PASS POST /api/webhooks/sendgrid: 401
+PASS GET /unsubscribe: 401
+PASS POST /unsubscribe: 401
+PASS GET /unsubscribe/a/b: 401
+PASS POST /unsubscribe/a/b: 401
+PASS GET /unsubscribe-admin/a: 401
+PASS POST /unsubscribe-admin/a: 401
+PASS GET /api/unsubscribe/a/admin: 401
+PASS POST /api/unsubscribe/a/admin: 401
+PASS GET /api/webhooks/ses-extra: 401
+PASS POST /api/webhooks/ses-extra: 401
+PASS GET /_next/server/app/contacts: 401
+PASS POST /_next/server/app/contacts: 401
+PASS GET /api/website-signups: 401
+PASS POST /api/website-signups: 401
+PASS GET /api/webhooks/ses: 401
+PASS HEAD /api/webhooks/ses: 401
+PASS PUT /unsubscribe/a: 401
+PASS PUT /api/unsubscribe/a: 401
+PASS PUT /api/track/open/a: 401
+PASS PUT /_next/static/a.js: 401
+PASS PUT /api/webhooks/ses: 401
+PASS DELETE /unsubscribe/a: 401
+PASS DELETE /api/unsubscribe/a: 401
+PASS DELETE /api/track/open/a: 401
+PASS DELETE /_next/static/a.js: 401
+PASS DELETE /api/webhooks/ses: 401
+PASS PATCH /unsubscribe/a: 401
+PASS PATCH /api/unsubscribe/a: 401
+PASS PATCH /api/track/open/a: 401
+PASS PATCH /_next/static/a.js: 401
+PASS PATCH /api/webhooks/ses: 401
+PASS OPTIONS /unsubscribe/a: 401
+PASS OPTIONS /api/unsubscribe/a: 401
+PASS OPTIONS /api/track/open/a: 401
+PASS OPTIONS /_next/static/a.js: 401
+PASS OPTIONS /api/webhooks/ses: 401
+PASS encoded GET /_next/static/../../api/contacts: 401
+PASS encoded GET /_next/static/%2e%2e/%2e%2e/api/contacts: 401
+PASS encoded GET /unsubscribe/a%2fb: 401
+PASS encoded GET /api/unsubscribe/a%2fadmin: 401
+PASS encoded GET /api/webhooks/ses%2f..%2fcontacts: 401
+PASS encoded GET /unsubscribe/%2e%2e/contacts: 401
+PASS 75 route cases; real Traefik grammar and file provider. No production writes.
