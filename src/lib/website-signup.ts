@@ -22,7 +22,7 @@ export function parseWebsiteSignup(value: unknown) {
   const body = value as Record<string, unknown>
   if (Object.keys(body).some(key => !['email', 'firstName', 'lastName', 'consent', 'consentVersion', 'source'].includes(key))) throw new WebsiteSignupError(400, 'Unknown field')
   const source = body.source as keyof typeof WEBSITE_SOURCES
-  if (!Object.hasOwn(WEBSITE_SOURCES, source) || body.consent !== true || body.consentVersion !== WEBSITE_SOURCES[source].version) throw new WebsiteSignupError(400, 'Explicit current consent required')
+  if (typeof source !== 'string' || !Object.hasOwn(WEBSITE_SOURCES, source) || body.consent !== true || body.consentVersion !== WEBSITE_SOURCES[source].version) throw new WebsiteSignupError(400, 'Explicit current consent required')
   const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
   if (email.length > 254 || !/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/.test(email)) throw new WebsiteSignupError(400, 'Invalid email')
   const name = (key: 'firstName' | 'lastName') => {

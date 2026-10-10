@@ -14,7 +14,7 @@ test('auth and consent fail closed before database access', async () => {
   authenticateWebsiteSignup(process.env.CRM_WEBSITE_SIGNUP_TOKEN)
   assert.throws(() => authenticateWebsiteSignup('wrong'), /Unauthorized/)
   assert.equal(parseWebsiteSignup(payload).email, 'visitor@example.com')
-  for (const value of [{...payload, source:'evil.test'}, {...payload, consent:false}, {...payload, consentVersion:'old'}, {...payload, extra:1}, {...payload,email:'a@example.com,b@example.com'}]) assert.throws(() => parseWebsiteSignup(value))
+  for (const value of [{...payload, source:['jackpottwins.ca']}, {...payload, source:'evil.test'}, {...payload, consent:false}, {...payload, consentVersion:'old'}, {...payload, extra:1}, {...payload,email:'a@example.com,b@example.com'}]) assert.throws(() => parseWebsiteSignup(value))
   for (const [body, status] of [['{',400], [' '.repeat(5000),413], [JSON.stringify({...payload,consent:false}),400]] as const) {
     const res=await POST(new NextRequest('http://localhost/api/website-signups',{method:'POST',headers:{'content-type':'application/json','x-website-signup-token':process.env.CRM_WEBSITE_SIGNUP_TOKEN},body}))
     assert.equal(res.status,status)
