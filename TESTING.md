@@ -1,5 +1,9 @@
 # Testing
 
+## October 12: isolated worker runtime
+
+`node --test tests/worker-runtime.test.mjs` verifies offline worker-lock projection removes web dependencies while retaining the exact committed versions, resolved URLs and integrity hashes. The worker Docker target installs only its six direct runtime dependencies; Prisma generation is separate from the web build. Mandatory high-severity runtime audit remains enabled. Network-disabled actual worker startup and installed-module checks passed on Docker; see `reports/worker-runtime-2026-10-12/REVIEW.md`. This does not fix web-runtime advisories or establish AWS connectivity/delivery.
+
 ## October 10: disabled-worker staging and historical campaign holds
 
 `node scripts/test-disabled-worker.mjs` runs the actual disabled CLI in a clean environment against unreachable localhost; it must exit successfully without database or AWS access. `./scripts/test-readiness-local.sh` additionally proves exact historical unsubscribe/hard-bounce tag exclusion during all/tag campaign selection and late worker recheck, without modifying Contact permissions or creating global suppression. The web Compose provider is explicitly disabled; the worker receives the mandatory exact-recipient allowlist. See `reports/email-readiness-2026-10-10/REVIEW.md` for the no-send staging specification and remaining container/AWS/inbox gates. These local checks do not authorize any sends.
