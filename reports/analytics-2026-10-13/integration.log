@@ -42,93 +42,105 @@ TAP version 13
     # Subtest: placement identities distinguish duplicate targets and preserve entity decoding
     ok 1 - placement identities distinguish duplicate targets and preserve entity decoding
       ---
-      duration_ms: 1.341334
+      duration_ms: 1.540917
       type: 'test'
       ...
     # Subtest: signed link rejects tamper, recipient and campaign mismatch; HEAD does not count
     ok 2 - signed link rejects tamper, recipient and campaign mismatch; HEAD does not count
       ---
-      duration_ms: 4.825709
+      duration_ms: 4.973666
       type: 'test'
       ...
     # Subtest: signed click persists before redirect; repeat clicks are total events, one unique recipient
     ok 3 - signed click persists before redirect; repeat clicks are total events, one unique recipient
       ---
-      duration_ms: 10.205333
+      duration_ms: 10.637625
       type: 'test'
       ...
     # Subtest: capture storage failure is explicit 503 and no redirect, not silent evidence loss
     ok 4 - capture storage failure is explicit 503 and no redirect, not silent evidence loss
       ---
-      duration_ms: 14.240459
+      duration_ms: 13.992291
       type: 'test'
       ...
     # Subtest: SNS duplicate is idempotent; earlier late event retains first timestamp; mirrors excluded
     ok 5 - SNS duplicate is idempotent; earlier late event retains first timestamp; mirrors excluded
       ---
-      duration_ms: 13.197792
+      duration_ms: 13.6505
+      type: 'test'
+      ...
+    # Subtest: provider attribution cannot cross message, campaign or recipient boundaries
+    ok 6 - provider attribution cannot cross message, campaign or recipient boundaries
+      ---
+      duration_ms: 2.033667
       type: 'test'
       ...
     # Subtest: signed private pixel rejects unsigned requests and never doubles SES open totals
-    ok 6 - signed private pixel rejects unsigned requests and never doubles SES open totals
+    ok 7 - signed private pixel rejects unsigned requests and never doubles SES open totals
       ---
-      duration_ms: 2.885208
+      duration_ms: 2.432625
       type: 'test'
       ...
     # Subtest: delivery evidence survives late acceptance without current-status regression
-    ok 7 - delivery evidence survives late acceptance without current-status regression
+    ok 8 - delivery evidence survives late acceptance without current-status regression
       ---
-      duration_ms: 6.070541
+      duration_ms: 4.996625
       type: 'test'
       ...
     # Subtest: unsubscribe GET is scanner-safe; POST attributes exact campaign and is idempotent
-    ok 8 - unsubscribe GET is scanner-safe; POST attributes exact campaign and is idempotent
+    ok 9 - unsubscribe GET is scanner-safe; POST attributes exact campaign and is idempotent
       ---
-      duration_ms: 7.747083
+      duration_ms: 8.284208
       type: 'test'
       ...
     # Subtest: bounce is final, complaint stays suppressed after late delivery, timestamp evidence retained
-    ok 9 - bounce is final, complaint stays suppressed after late delivery, timestamp evidence retained
+    ok 10 - bounce is final, complaint stays suppressed after late delivery, timestamp evidence retained
       ---
-      duration_ms: 6.824042
+      duration_ms: 7.12275
       type: 'test'
       ...
     # Subtest: filter/export parity and formula-safe CSV; no token/raw metadata leak
-    ok 10 - filter/export parity and formula-safe CSV; no token/raw metadata leak
+    ok 11 - filter/export parity and formula-safe CSV; no token/raw metadata leak
       ---
-      duration_ms: 4.941584
+      duration_ms: 4.966916
       type: 'test'
       ...
     # Subtest: prototype keys cannot bypass filter whitelist; automation view is reversible and exports match
-    ok 11 - prototype keys cannot bypass filter whitelist; automation view is reversible and exports match
+    ok 12 - prototype keys cannot bypass filter whitelist; automation view is reversible and exports match
       ---
-      duration_ms: 12.068708
+      duration_ms: 11.36325
       type: 'test'
       ...
     # Subtest: delivery delay keeps actual event time; late bounce cannot undo complaint suppression
-    ok 12 - delivery delay keeps actual event time; late bounce cannot undo complaint suppression
+    ok 13 - delivery delay keeps actual event time; late bounce cannot undo complaint suppression
       ---
-      duration_ms: 4.1665
+      duration_ms: 3.894625
+      type: 'test'
+      ...
+    # Subtest: retained historical provider evidence backfills safely, idempotently and without fabricated events
+    ok 14 - retained historical provider evidence backfills safely, idempotently and without fabricated events
+      ---
+      duration_ms: 19.473542
       type: 'test'
       ...
     # Subtest: 14k recipients use bounded pagination and matching streaming export
-    ok 13 - 14k recipients use bounded pagination and matching streaming export
+    ok 15 - 14k recipients use bounded pagination and matching streaming export
       ---
-      duration_ms: 788.276708
+      duration_ms: 798.199625
       type: 'test'
       ...
-    1..13
+    1..15
 ok 1 - analytics isolated persistence, tracking and reporting
   ---
-  duration_ms: 936.148625
+  duration_ms: 960.50825
   type: 'test'
   ...
 1..1
-# tests 14
+# tests 16
 # suites 0
-# pass 14
+# pass 16
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 11151.755708
+# duration_ms 11177.658708

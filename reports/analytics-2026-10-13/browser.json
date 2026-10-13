@@ -1,0 +1,85 @@
+{
+  "results": [
+    {
+      "check": "layout 1440",
+      "passed": true
+    },
+    {
+      "check": "layout 390",
+      "passed": true
+    },
+    {
+      "check": "layout 320",
+      "passed": true
+    },
+    {
+      "check": "reversible automation view",
+      "passed": true
+    },
+    {
+      "check": "opened + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "unopened + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "clicked + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "bounced + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "hard + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "soft + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "unsubscribed + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "complaint + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "unknown + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "queued + CSV parity",
+      "passed": true
+    },
+    {
+      "check": "real form search and person timeline navigation",
+      "passed": true
+    },
+    {
+      "check": "analytics-empty",
+      "passed": true
+    },
+    {
+      "check": "analytics-legacy",
+      "passed": true
+    },
+    {
+      "check": "analytics-14k",
+      "passed": true
+    },
+    {
+      "check": "comparison",
+      "passed": true
+    },
+    {
+      "check": "cross-campaign recipient scope",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

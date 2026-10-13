@@ -15,11 +15,11 @@
 ## Verification to date
 
 - Additive migration deployed to fresh Unix-socket-only synthetic PostgreSQL; Prisma schema diff clean.
-- 14 isolated analytics checks passed, including real persistence, repeated/duplicate/out-of-order events, overlap, unsafe/tampered/cross-campaign links, explicit storage failure, bot filtering, export parity, delay timing and complaint ordering.
+- 16 isolated analytics checks passed, including real persistence, repeated/duplicate/out-of-order events, overlap, unsafe/tampered/cross-campaign links, explicit storage failure, bot filtering, export parity, delay timing and complaint ordering.
 - 14,000-recipient final-page lookup and matching full streaming export passed; local paginated read threshold <2 seconds.
 - Existing isolated readiness: **23/23 passed**.
-- Production webpack build passed; independent TypeScript/scoped ESLint/diff check passed before final review.
-- Parent independent browser QA is in progress; do not infer visual acceptance from this report alone.
+- Production webpack build, independent TypeScript, scoped ESLint and diff checks passed. Offline tests: 35 pass, 4 database-gated skips; worker dependency projection test: 1 pass.
+- **20/20 browser checks passed** against the final production-build synthetic preview: 1440/390/320 layouts, zero document overflow, reversible automation view, ten recipient-filter/CSV parity cases, real search and timeline navigation, empty/legacy/14k pages, comparison, cross-campaign rejection; zero page/console errors. Screenshots visually inspected at desktop and 320px. Parent independent review remains welcome.
 
 Default Turbopack build cannot traverse the reused dependency symlink outside its root; webpack production build is the verified local path. No dependency installation was performed. Docker container build remains unverified locally.
 
@@ -41,3 +41,6 @@ Expected fixture: 120 recipients; 110 accepted; 90 confirmed deliveries; 60 uniq
 6. An explicitly approved small inbox round is still required to prove real SES open telemetry, click tracking and link destinations. No live-end-to-end analytics claim before that evidence.
 
 Additive schema can remain if app rolls back; do not delete audit events or recipient rows. A worker rollback stops generating placement-aware tokens, so mark its resulting tracking coverage historical. Direct legacy layout-test endpoint still bypasses durable campaign analytics; use approved queue-based test campaigns for analytics acceptance.
+
+## Historical evidence recovery
+`npx tsx scripts/backfill-email-analytics.ts` defaults to read-only counts (explicit database environment required). `--apply` is a database mutation that still requires separate production approval. Isolated rehearsal recovered a retained signed OPENED event, kept provider automation evidence, stripped raw metadata, preserved UNKNOWN delivery status, and proved second application inserted zero duplicates. No events are synthesized from timestamp flags. Missing historical signing keys leave opaque signed-link destinations unavailable rather than leaking the token.

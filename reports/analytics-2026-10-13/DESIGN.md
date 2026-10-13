@@ -16,7 +16,7 @@ Additive `EmailAnalyticsEvent` ledger: campaign/recipient, event kind, source, c
 
 New messages: SES signed notifications are canonical opens; persisted app redirects are canonical clicks. SES click mirrors remain inspectable but do not inflate totals. Private app pixels are no longer emitted in new messages. Historical signed open route is hardened and remains private; no new public route is required. Old signed click and unsubscribe tokens continue to validate. Recipient `analyticsVersion=1` is written before dispatch; no provider is enabled by this release.
 
-Legacy recipients retain their historical first-open/click flags. SES clicks remain their canonical source. Missing repeat counts and destination evidence are never fabricated. Recoverable old signed provider rows need the separately rehearsed historical backfill; a missing new ledger is not evidence no historical activity occurred.
+Legacy recipients retain their historical first-open/click flags. SES clicks remain their canonical source. Missing repeat counts and destination evidence are never fabricated. Recoverable old signed provider rows have a separately rehearsed idempotent historical backfill; a missing new ledger is not evidence no historical activity occurred.
 
 First timestamps are conditional database updates, preserving earliest event time under late/out-of-order delivery. Late acceptance/delivery cannot regress failed/suppressed state; complaints remain suppressed after a late bounce/reject. SES transient bounce is final for that delivery, not a still-retrying state. DeliveryDelay is separately recorded with its actual delay timestamp.
 

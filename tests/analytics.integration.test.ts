@@ -72,6 +72,13 @@ test('analytics isolated persistence, tracking and reporting', { skip: process.e
       const payloads=JSON.stringify(await prisma.emailProviderEvent.findMany())
       assert.ok(!payloads.includes('private-ip'));assert.ok(!payloads.includes('private-agent'));assert.ok(!payloads.includes(token))
     })
+    await t.test('provider attribution cannot cross message, campaign or recipient boundaries',async()=>{
+      for (const mail of [
+        {messageId:'wrong-message',tags:{recipient_id:[recipient.id]}},
+        {messageId:'provider-proof',tags:{recipient_id:[recipient.id],campaign_id:['wrong-campaign']}},
+        {messageId:'provider-proof',destination:['wrong@example.test'],tags:{recipient_id:[recipient.id]}},
+      ]) await assert.rejects(ingest(event('Open','2026-10-13T15:00:00Z',{mail})),/Mismatched/)
+    })
     await t.test('signed private pixel rejects unsigned requests and never doubles SES open totals',async()=>{
       assert.equal((await open(new NextRequest('http://localhost'),context)).status,400)
       const token=createOpenToken(recipient.id,campaign.id)
@@ -132,6 +139,23 @@ test('analytics isolated persistence, tracking and reporting', { skip: process.e
       assert.equal(delay.occurredAt.toISOString(),'2026-10-13T18:00:00.000Z')
       await ingest(event('Bounce','2026-10-13T16:00:00Z',{bounce:{bounceType:'Transient',timestamp:'2026-10-13T16:00:00Z'}}))
       assert.equal((await prisma.campaignRecipient.findUniqueOrThrow({where:{id:recipient.id}})).status,'SUPPRESSED')
+    })
+    await t.test('retained historical provider evidence backfills safely, idempotently and without fabricated events',async()=>{
+      const {backfillAnalyticsBatch}=await import('../src/lib/email/analytics-history')
+      const old=await prisma.contact.create({data:{email:'legacy-evidence@example.test'}})
+      const r=await prisma.campaignRecipient.create({data:{campaignId:campaign.id,contactId:old.id,email:old.email,status:'UNKNOWN'}})
+      await prisma.emailProviderEvent.create({data:{provider:'ses',providerEventId:'old-signed-open',campaignId:campaign.id,recipientId:r.id,eventType:'OPENED',occurredAt:new Date('2026-10-01T12:00:00Z'),payload:{eventType:'Open',open:{isBotEvent:'Likely',ipAddress:'private-old-ip',userAgent:'private-old-agent'}}}})
+      const before=await prisma.emailAnalyticsEvent.count()
+      await backfillAnalyticsBatch(undefined,false)
+      assert.equal(await prisma.emailAnalyticsEvent.count(),before)
+      const applied=await backfillAnalyticsBatch(undefined,true)
+      assert.equal(applied.inserted,1)
+      assert.equal((await backfillAnalyticsBatch(undefined,true)).inserted,0)
+      const event=await prisma.emailAnalyticsEvent.findUniqueOrThrow({where:{eventKey:'ses:old-signed-open'}})
+      assert.equal(event.automation,'likely_automated');assert.equal(event.kind,'OPENED')
+      assert.ok(!JSON.stringify(event).includes('private-old'))
+      assert.equal((await prisma.campaignRecipient.findUniqueOrThrow({where:{id:r.id}})).status,'UNKNOWN')
+      assert.equal(await prisma.emailAnalyticsEvent.count({where:{recipientId:r.id}}),1)
     })
     await t.test('14k recipients use bounded pagination and matching streaming export',async()=>{
       const bulk=await prisma.campaign.create({data:{id:'analytics-14k',name:'Synthetic volume',subject:'Never sent',content:'<p>Fixture</p>'}})

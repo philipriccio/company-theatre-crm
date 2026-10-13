@@ -47,6 +47,9 @@ export async function ingestSesNotification(envelope: SnsEnvelope) {
   )
   if (!Number.isFinite(occurredAt.getTime())) throw new Error('Invalid event timestamp')
   if (recipient && messageId && recipient.providerMessageId && recipient.providerMessageId !== messageId) throw new Error('Mismatched message attribution')
+  const taggedCampaignId = payload.mail?.tags?.campaign_id?.[0]
+  if (recipient && taggedCampaignId && taggedCampaignId !== recipient.campaignId) throw new Error('Mismatched campaign attribution')
+  if (recipient && payload.mail?.destination?.length && !payload.mail.destination.some(email => email.trim().toLowerCase() === recipient.email.toLowerCase())) throw new Error('Mismatched recipient attribution')
   const recipientEmail = recipient?.email || payload.bounce?.bouncedRecipients?.[0]?.emailAddress
     || payload.complaint?.complainedRecipients?.[0]?.emailAddress || payload.mail?.destination?.[0]
   const recipientData: Prisma.CampaignRecipientUncheckedUpdateManyInput = {
