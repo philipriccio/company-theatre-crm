@@ -19,16 +19,16 @@ function sign(payload: string): string {
   return crypto.createHmac('sha256', secret()).update(payload).digest('base64url')
 }
 
-export function createUnsubscribeToken(contactId: string, validForSeconds = 180 * 24 * 60 * 60): string {
+export function createUnsubscribeToken(contactId: string, validForSeconds = 180 * 24 * 60 * 60, attribution?: { campaignId: string; recipientId: string }): string {
   if (validForSeconds < MIN_VALID_SECONDS) {
     throw new Error('Unsubscribe token validity must be at least 60 days')
   }
   const expiresAt = Math.floor(Date.now() / 1000) + validForSeconds
-  const payload = base64url(JSON.stringify({ v: VERSION, cid: contactId, exp: expiresAt, purpose: 'unsubscribe' }))
+  const payload = base64url(JSON.stringify({ v: VERSION, cid: contactId, exp: expiresAt, purpose: 'unsubscribe', attribution }))
   return `${VERSION}.${payload}.${sign(payload)}`
 }
 
-export function verifyUnsubscribeToken(token: string, now = new Date()): { ok: true; contactId: string } | { ok: false; reason: string } {
+export function verifyUnsubscribeToken(token: string, now = new Date()): { ok: true; contactId: string; attribution?: { campaignId: string; recipientId: string } } | { ok: false; reason: string } {
   const parts = token.split('.')
   if (parts.length !== 3) return { ok: false, reason: 'malformed' }
   const [version, payload, signature] = parts
@@ -38,10 +38,10 @@ export function verifyUnsubscribeToken(token: string, now = new Date()): { ok: t
   if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return { ok: false, reason: 'tampered' }
 
   try {
-    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { cid?: string; exp?: number; purpose?: string }
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { cid?: string; exp?: number; purpose?: string; attribution?: { campaignId: string; recipientId: string } }
     if (decoded.purpose !== 'unsubscribe' || !decoded.cid || !decoded.exp) return { ok: false, reason: 'invalid_payload' }
     if (decoded.exp < Math.floor(now.getTime() / 1000)) return { ok: false, reason: 'expired' }
-    return { ok: true, contactId: decoded.cid }
+    return { ok: true, contactId: decoded.cid, ...(decoded.attribution ? { attribution: decoded.attribution } : {}) }
   } catch {
     return { ok: false, reason: 'invalid_payload' }
   }
@@ -51,12 +51,12 @@ export function emailHash(email: string): string {
   return crypto.createHash('sha256').update(email.trim().toLowerCase()).digest('hex')
 }
 
-export function createTrackingToken(recipientId: string, targetUrl: string): string {
-  const payload = base64url(JSON.stringify({ v: VERSION, rid: recipientId, url: targetUrl, purpose: 'click' }))
+export function createTrackingToken(recipientId: string, targetUrl: string, placement?: { campaignId: string; linkKey: string; label: string }): string {
+  const payload = base64url(JSON.stringify({ v: VERSION, rid: recipientId, url: targetUrl, purpose: 'click', placement }))
   return `${VERSION}.${payload}.${sign(payload)}`
 }
 
-export function verifyTrackingToken(token: string): { ok: true; recipientId: string; url: string } | { ok: false; reason: string } {
+export function verifyTrackingToken(token: string): { ok: true; recipientId: string; url: string; placement?: { campaignId: string; linkKey: string; label: string } } | { ok: false; reason: string } {
   const parts = token.split('.')
   if (parts.length !== 3) return { ok: false, reason: 'malformed' }
   const [version, payload, signature] = parts
@@ -65,9 +65,9 @@ export function verifyTrackingToken(token: string): { ok: true; recipientId: str
   if (Buffer.byteLength(signature) !== Buffer.byteLength(expected)) return { ok: false, reason: 'tampered' }
   if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return { ok: false, reason: 'tampered' }
   try {
-    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { rid?: string; url?: string; purpose?: string }
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { rid?: string; url?: string; purpose?: string; placement?: { campaignId: string; linkKey: string; label: string } }
     if (decoded.purpose !== 'click' || !decoded.rid || !decoded.url) return { ok: false, reason: 'invalid_payload' }
-    return { ok: true, recipientId: decoded.rid, url: decoded.url }
+    return { ok: true, recipientId: decoded.rid, url: decoded.url, ...(decoded.placement ? { placement: decoded.placement } : {}) }
   } catch {
     return { ok: false, reason: 'invalid_payload' }
   }
@@ -82,4 +82,19 @@ export function safeHttpUrl(raw: string): URL | null {
   } catch {
     return null
   }
+}
+
+export function createOpenToken(recipientId: string, campaignId: string): string {
+  const payload = base64url(JSON.stringify({ rid: recipientId, cid: campaignId, purpose: 'open' }))
+  return `${VERSION}.${payload}.${sign(payload)}`
+}
+export function verifyOpenToken(token: string): { recipientId: string; campaignId: string } | null {
+  const [version, payload, signature, extra] = token.split('.')
+  if (version !== VERSION || !payload || !signature || extra) return null
+  const expected = sign(payload)
+  if (Buffer.byteLength(signature) !== Buffer.byteLength(expected) || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null
+  try {
+    const value = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'))
+    return value.purpose === 'open' && typeof value.rid === 'string' && typeof value.cid === 'string' ? { recipientId: value.rid, campaignId: value.cid } : null
+  } catch { return null }
 }

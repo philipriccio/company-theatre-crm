@@ -122,3 +122,6 @@ Local visual workflow evidence is in `reports/ux-review-2026-10-07/REVIEW.md`. O
 
 ## Draft-save recovery — October 13
 After a production build, `PROOF_FIXED=1 bash scripts/test-copy-save-local.sh` runs real Chromium/HTTP/isolated PostgreSQL checks for typing/save/reload, stale-version recovery, missing input events, network failures, and same-field conflict retention. It never uses project `.env` or production data and leaves email disabled. Optional `COPY_PROOF_FIXTURE` is a local HTML fixture; default synthetic. See `reports/save-fix-2026-10-13/REVIEW.md` for evidence limits.
+
+## Email analytics — October 13 (local candidate)
+`bash scripts/test-analytics-local.sh` creates a fresh Unix-socket-only PostgreSQL cluster, applies the additive analytics migration, checks schema drift, and runs synthetic capture/report/export/14k-pagination regressions. No project `.env` or real provider is used. With `CRM_ANALYTICS_PREVIEW=1`, it also seeds explicitly labelled synthetic examples and runs loopback :3194 until stopped. Build first; shared external node_modules symlinks require `npm run build -- --webpack` locally. See `reports/analytics-2026-10-13/REVIEW.md` for exact gates and limitations. Production migration/deployment/send approval are separate.

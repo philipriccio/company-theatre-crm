@@ -145,6 +145,7 @@ model Campaign {
   frozenRecipientCount Int?
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
+  analyticsEvents EmailAnalyticsEvent[]
   links       CampaignLink[]
   recipients  CampaignRecipient[]
   attempts    EmailDeliveryAttempt[]
@@ -183,6 +184,10 @@ model CampaignRecipient {
   lastErrorClass String?
   lastErrorCode String?
   lastErrorMessage String?
+  analyticsVersion Int?
+  unsubscribedAt DateTime?
+  complainedAt DateTime?
+  analyticsEvents EmailAnalyticsEvent[]
   metadata    Json?
   campaign    Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   contact     Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
@@ -368,4 +373,28 @@ model CampaignReview {
   createdAt DateTime @default(now())
 
   @@index([campaignId, createdAt])
+}
+
+// Minimal normalized evidence; no raw IP, user agent, headers or signed tokens.
+model EmailAnalyticsEvent {
+  id String @id @default(cuid())
+  eventKey String @unique
+  campaignId String
+  recipientId String
+  kind String
+  source String
+  canonical Boolean @default(true)
+  occurredAt DateTime
+  receivedAt DateTime @default(now())
+  linkKey String?
+  linkLabel String?
+  targetUrl String?
+  automation String @default("unknown")
+  detail String?
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  recipient CampaignRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId, canonical, kind, occurredAt])
+  @@index([campaignId, linkKey, recipientId])
+  @@index([recipientId, occurredAt])
 }

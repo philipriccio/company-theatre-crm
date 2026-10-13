@@ -10,6 +10,8 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      # Web routes enqueue only. Never inherit the worker's SES provider setting.
+      - EMAIL_PROVIDER=disabled
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
       - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL:-http://localhost:3000}
     depends_on:
@@ -26,6 +28,8 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - EMAIL_PROVIDER=${EMAIL_PROVIDER:-disabled}
+      # Mandatory exact seed destinations; empty fails closed, never grants approval.
+      - EMAIL_SES_RECIPIENT_ALLOWLIST=${EMAIL_SES_RECIPIENT_ALLOWLIST:-}
       - EMAIL_TOKEN_SECRET=${EMAIL_TOKEN_SECRET}
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
       - AWS_SES_REGION=${AWS_SES_REGION:-ca-central-1}

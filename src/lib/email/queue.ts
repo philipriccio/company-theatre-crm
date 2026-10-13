@@ -1,4 +1,5 @@
 import { selectAudience } from './audience'
+import { LEGACY_NEGATIVE_TAGS } from './legacy-exclusions'
 import { prisma } from '@/lib/db'
 import { CampaignRecipientStatus } from '@prisma/client'
 import { canRetry, nextAttemptAt } from './retry'
@@ -126,7 +127,7 @@ export async function recoverExpiredLeases() {
 export async function processRecipient(recipientId: string, provider: EmailProvider = getEmailProvider(), workerId?: string) {
   const recipient = await prisma.campaignRecipient.findUnique({
     where: { id: recipientId },
-    include: { campaign: true, contact: true },
+    include: { campaign: true, contact: { include: { tags: { where: { tag: { name: { in: LEGACY_NEGATIVE_TAGS } } }, select: { tagId: true } } } } },
   })
   if (!recipient || recipient.status !== 'SENDING' || (workerId && recipient.leaseOwner !== workerId)) return
   if (!recipient.leasedUntil || recipient.leasedUntil <= new Date()) return
@@ -141,6 +142,17 @@ export async function processRecipient(recipientId: string, provider: EmailProvi
   }
 
   const now = new Date()
+  if (recipient.contact.tags.length > 0) {
+    // A negative imported tag may be added after enqueue. Hold this recipient
+    // without changing Contact permissions or promoting legacy data to a global block.
+    await prisma.campaignRecipient.updateMany({
+      where: { id: recipient.id, status: 'SENDING', leaseOwner: recipient.leaseOwner },
+      data: { status: 'SUPPRESSED', suppressedAt: now, leasedUntil: null, leaseOwner: null,
+        lastErrorClass: 'suppressed', lastErrorCode: 'legacy_negative_tag_review',
+        lastErrorMessage: 'Imported unsubscribe or hard-bounce tag requires review before sending' },
+    })
+    return
+  }
   const suppressed = await prisma.globalSuppression.findUnique({ where: { email: recipient.email.toLowerCase() } })
   if (suppressed || !recipient.contact.solicitation || recipient.contact.unsubscribedAt) {
     await prisma.campaignRecipient.update({
@@ -152,6 +164,7 @@ export async function processRecipient(recipientId: string, provider: EmailProvi
   }
 
   const message = buildCampaignEmail(recipient.campaign, recipient)
+  await prisma.campaignRecipient.update({ where: { id: recipient.id }, data: { analyticsVersion: 1 } })
   const result = await provider.send(message)
   const attemptCount = recipient.attemptCount + 1
 

@@ -26,14 +26,6 @@ export default async function CampaignDetailPage({
     where: { id },
     include: {
       _count: { select: { recipients: true } },
-      recipients: {
-        select: {
-          openedAt: true,
-          clickedAt: true,
-          bouncedAt: true,
-          status: true,
-        },
-      },
     },
   });
 
@@ -47,7 +39,7 @@ export default async function CampaignDetailPage({
     const refs=events.filter(e=>e.action==='APPROVE')
     return <div className="p-4 sm:p-8 space-y-6 max-w-6xl mx-auto">
       <Link href="/campaigns" className="text-sm underline">← All emails</Link>
-      <header className="space-y-3"><p className="text-sm uppercase tracking-widest text-stone-500">Company Theatre · Creative review</p><div className="flex flex-wrap items-center gap-3"><h1 className="text-3xl font-semibold">{campaign.name}</h1><span className="rounded-full bg-amber-50 text-amber-900 px-3 py-1 text-sm">{reviewState(events,hash)}</span></div><p className="text-stone-600">Review the email below, edit the text or leave your notes. Nothing is sent from this page.</p></header>
+      <header className="space-y-3"><p className="text-sm uppercase tracking-widest text-stone-500">Company Theatre · Creative review</p><div className="flex flex-wrap items-center gap-3"><Link className="text-sm underline" href={`/campaigns/${id}/analytics`}>Email analytics →</Link><h1 className="text-3xl font-semibold">{campaign.name}</h1><span className="rounded-full bg-amber-50 text-amber-900 px-3 py-1 text-sm">{reviewState(events,hash)}</span></div><p className="text-stone-600">Review the email below, edit the text or leave your notes. Nothing is sent from this page.</p></header>
       <section className="card p-5 space-y-2 text-sm"><p><strong>Subject:</strong> {campaign.subject || 'Not set'}</p><p><strong>Inbox preview:</strong> {campaign.previewText || 'Not set'}</p><p><strong>From:</strong> {campaign.fromName} · {campaign.fromEmail}</p><p><strong>Replies:</strong> {campaign.replyToEmail || campaign.fromEmail}</p></section>
       {campaign.design!==null&&<CopyEditor id={id} hash={hash} subject={campaign.subject} previewText={campaign.previewText||''} fields={campaign.design ? [] : copyFields(campaign.content)} structured={campaign.design!==null}/>}
       <div className="grid xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 items-start"><section className="card p-3 sm:p-5 min-w-0">{campaign.design!==null ? <EmailPreview html={wrapInTemplate({content:campaign.content,previewText:campaign.previewText||undefined,unsubscribeUrl:'#'})}/> : <InlineCopyPreview key={hash} id={id} hash={hash} subject={campaign.subject} previewText={campaign.previewText||''} fields={copyFields(campaign.content)} document={inlineEmailPreview(campaign.content,campaign.previewText||'')}/>}</section><div className="space-y-5"><ReviewActions id={id} hash={hash} references={refs.map((r,i)=>({id:r.id,label:`approved version ${refs.length-i}`}))}/><section className="card p-5"><h2 className="text-lg font-semibold mb-4">Review history</h2>{!events.length&&<p className="text-sm text-stone-500">No notes yet. Your feedback and approved versions will appear here.</p>}<ol className="space-y-4">{events.map(e=><li key={e.id} className="border-b pb-3 text-sm"><p className="font-medium">{e.author} · {({NOTE:'Note',SUBMIT:'Ready for review',CHANGES:'Changes requested',APPROVE:'Design approved'} as Record<string,string>)[e.action]}</p><p className="text-xs text-stone-500">{e.createdAt.toISOString().replace('T',' ').slice(0,16)} UTC{e.contentHash!==hash?' · Earlier version':''}</p>{e.note&&<p className="whitespace-pre-wrap mt-2 break-words">{e.note}</p>}{e.action==='APPROVE'&&<Link className="underline inline-block mt-2" href={`/campaigns/${id}/references/${e.id}`}>View preserved approved design</Link>}</li>)}</ol></section></div></div>
@@ -55,26 +47,7 @@ export default async function CampaignDetailPage({
     </div>
   }
 
-  // Calculate stats
   const total = campaign._count.recipients;
-  const opened = campaign.recipients.filter((r) => r.openedAt).length;
-  const clicked = campaign.recipients.filter((r) => r.clickedAt).length;
-  const bounced = campaign.recipients.filter((r) => r.bouncedAt).length;
-  const accepted = campaign.recipients.filter(
-    (r) => r.status === "ACCEPTED",
-  ).length;
-  const delivered = campaign.recipients.filter(
-    (r) => r.status === "DELIVERED",
-  ).length;
-  const failed = campaign.recipients.filter(
-    (r) => r.status === "FAILED",
-  ).length;
-  const suppressed = campaign.recipients.filter(
-    (r) => r.status === "SUPPRESSED",
-  ).length;
-  const unknown = campaign.recipients.filter(
-    (r) => r.status === "UNKNOWN",
-  ).length;
 
   return (
     <div className="p-4 sm:p-8">
@@ -98,40 +71,8 @@ export default async function CampaignDetailPage({
         </div>
       </div>
 
-      {total > 0 && (
-        <div className="grid grid-cols-2 lg:grid-cols-7 gap-4 mb-8">
-          <StatCard label="Accepted" value={accepted} />
-          <StatCard label="Delivered" value={delivered} />
-          <StatCard
-            label="Opened"
-            value={opened}
-            percent={(opened / total) * 100}
-          />
-          <StatCard
-            label="Clicked"
-            value={clicked}
-            percent={(clicked / total) * 100}
-          />
-          <StatCard
-            label="Bounced"
-            value={bounced}
-            percent={(bounced / total) * 100}
-            color="red"
-          />
-          <StatCard label="Suppressed" value={suppressed} color="red" />
-          <StatCard label="Failed" value={failed} color="red" />
-          <StatCard label="Unknown" value={unknown} color="red" />
-        </div>
-      )}
-
-      {total > 0 && (
-        <p className="mb-6 text-sm text-stone-500">
-          Accepted means the provider accepted the message, not that it reached
-          an inbox. Opens and clicks are indicative: privacy features and
-          security scanners can inflate both. Unknown outcomes are not
-          automatically resent.
-        </p>
-      )}
+      <Link className="inline-block mb-6 underline" href={`/campaigns/${id}/analytics`}>Explore people, link clicks and delivery evidence →</Link>
+      <p className="mb-6 text-sm text-stone-500">{total.toLocaleString()} recipient records. Open the analytics report for confirmed delivery, recorded engagement and matching people. Acceptance is not proof of inbox delivery.</p>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Email Preview */}
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
@@ -265,27 +206,3 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  percent,
-  color = "indigo",
-}: {
-  label: string;
-  value: number;
-  percent?: number;
-  color?: string;
-}) {
-  const colorClasses = color === "red" ? "text-red-600" : "text-indigo-600";
-  return (
-    <div className="bg-white rounded-xl shadow-sm p-4">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="text-2xl font-bold text-gray-900">
-        {value.toLocaleString()}
-      </p>
-      {percent !== undefined && (
-        <p className={`text-sm ${colorClasses}`}>{percent.toFixed(1)}%</p>
-      )}
-    </div>
-  );
-}

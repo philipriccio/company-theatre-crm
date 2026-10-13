@@ -1,6 +1,7 @@
 import { Prisma, type EmailProviderEventType } from '@prisma/client'
 import { prisma } from '@/lib/db'
-import { emailHash } from './tokens'
+import { emailHash, safeHttpUrl, verifyTrackingToken } from './tokens'
+import { firstTimestamp } from './analytics-capture'
 import type { SnsEnvelope } from './sns'
 
 type SesPayload = Record<string, unknown> & {
@@ -8,11 +9,12 @@ type SesPayload = Record<string, unknown> & {
   notificationType?: string
   mail?: { messageId?: string; timestamp?: string; destination?: string[]; tags?: Record<string, string[]> }
   delivery?: { timestamp?: string }
+  deliveryDelay?: { timestamp?: string }
   bounce?: { bounceType?: string; bounceSubType?: string; timestamp?: string; bouncedRecipients?: Array<{ emailAddress?: string }> }
   complaint?: { timestamp?: string; complainedRecipients?: Array<{ emailAddress?: string }> }
   reject?: { reason?: string }
-  open?: { timestamp?: string }
-  click?: { timestamp?: string }
+  open?: { timestamp?: string; isBotEvent?: string }
+  click?: { timestamp?: string; isBotEvent?: string; link?: string }
 }
 
 function mapEventType(raw: string): EmailProviderEventType {
@@ -40,9 +42,11 @@ export async function ingestSesNotification(envelope: SnsEnvelope) {
       : null
 
   const occurredAt = new Date(
-    payload.delivery?.timestamp || payload.bounce?.timestamp || payload.complaint?.timestamp
+    payload.delivery?.timestamp || payload.deliveryDelay?.timestamp || payload.bounce?.timestamp || payload.complaint?.timestamp
       || payload.open?.timestamp || payload.click?.timestamp || payload.mail?.timestamp || envelope.Timestamp
   )
+  if (!Number.isFinite(occurredAt.getTime())) throw new Error('Invalid event timestamp')
+  if (recipient && messageId && recipient.providerMessageId && recipient.providerMessageId !== messageId) throw new Error('Mismatched message attribution')
   const recipientEmail = recipient?.email || payload.bounce?.bouncedRecipients?.[0]?.emailAddress
     || payload.complaint?.complainedRecipients?.[0]?.emailAddress || payload.mail?.destination?.[0]
   const recipientData: Prisma.CampaignRecipientUncheckedUpdateManyInput = {
@@ -50,16 +54,15 @@ export async function ingestSesNotification(envelope: SnsEnvelope) {
   }
   let suppressReason: string | null = null
 
-  if (eventType === 'ACCEPTED') Object.assign(recipientData, { status: 'ACCEPTED', acceptedAt: occurredAt, sentAt: occurredAt, leasedUntil: null, leaseOwner: null })
-  if (eventType === 'DELIVERED') Object.assign(recipientData, { status: 'DELIVERED', deliveredAt: occurredAt, leasedUntil: null, leaseOwner: null })
-  if (eventType === 'OPENED') Object.assign(recipientData, { openedAt: occurredAt })
-  if (eventType === 'CLICKED') Object.assign(recipientData, { clickedAt: occurredAt })
+  if (eventType === 'ACCEPTED') Object.assign(recipientData, { status: 'ACCEPTED', leasedUntil: null, leaseOwner: null })
+  if (eventType === 'DELIVERED') Object.assign(recipientData, { status: 'DELIVERED', leasedUntil: null, leaseOwner: null })
+
+
   if (eventType === 'BOUNCED') {
     const permanent = payload.bounce?.bounceType?.toLowerCase() === 'permanent'
     Object.assign(recipientData, {
-      bouncedAt: occurredAt,
       bounceType: [payload.bounce?.bounceType, payload.bounce?.bounceSubType].filter(Boolean).join(':'),
-      ...(permanent ? { status: 'FAILED', failedAt: occurredAt, lastErrorClass: 'permanent', lastErrorCode: 'ses_hard_bounce' } : {}),
+      status: 'FAILED', failedAt: occurredAt, lastErrorClass: 'permanent', lastErrorCode: permanent ? 'ses_hard_bounce' : 'ses_soft_bounce_final',
     })
     if (permanent) suppressReason = 'hard_bounce'
   }
@@ -76,12 +79,49 @@ export async function ingestSesNotification(envelope: SnsEnvelope) {
           provider: 'ses', providerEventId: envelope.MessageId, providerMessageId: messageId,
           eventType, campaignId: recipient?.campaignId, recipientId: recipient?.id,
           emailHash: recipientEmail ? emailHash(recipientEmail) : null, occurredAt,
-          payload: payload as Prisma.InputJsonValue,
+          // Do not retain raw IP/UA/header/token payloads for new events.
+          payload: { eventType: rawType, bounceType: payload.bounce?.bounceType ?? null, bounceSubType: payload.bounce?.bounceSubType ?? null },
         },
       })
+      if (recipient) {
+        const canonical = eventType !== 'CLICKED' || recipient.analyticsVersion !== 1
+        let targetUrl: string | undefined
+        let linkKey: string | undefined
+        let linkLabel: string | undefined
+        if (eventType === 'CLICKED' && payload.click?.link) {
+          const link = safeHttpUrl(payload.click.link)
+          if (link) {
+            const token = link.searchParams.get('t')
+            const tracked = token ? verifyTrackingToken(token) : null
+            if (tracked?.ok && tracked.recipientId === recipient.id && (!tracked.placement || tracked.placement.campaignId === recipient.campaignId)) {
+              targetUrl = safeHttpUrl(tracked.url)?.toString()
+              linkKey = tracked.placement?.linkKey
+              linkLabel = tracked.placement?.label
+            } else if (!token) targetUrl = link.toString()
+          }
+        }
+        const classification = payload.open?.isBotEvent || payload.click?.isBotEvent
+        await tx.emailAnalyticsEvent.create({ data: {
+          eventKey: `ses:${envelope.MessageId}`, campaignId: recipient.campaignId, recipientId: recipient.id,
+          kind: rawType.toLowerCase() === 'deliverydelay' ? 'DELAYED' : eventType, source: 'ses', canonical, occurredAt,
+          targetUrl, linkKey, linkLabel,
+          automation: classification === 'Likely' ? 'likely_automated' : classification === 'Unlikely' ? 'unlikely_automated' : 'unknown',
+          detail: eventType === 'BOUNCED' ? [payload.bounce?.bounceType, payload.bounce?.bounceSubType].filter(Boolean).join(':') : undefined,
+        } })
+        if (eventType === 'OPENED') await firstTimestamp(tx, recipient.id, 'openedAt', occurredAt)
+        if (eventType === 'CLICKED' && canonical) await firstTimestamp(tx, recipient.id, 'clickedAt', occurredAt)
+        if (eventType === 'ACCEPTED') {
+          await firstTimestamp(tx, recipient.id, 'acceptedAt', occurredAt)
+          await firstTimestamp(tx, recipient.id, 'sentAt', occurredAt)
+        }
+        if (eventType === 'DELIVERED') await firstTimestamp(tx, recipient.id, 'deliveredAt', occurredAt)
+        if (eventType === 'BOUNCED') await firstTimestamp(tx, recipient.id, 'bouncedAt', occurredAt)
+        if (eventType === 'COMPLAINED') await firstTimestamp(tx, recipient.id, 'complainedAt', occurredAt)
+      }
       if (recipient && Object.keys(recipientData).length) {
         // Late acceptance/delivery must not overwrite complaint, bounce, or suppression.
-        const allowedStatuses = eventType === 'ACCEPTED' ? ['SENDING', 'UNKNOWN', 'QUEUED', 'ACCEPTED'] as const
+        const allowedStatuses = eventType === 'BOUNCED' || eventType === 'REJECTED' ? ['SENDING', 'UNKNOWN', 'QUEUED', 'ACCEPTED', 'DELIVERED', 'FAILED'] as const
+          : eventType === 'ACCEPTED' ? ['SENDING', 'UNKNOWN', 'QUEUED', 'ACCEPTED'] as const
           : eventType === 'DELIVERED' ? ['SENDING', 'UNKNOWN', 'QUEUED', 'ACCEPTED', 'DELIVERED'] as const : null
         await tx.campaignRecipient.updateMany({
           where: { id: recipient.id, ...(allowedStatuses ? { status: { in: [...allowedStatuses] } } : {}) }, data: recipientData,

@@ -26,39 +26,42 @@ export function appUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL || 'https://crm.companytheatre.ca'
 }
 
-export function wrapLinksForTracking(html: string, recipientId: string, baseUrl = appUrl()): string {
-  return html.replace(/href="(https?:\/\/[^\"]+)"/g, (match: string, encodedUrl: string) => {
-    // HTML href values are decoded once by email clients. Sign that destination,
-    // not the source spelling (e.g. &amp;), using attribute-context entity rules.
-    const url = decodeHTMLAttribute(encodedUrl)
-    if (url.includes('/unsubscribe/')) return match
-    const safe = safeHttpUrl(url)
-    if (!safe) return match
-    const token = createTrackingToken(recipientId, safe.toString())
-    return `href="${baseUrl}/api/track/click/${recipientId}?t=${encodeURIComponent(token)}"`
+export function wrapLinksForTracking(html: string, recipientId: string, baseUrl = appUrl(), campaignId?: string): string {
+  let position = 0
+  // Anchor-local replacement preserves authored HTML, entities and attribute quoting.
+  return html.replace(/<a\b[^>]*>[\s\S]*?<\/a\s*>/gi, (anchor: string) => {
+    const href = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(anchor)
+    if (!href) return anchor
+    const safe = safeHttpUrl(decodeHTMLAttribute(href[1] ?? href[2] ?? href[3]))
+    if (!safe || safe.pathname.startsWith('/unsubscribe/') || safe.pathname.startsWith('/api/unsubscribe/')) return anchor
+    position++
+    const image = /<img\b/i.test(anchor)
+    const alt = /\balt=["']([^"']*)["']/i.exec(anchor)?.[1]
+    const text = decodeHTMLAttribute(anchor.replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim()
+    const label = `${image ? 'Image' : 'Link'} ${position}: ${(image ? alt : text) || safe.hostname}`.slice(0, 180)
+    const placement = campaignId ? { campaignId, linkKey: `placement-${position}`, label } : undefined
+    const token = createTrackingToken(recipientId, safe.toString(), placement)
+    return anchor.replace(href[0], `href="${baseUrl}/api/track/click/${recipientId}?t=${encodeURIComponent(token)}"`)
   })
 }
 
 export function buildCampaignEmail(campaign: CampaignData, recipient: RecipientData): EmailMessage {
   const baseUrl = appUrl()
-  const unsubscribeUrl = `${baseUrl}/unsubscribe/${createUnsubscribeToken(recipient.contactId)}`
-  const oneClickUrl = `${baseUrl}/api/unsubscribe/${createUnsubscribeToken(recipient.contactId)}`
-  const trackingPixelUrl = `${baseUrl}/api/track/open/${recipient.id}`
+  const unsubscribeUrl = `${baseUrl}/unsubscribe/${createUnsubscribeToken(recipient.contactId, undefined, { campaignId: campaign.id, recipientId: recipient.id })}`
+  const oneClickUrl = `${baseUrl}/api/unsubscribe/${createUnsubscribeToken(recipient.contactId, undefined, { campaignId: campaign.id, recipientId: recipient.id })}`
 
-  let personalizedContent = personalizeContent(campaign.content, recipient)
-  personalizedContent += `<img src="${trackingPixelUrl}" width="1" height="1" style="display:none" alt="" />`
-  personalizedContent = wrapLinksForTracking(personalizedContent, recipient.id, baseUrl)
+  const personalizedContent = personalizeContent(campaign.content, recipient)
 
   return {
     to: { email: recipient.email },
     from: { email: campaign.fromEmail, name: campaign.fromName },
     replyTo: { email: campaign.replyToEmail || campaign.fromEmail, name: campaign.fromName },
     subject: campaign.subject,
-    html: wrapInTemplate({
+    html: wrapLinksForTracking(wrapInTemplate({
       content: personalizedContent,
       previewText: campaign.previewText || undefined,
       unsubscribeUrl,
-    }),
+    }), recipient.id, baseUrl, campaign.id),
     headers: {
       'List-Unsubscribe': `<${oneClickUrl}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
@@ -66,6 +69,7 @@ export function buildCampaignEmail(campaign: CampaignData, recipient: RecipientD
       'X-Company-Theatre-Recipient-ID': recipient.id,
     },
     metadata: {
+      analytics_version: '1',
       campaign_id: campaign.id,
       recipient_id: recipient.id,
       one_click_unsubscribe_url: oneClickUrl,

@@ -9,10 +9,6 @@ type CampaignWithStats = Campaign & {
   _count: {
     recipients: number
   }
-  recipients: {
-    openedAt: Date | null
-    clickedAt: Date | null
-  }[]
 }
 
 interface SearchParams {
@@ -35,12 +31,6 @@ export default async function CampaignsPage({
       _count: {
         select: { recipients: true },
       },
-      recipients: {
-        select: {
-          openedAt: true,
-          clickedAt: true,
-        },
-      },
     },
     orderBy: { createdAt: 'desc' },
   }) as CampaignWithStats[]
@@ -52,7 +42,7 @@ export default async function CampaignsPage({
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-semibold text-stone-900 tracking-tight">Campaigns</h1>
+          <Link href="/campaigns/analytics" className="underline text-sm">Email analytics →</Link><h1 className="text-3xl font-semibold text-stone-900 tracking-tight">Campaigns</h1>
           <p className="text-stone-500 mt-1">
             Review drafts from Mildred, leave notes, and keep approved designs.
           </p>
@@ -113,16 +103,12 @@ export default async function CampaignsPage({
       ) : (
         <div className="space-y-4">
           {campaigns.map((campaign) => {
-            const opens = campaign.recipients.filter(r => r.openedAt).length
-            const clicks = campaign.recipients.filter(r => r.clickedAt).length
             const total = campaign._count.recipients
-            const openRate = total > 0 ? ((opens / total) * 100).toFixed(1) : null
-            const clickRate = total > 0 ? ((clicks / total) * 100).toFixed(1) : null
 
             return (
               <Link
                 key={campaign.id}
-                href={`/campaigns/${campaign.id}`}
+                href={`/campaigns/${campaign.id}${['SENT','COMPLETED','COMPLETED_WITH_FAILURES'].includes(campaign.status)?'/analytics':''}`}
                 className="card p-6 flex items-center gap-6 card-interactive"
               >
                 {/* Icon */}
@@ -151,23 +137,7 @@ export default async function CampaignsPage({
                   </p>
                 </div>
 
-                {/* Stats (only for sent campaigns) */}
-                {['SENT', 'COMPLETED', 'COMPLETED_WITH_FAILURES'].includes(campaign.status) && total > 0 && (
-                  <div className="flex items-center gap-8 flex-shrink-0">
-                    <div className="text-center">
-                      <p className="text-2xl font-semibold text-stone-900">{total.toLocaleString()}</p>
-                      <p className="text-xs text-stone-400">Sent</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-semibold text-emerald-600">{openRate}%</p>
-                      <p className="text-xs text-stone-400">Opens</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-semibold text-[#ff3b1d]">{clickRate}%</p>
-                      <p className="text-xs text-stone-400">Clicks</p>
-                    </div>
-                  </div>
-                )}
+                {total > 0 && <div className="hidden sm:block text-right flex-shrink-0"><p className="text-xl font-semibold">{total.toLocaleString()}</p><p className="text-xs text-stone-500">Recipient records</p></div>}
 
                 {/* Date */}
                 <div className="text-right flex-shrink-0 w-28">

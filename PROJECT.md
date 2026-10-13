@@ -115,3 +115,6 @@ Both public site signup paths now have an isolated, tested release candidate aga
 
 ## October 10: audience workspace — local release candidate
 New admin shell, useful audience overview/presets, shared directory/count/CSV filters, read-only consent evidence, safe default-off Add Person, and dossier/tag reliability repairs are locally verified. No schema migration, production change or sending change. Existing historical production statements above are not current deployment evidence. See `reports/audience-workspace-2026-10-10/REVIEW.md` for scope, synthetic browser proof and rollout boundaries.
+
+## October 13: email analytics — local release candidate
+The isolated analytics worktree adds durable minimal event capture, placement-specific clicks, attributed unsubscribe evidence, reports/recipient timelines/CSV exports, and explicit coverage/automation caveats. SES opens and signed app clicks are canonical for new emails; provider mirrors never double-count. Historical evidence recovery and production approval remain separate. Existing email sending stays disabled; no migration/deployment/send was performed. Design and verified local checks: `reports/analytics-2026-10-13/REVIEW.md`. Earlier historical deployment statements above are not current evidence.
