@@ -1,0 +1,150 @@
+TAP version 13
+# Subtest: current campaign ticket href preserves real UTM keys after signing
+not ok 1 - current campaign ticket href preserves real UTM keys after signing
+  ---
+  duration_ms: 3.586916
+  type: 'test'
+  location: '/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:2:1918'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'https://www.mirvish.com/shows/jackpot-twins?utm_source=company_theatre&amp;utm_medium=email&amp;utm_campaign=jackpot_twins_onsale_202610'
+    - 'https://www.mirvish.com/shows/jackpot-twins?utm_source=company_theatre&utm_medium=email&utm_campaign=jackpot_twins_onsale_202610'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'https://www.mirvish.com/shows/jackpot-twins?utm_source=company_theatre&utm_medium=email&utm_campaign=jackpot_twins_onsale_202610'
+  actual: 'https://www.mirvish.com/shows/jackpot-twins?utm_source=company_theatre&amp;utm_medium=email&amp;utm_campaign=jackpot_twins_onsale_202610'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:28:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: signed destinations match one HTML attribute parse, never repeated decoding
+not ok 2 - signed destinations match one HTML attribute parse, never repeated decoding
+  ---
+  duration_ms: 0.482791
+  type: 'test'
+  location: '/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:2:2435'
+  failureType: 'testCodeFailure'
+  error: |-
+    https://example.com/?a=1&#38;b=2&#x26;c=3
+    + actual - expected
+
+    + 'https://example.com/?a=1&#38;b=2&#x26;c=3'
+    - 'https://example.com/?a=1&b=2&c=3'
+                                ^
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'https://example.com/?a=1&b=2&c=3'
+  actual: 'https://example.com/?a=1&#38;b=2&#x26;c=3'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:43:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: unsubscribe exclusions and unsafe destinations remain untouched
+not ok 3 - unsubscribe exclusions and unsafe destinations remain untouched
+  ---
+  duration_ms: 0.101334
+  type: 'test'
+  location: '/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:2:3040'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + '<a href="https://crm.companytheatre.ca/api/track/click/synthetic-recipient?t=v1.eyJ2IjoidjEiLCJyaWQiOiJzeW50aGV0aWMtcmVjaXBpZW50IiwidXJsIjoiaHR0cHM6Ly9jcm0uZXhhbXBsZS5jb20vJiMxMTc7bnN1YnNjcmliZS9zaWduZWQiLCJwdXJwb3NlIjoiY2xpY2sifQ.gGqVMlckYUzfSWhq865GTQhfVKKnZvxQkccwKPAz8NY">Link</a>'
+    - '<a href="https://crm.example.com/&#117;nsubscribe/signed">Link</a>'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '<a href="https://crm.example.com/&#117;nsubscribe/signed">Link</a>'
+  actual: '<a href="https://crm.companytheatre.ca/api/track/click/synthetic-recipient?t=v1.eyJ2IjoidjEiLCJyaWQiOiJzeW50aGV0aWMtcmVjaXBpZW50IiwidXJsIjoiaHR0cHM6Ly9jcm0uZXhhbXBsZS5jb20vJiMxMTc7bnN1YnNjcmliZS9zaWduZWQiLCJwdXJwb3NlIjoiY2xpY2sifQ.gGqVMlckYUzfSWhq865GTQhfVKKnZvxQkccwKPAz8NY">Link</a>'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:56:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: first name trims only outer whitespace and falls back for absent/blank names
+not ok 4 - first name trims only outer whitespace and falls back for absent/blank names
+  ---
+  duration_ms: 0.189792
+  type: 'test'
+  location: '/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:2:3555'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + '<p>Hi   \t\n ,</p>'
+    - '<p>Hi there,</p>'
+             ^
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '<p>Hi there,</p>'
+  actual: |-
+    <p>Hi
+     ,</p>
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:62:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual email builder preserves named greeting and signed unsubscribe without provider calls
+not ok 5 - actual email builder preserves named greeting and signed unsubscribe without provider calls
+  ---
+  duration_ms: 0.413708
+  type: 'test'
+  location: '/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:2:4434'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Hi there,/. Input:
+
+    '<!DOCTYPE html><html><body>Hi   ,<a href="https://crm.companytheatre.ca/api/track/click/synthetic-recipient?t=v1.eyJ2IjoidjEiLCJyaWQiOiJzeW50aGV0aWMtcmVjaXBpZW50IiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS8_YT0xJmFtcDtiPTIiLCJwdXJwb3NlIjoiY2xpY2sifQ.qMGvdgzLjaPUsxWP-UMaGhzoh8SUTu11W1PFbZUcW8U">Tickets</a><a href="https://crm.companytheatre.ca/unsubscribe/v1.eyJ2IjoidjEiLCJjaWQiOiJzeW50aGV0aWMtY29udGFjdCIsImV4cCI6MTgwNzQ1MzQxNywicHVycG9zZSI6InVuc3Vic2NyaWJlIn0.p0x-4dEteuMpzQq6dN--BJigv7dF2VVAfjshxzmpsxM">Unsubscribe</a></body></html><img src="https://crm.companytheatre.ca/api/track/open/synthetic-recipient" width="1" height="1" style="display:none" alt="" />'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<!DOCTYPE html><html><body>Hi   ,<a href="https://crm.companytheatre.ca/api/track/click/synthetic-recipient?t=v1.eyJ2IjoidjEiLCJyaWQiOiJzeW50aGV0aWMtcmVjaXBpZW50IiwidXJsIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS8_YT0xJmFtcDtiPTIiLCJwdXJwb3NlIjoiY2xpY2sifQ.qMGvdgzLjaPUsxWP-UMaGhzoh8SUTu11W1PFbZUcW8U">Tickets</a><a href="https://crm.companytheatre.ca/unsubscribe/v1.eyJ2IjoidjEiLCJjaWQiOiJzeW50aGV0aWMtY29udGFjdCIsImV4cCI6MTgwNzQ1MzQxNywicHVycG9zZSI6InVuc3Vic2NyaWJlIn0.p0x-4dEteuMpzQq6dN--BJigv7dF2VVAfjshxzmpsxM">Unsubscribe</a></body></html><img src="https://crm.companytheatre.ca/api/track/open/synthetic-recipient" width="1" height="1" style="display:none" alt="" />'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/Users/mildred/.openclaw/workspace/projects/crm-presend-repair-20261013/tests/presend-render.test.ts:71:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 229.850917

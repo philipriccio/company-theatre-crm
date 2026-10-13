@@ -139,9 +139,9 @@ export function personalizeContent(
 ): string {
   const values: Record<string, string> = {
     email: contact.email,
-    firstName: contact.firstName || 'there',
+    firstName: contact.firstName?.trim() || 'there',
     lastName: contact.lastName || '',
-    fullName: contact.fullName || contact.firstName || 'Friend',
+    fullName: contact.fullName || contact.firstName?.trim() || 'Friend',
   }
   const escape = (value: string) => value.replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',

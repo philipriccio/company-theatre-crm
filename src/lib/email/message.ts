@@ -1,3 +1,4 @@
+import { decodeHTMLAttribute } from 'entities'
 import { wrapInTemplate, personalizeContent } from '@/lib/email-template'
 import { createTrackingToken, createUnsubscribeToken, safeHttpUrl } from './tokens'
 import type { EmailMessage } from './types'
@@ -26,7 +27,10 @@ export function appUrl(): string {
 }
 
 export function wrapLinksForTracking(html: string, recipientId: string, baseUrl = appUrl()): string {
-  return html.replace(/href="(https?:\/\/[^\"]+)"/g, (match: string, url: string) => {
+  return html.replace(/href="(https?:\/\/[^\"]+)"/g, (match: string, encodedUrl: string) => {
+    // HTML href values are decoded once by email clients. Sign that destination,
+    // not the source spelling (e.g. &amp;), using attribute-context entity rules.
+    const url = decodeHTMLAttribute(encodedUrl)
     if (url.includes('/unsubscribe/')) return match
     const safe = safeHttpUrl(url)
     if (!safe) return match
