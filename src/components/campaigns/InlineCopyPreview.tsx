@@ -84,7 +84,7 @@ export function InlineCopyPreview(initial:Props) {
    const data=await response.json()
    if(!response.ok){setStale(data.code==='STALE_COPY');throw Error(data.error||'Unable to save text')}
    setSaved(true);setActive(false);router.refresh()
-  } catch(e) {setError(e instanceof TypeError?'Could not save. Check your connection and try again.':e instanceof Error?e.message:'Unable to save text')} finally {setBusy(false)}
+  } catch(e) {setError((e instanceof TypeError||e instanceof SyntaxError)?'Save could not be confirmed. Check your connection; keep these edits until you can verify the latest draft.':e instanceof Error?e.message:'Unable to save text')} finally {setBusy(false)}
  }
  async function recover() {
   setBusy(true);setError('')
@@ -109,7 +109,7 @@ export function InlineCopyPreview(initial:Props) {
    <button type="button" className="btn btn-secondary btn-md min-h-[44px]" disabled={busy} onClick={cancel}>Cancel</button>
    <span role="status" className="text-sm text-stone-600">{saved?'Text saved. Nothing was sent.':dirty?'Unsaved changes':'Click text to edit'}</span>
   </div>
-  {error&&<div className="rounded border border-red-300 bg-red-50 p-3 space-y-2"><p role="alert" className="text-red-700">{error} Your changes are still here; nothing was saved.</p>{stale&&<button type="button" disabled={busy} className="btn btn-secondary btn-md" onClick={recover}>Load latest and keep my edits</button>}<button type="button" className="btn btn-secondary btn-md" onClick={download}>Download unsaved text</button></div>}
+  {error&&<div className="rounded border border-red-300 bg-red-50 p-3 space-y-2"><p role="alert" className="text-red-700">{error} Your changes are still here. Save was not confirmed.</p>{stale&&<button type="button" disabled={busy} className="btn btn-secondary btn-md" onClick={recover}>Load latest and keep my edits</button>}<button type="button" className="btn btn-secondary btn-md" onClick={download}>Download unsaved text</button></div>}
   <fieldset disabled={busy} className="space-y-3 min-w-0">
    <label className="block text-sm font-medium">Subject<input className="input mt-1 w-full" value={subject} maxLength={200} onFocus={()=>setActive(true)} onChange={e=>{setSaved(false);setSubject(e.target.value)}}/></label>
    <label className="block text-sm font-medium">Inbox preview<input className="input mt-1 w-full" value={preview} maxLength={300} onFocus={()=>setActive(true)} onChange={e=>{setSaved(false);setPreview(e.target.value)}}/></label>

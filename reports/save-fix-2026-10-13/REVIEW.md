@@ -23,7 +23,7 @@ Demonstrated problems:
 ## Verification
 
 - Production webpack build passed; independent `tsc --noEmit` passed; scoped ESLint and `git diff --check` passed.
-- Offline unit runner: **29 passed, 3 intentionally DB-gated skipped**. Added three substantive rebase cases covering shifted offsets/independent edits, ambiguity/conflicts, and already-saved changes.
+- Offline unit runner: **30 passed, 3 intentionally DB-gated skipped**. Added four substantive rebase cases covering shifted offsets/independent edits, ambiguity/conflicts, and misleading already-saved matches/duplicate originals.
 - Real Chrome → local HTTP API → isolated Unix-socket PostgreSQL using a copy of saved campaign HTML:
   - Real keyboard typing saves and reloads from DB.
   - Separate subject update makes tab stale; original stale Save is rejected with no DB overwrite.
@@ -58,3 +58,6 @@ Graph rebuilt before/after; affected routes/component/helpers identified. Genera
 ## Boundaries
 
 No production writes, original draft modifications, emails, provider calls, configuration changes, pushes or deployments performed by this subtask. Parent separately owns live verification and release decision. Existing browser tabs must preserve/download/copy visible unsaved text before any reload; deploying code does not replace code already running in an old tab.
+
+### Review follow-up
+Original and destination field matches must both be unique; repeated original paragraphs fail closed even if only one remains in latest. Matching the desired words in some latest field is not accepted as saved evidence. Network/JSON response failure says save could not be confirmed, not that nothing was written.
