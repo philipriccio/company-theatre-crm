@@ -119,3 +119,6 @@ Local visual workflow evidence is in `reports/ux-review-2026-10-07/REVIEW.md`. O
 
 ## Audience workspace local proof — October 10
 `CRM_BROWSER_PROOF=1 ./scripts/test-audience-local.sh` creates and destroys an isolated Unix-socket-only PostgreSQL database and starts the existing production build on loopback port 3047. Requires locally installed Chrome and agent-browser's Playwright runtime. It validates shared filters/count/export, permission precedence, safe creation and dossier mutation behavior at 14k synthetic contacts, then exercises real browser journeys at 1440/390/320. Never uses project `.env`; no real email provider. See `reports/audience-workspace-2026-10-10/REVIEW.md`.
+
+## Draft-save recovery — October 13
+After a production build, `PROOF_FIXED=1 bash scripts/test-copy-save-local.sh` runs real Chromium/HTTP/isolated PostgreSQL checks for typing/save/reload, stale-version recovery, missing input events, network failures, and same-field conflict retention. It never uses project `.env` or production data and leaves email disabled. Optional `COPY_PROOF_FIXTURE` is a local HTML fixture; default synthetic. See `reports/save-fix-2026-10-13/REVIEW.md` for evidence limits.
