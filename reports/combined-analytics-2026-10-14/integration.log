@@ -1,0 +1,205 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "crm_analytics_test", schema "public" at "localhost:55441"
+
+7 migrations found in prisma/migrations
+
+Applying migration `20260217131013_init`
+Applying migration `20260403152338_relationship_engine`
+Applying migration `20260917120000_durable_email_queue`
+Applying migration `20261007120000_scratch_intake`
+Applying migration `20261007200000_campaign_design`
+Applying migration `20261007210000_campaign_review`
+Applying migration `20261013160000_email_analytics`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260217131013_init/
+    └─ migration.sql
+  └─ 20260403152338_relationship_engine/
+    └─ migration.sql
+  └─ 20260917120000_durable_email_queue/
+    └─ migration.sql
+  └─ 20261007120000_scratch_intake/
+    └─ migration.sql
+  └─ 20261007200000_campaign_design/
+    └─ migration.sql
+  └─ 20261007210000_campaign_review/
+    └─ migration.sql
+  └─ 20261013160000_email_analytics/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Loaded Prisma config from prisma.config.ts.
+
+No difference detected.
+
+TAP version 13
+# Subtest: analytics isolated persistence, tracking and reporting
+    # Subtest: placement identities distinguish duplicate targets and preserve entity decoding
+    ok 1 - placement identities distinguish duplicate targets and preserve entity decoding
+      ---
+      duration_ms: 1.4165
+      type: 'test'
+      ...
+    # Subtest: signed link rejects tamper, recipient and campaign mismatch; HEAD does not count
+    ok 2 - signed link rejects tamper, recipient and campaign mismatch; HEAD does not count
+      ---
+      duration_ms: 4.852208
+      type: 'test'
+      ...
+    # Subtest: signed click persists before redirect; repeat clicks are total events, one unique recipient
+    ok 3 - signed click persists before redirect; repeat clicks are total events, one unique recipient
+      ---
+      duration_ms: 10.600833
+      type: 'test'
+      ...
+    # Subtest: capture storage failure is explicit 503 and no redirect, not silent evidence loss
+    ok 4 - capture storage failure is explicit 503 and no redirect, not silent evidence loss
+      ---
+      duration_ms: 14.659375
+      type: 'test'
+      ...
+    # Subtest: SNS duplicate is idempotent; earlier late event retains first timestamp; mirrors excluded
+    ok 5 - SNS duplicate is idempotent; earlier late event retains first timestamp; mirrors excluded
+      ---
+      duration_ms: 14.281875
+      type: 'test'
+      ...
+    # Subtest: provider attribution cannot cross message, campaign or recipient boundaries
+    ok 6 - provider attribution cannot cross message, campaign or recipient boundaries
+      ---
+      duration_ms: 1.8205
+      type: 'test'
+      ...
+    # Subtest: signed private pixel rejects unsigned requests and never doubles SES open totals
+    ok 7 - signed private pixel rejects unsigned requests and never doubles SES open totals
+      ---
+      duration_ms: 2.396625
+      type: 'test'
+      ...
+    # Subtest: delivery evidence survives late acceptance without current-status regression
+    ok 8 - delivery evidence survives late acceptance without current-status regression
+      ---
+      duration_ms: 4.678042
+      type: 'test'
+      ...
+    # Subtest: unsubscribe GET is scanner-safe; POST attributes exact campaign and is idempotent
+    ok 9 - unsubscribe GET is scanner-safe; POST attributes exact campaign and is idempotent
+      ---
+      duration_ms: 9.067459
+      type: 'test'
+      ...
+    # Subtest: bounce is final, complaint stays suppressed after late delivery, timestamp evidence retained
+    ok 10 - bounce is final, complaint stays suppressed after late delivery, timestamp evidence retained
+      ---
+      duration_ms: 6.6245
+      type: 'test'
+      ...
+    # Subtest: filter/export parity and formula-safe CSV; no token/raw metadata leak
+    ok 11 - filter/export parity and formula-safe CSV; no token/raw metadata leak
+      ---
+      duration_ms: 5.149375
+      type: 'test'
+      ...
+    # Subtest: prototype keys cannot bypass filter whitelist; automation view is reversible and exports match
+    ok 12 - prototype keys cannot bypass filter whitelist; automation view is reversible and exports match
+      ---
+      duration_ms: 10.87975
+      type: 'test'
+      ...
+    # Subtest: delivery delay keeps actual event time; late bounce cannot undo complaint suppression
+    ok 13 - delivery delay keeps actual event time; late bounce cannot undo complaint suppression
+      ---
+      duration_ms: 4.341792
+      type: 'test'
+      ...
+    # Subtest: retained historical provider evidence backfills safely, idempotently and without fabricated events
+    ok 14 - retained historical provider evidence backfills safely, idempotently and without fabricated events
+      ---
+      duration_ms: 16.501875
+      type: 'test'
+      ...
+    # Subtest: 14k recipients use bounded pagination and matching streaming export
+    ok 15 - 14k recipients use bounded pagination and matching streaming export
+      ---
+      duration_ms: 793.974708
+      type: 'test'
+      ...
+    1..15
+ok 1 - analytics isolated persistence, tracking and reporting
+  ---
+  duration_ms: 955.411291
+  type: 'test'
+  ...
+1..1
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11122.123459
+TAP version 13
+# Subtest: combined analytics isolated proof
+    # Subtest: Toronto inclusive send-day boundaries include accepted fallback across batches, not campaign creation
+    ok 1 - Toronto inclusive send-day boundaries include accepted fallback across batches, not campaign creation
+      ---
+      duration_ms: 40.727209
+      type: 'test'
+      ...
+    # Subtest: all-date default includes both batches without deduping repeated people or adding unsent holds/unknown
+    ok 2 - all-date default includes both batches without deduping repeated people or adding unsent holds/unknown
+      ---
+      duration_ms: 9.617625
+      type: 'test'
+      ...
+    # Subtest: date-only filtering follows the whole Toronto day through DST transitions
+    ok 3 - date-only filtering follows the whole Toronto day through DST transitions
+      ---
+      duration_ms: 0.779583
+      type: 'test'
+      ...
+    # Subtest: invalid and reversed dates fail closed including export
+    ok 4 - invalid and reversed dates fail closed including export
+      ---
+      duration_ms: 26.376917
+      type: 'test'
+      ...
+    # Subtest: search, outcome, date, summary and CSV select exactly the same email evidence
+    ok 5 - search, outcome, date, summary and CSV select exactly the same email evidence
+      ---
+      duration_ms: 14.161917
+      type: 'test'
+      ...
+    # Subtest: sentAt takes precedence over acceptedAt when they cross the boundary
+    ok 6 - sentAt takes precedence over acceptedAt when they cross the boundary
+      ---
+      duration_ms: 6.793375
+      type: 'test'
+      ...
+    # Subtest: likely automation exclusion keeps summaries, list and export timestamps aligned
+    ok 7 - likely automation exclusion keeps summaries, list and export timestamps aligned
+      ---
+      duration_ms: 13.33825
+      type: 'test'
+      ...
+    1..7
+ok 1 - combined analytics isolated proof
+  ---
+  duration_ms: 162.641333
+  type: 'test'
+  ...
+1..1
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10337.309875

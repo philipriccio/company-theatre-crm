@@ -1,0 +1,254 @@
+
+> company-theatre-crm@0.1.0 test
+> tsx --test tests/*.test.ts
+
+TAP version 13
+# Subtest: analytics isolated persistence, tracking and reporting
+ok 1 - analytics isolated persistence, tracking and reporting # SKIP
+  ---
+  duration_ms: 0.704875
+  type: 'test'
+  ...
+# Subtest: audience inputs are bounded; URLs and spreadsheet cells stay literal
+ok 2 - audience inputs are bounded; URLs and spreadsheet cells stay literal
+  ---
+  duration_ms: 0.87575
+  type: 'test'
+  ...
+# Subtest: isolated audience workspace
+ok 3 - isolated audience workspace # SKIP
+  ---
+  duration_ms: 2.930458
+  type: 'test'
+  ...
+# Subtest: visual email renderer escapes editable text and attributes, includes social and nested legacy blocks without scripts
+ok 4 - visual email renderer escapes editable text and attributes, includes social and nested legacy blocks without scripts
+  ---
+  duration_ms: 1.700166
+  type: 'test'
+  ...
+# Subtest: legacy HTML is preserved and design JSON is never treated as outgoing HTML
+ok 5 - legacy HTML is preserved and design JSON is never treated as outgoing HTML
+  ---
+  duration_ms: 0.323083
+  type: 'test'
+  ...
+# Subtest: chosen heading levels, sizes and multiline content survive HTML export
+ok 6 - chosen heading levels, sizes and multiline content survive HTML export
+  ---
+  duration_ms: 0.099375
+  type: 'test'
+  ...
+# Subtest: rebase preserves independent server changes and relocates text after formatting
+ok 7 - rebase preserves independent server changes and relocates text after formatting
+  ---
+  duration_ms: 0.90875
+  type: 'test'
+  ...
+# Subtest: both-side changes, duplicate matches and removed fields fail closed
+ok 8 - both-side changes, duplicate matches and removed fields fail closed
+  ---
+  duration_ms: 0.107292
+  type: 'test'
+  ...
+# Subtest: desired words elsewhere do not prove this field was already saved
+ok 9 - desired words elsewhere do not prove this field was already saved
+  ---
+  duration_ms: 0.083417
+  type: 'test'
+  ...
+# Subtest: duplicate original paragraphs cannot collapse into one latest destination
+ok 10 - duplicate original paragraphs cannot collapse into one latest destination
+  ---
+  duration_ms: 0.08175
+  type: 'test'
+  ...
+# Subtest: copy edit keeps template bytes and emphasis while escaping text and preserving links
+ok 11 - copy edit keeps template bytes and emphasis while escaping text and preserving links
+  ---
+  duration_ms: 3.718541
+  type: 'test'
+  ...
+# Subtest: line breaks, entities, empty text and unsupported field IDs
+ok 12 - line breaks, entities, empty text and unsupported field IDs
+  ---
+  duration_ms: 0.991625
+  type: 'test'
+  ...
+# Subtest: real review email retains assets, style, links and synchronized hidden preview
+ok 13 - real review email retains assets, style, links and synchronized hidden preview
+  ---
+  duration_ms: 9.474791
+  type: 'test'
+  ...
+# Subtest: cleared paragraphs remain editable and nested hidden content is never exposed
+ok 14 - cleared paragraphs remain editable and nested hidden content is never exposed
+  ---
+  duration_ms: 0.756375
+  type: 'test'
+  ...
+# Subtest: sender defaults reject header injection, multiple addresses and configuration secrets
+ok 15 - sender defaults reject header injection, multiple addresses and configuration secrets
+  ---
+  duration_ms: 2.224833
+  type: 'test'
+  ...
+# Subtest: combined analytics isolated proof
+ok 16 - combined analytics isolated proof # SKIP
+  ---
+  duration_ms: 0.340708
+  type: 'test'
+  ...
+# Subtest: unsubscribe tokens do not expose raw email and reject tampering
+ok 17 - unsubscribe tokens do not expose raw email and reject tampering
+  ---
+  duration_ms: 2.455292
+  type: 'test'
+  ...
+# Subtest: unsubscribe token expiry is enforced
+ok 18 - unsubscribe token expiry is enforced
+  ---
+  duration_ms: 0.268042
+  type: 'test'
+  ...
+# Subtest: unsafe redirects are rejected
+ok 19 - unsafe redirects are rejected
+  ---
+  duration_ms: 0.148916
+  type: 'test'
+  ...
+# Subtest: tracking tokens bind recipient and target
+ok 20 - tracking tokens bind recipient and target
+  ---
+  duration_ms: 0.21225
+  type: 'test'
+  ...
+# Subtest: retry classification retries only transient failures
+ok 21 - retry classification retries only transient failures
+  ---
+  duration_ms: 0.113625
+  type: 'test'
+  ...
+# Subtest: SNS certificate URLs reject SSRF and non-AWS hosts
+ok 22 - SNS certificate URLs reject SSRF and non-AWS hosts
+  ---
+  duration_ms: 0.308917
+  type: 'test'
+  ...
+# Subtest: SNS notification canonicalization follows AWS field order
+ok 23 - SNS notification canonicalization follows AWS field order
+  ---
+  duration_ms: 0.136417
+  type: 'test'
+  ...
+# Subtest: tokens reject appended unsigned segments
+ok 24 - tokens reject appended unsigned segments
+  ---
+  duration_ms: 0.216
+  type: 'test'
+  ...
+# Subtest: SES SDK v3 errors use metadata status; network uncertainty stays nonretryable
+ok 25 - SES SDK v3 errors use metadata status; network uncertainty stays nonretryable
+  ---
+  duration_ms: 11.268333
+  type: 'test'
+  ...
+# Subtest: SES adapter excludes signed unsubscribe URLs from restricted SES tags and preserves unsubscribe header
+ok 26 - SES adapter excludes signed unsubscribe URLs from restricted SES tags and preserves unsubscribe header
+  ---
+  duration_ms: 56.433667
+  type: 'test'
+  ...
+# Subtest: SNS signature verification rejects wrong topics and tampered payloads without external fetches
+ok 27 - SNS signature verification rejects wrong topics and tampered payloads without external fetches
+  ---
+  duration_ms: 74.505333
+  type: 'test'
+  ...
+# Subtest: contact personalization cannot inject HTML or recursively substitute template tokens
+ok 28 - contact personalization cannot inject HTML or recursively substitute template tokens
+  ---
+  duration_ms: 2.168833
+  type: 'test'
+  ...
+# Subtest: inline markers map to original source fields, including quoted > and empty paragraphs
+ok 29 - inline markers map to original source fields, including quoted > and empty paragraphs
+  ---
+  duration_ms: 5.83225
+  type: 'test'
+  ...
+# Subtest: preview removes executable and navigation surfaces and forged field markers
+ok 30 - preview removes executable and navigation surfaces and forged field markers
+  ---
+  duration_ms: 4.584625
+  type: 'test'
+  ...
+# Subtest: real draft mapping preserves image/design and text-only saving preserves source
+ok 31 - real draft mapping preserves image/design and text-only saving preserves source
+  ---
+  duration_ms: 15.383417
+  type: 'test'
+  ...
+# Subtest: current campaign ticket href preserves real UTM keys after signing
+ok 32 - current campaign ticket href preserves real UTM keys after signing
+  ---
+  duration_ms: 2.808709
+  type: 'test'
+  ...
+# Subtest: signed destinations match one HTML attribute parse, never repeated decoding
+ok 33 - signed destinations match one HTML attribute parse, never repeated decoding
+  ---
+  duration_ms: 2.282458
+  type: 'test'
+  ...
+# Subtest: unsubscribe exclusions and unsafe destinations remain untouched
+ok 34 - unsubscribe exclusions and unsafe destinations remain untouched
+  ---
+  duration_ms: 0.1875
+  type: 'test'
+  ...
+# Subtest: first name trims only outer whitespace and falls back for absent/blank names
+ok 35 - first name trims only outer whitespace and falls back for absent/blank names
+  ---
+  duration_ms: 0.133625
+  type: 'test'
+  ...
+# Subtest: actual email builder preserves named greeting and signed unsubscribe without provider calls
+ok 36 - actual email builder preserves named greeting and signed unsubscribe without provider calls
+  ---
+  duration_ms: 0.28375
+  type: 'test'
+  ...
+# Subtest: isolated PostgreSQL readiness proof
+ok 37 - isolated PostgreSQL readiness proof # SKIP
+  ---
+  duration_ms: 0.346708
+  type: 'test'
+  ...
+# Subtest: SES exact-recipient guard fails closed before SDK send and permits only normalized seed addresses
+ok 38 - SES exact-recipient guard fails closed before SDK send and permits only normalized seed addresses
+  ---
+  duration_ms: 1.762542
+  type: 'test'
+  ...
+# Subtest: auth and consent fail closed before database access
+ok 39 - auth and consent fail closed before database access
+  ---
+  duration_ms: 6.4395
+  type: 'test'
+  ...
+# Subtest: isolated real HTTP website proxy → CRM route → PostgreSQL
+ok 40 - isolated real HTTP website proxy → CRM route → PostgreSQL # SKIP
+  ---
+  duration_ms: 0.084125
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 5
+# todo 0
+# duration_ms 471.224334

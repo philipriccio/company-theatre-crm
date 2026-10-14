@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "name": "combined report layout 1440",
+      "passed": true
+    },
+    {
+      "name": "combined report layout 390",
+      "passed": true
+    },
+    {
+      "name": "combined report layout 320",
+      "passed": true
+    },
+    {
+      "name": "real date/search form and totals/table/CSV parity",
+      "passed": true
+    },
+    {
+      "name": "outcome filter and evidence drilldown",
+      "passed": true
+    },
+    {
+      "name": "reversed dates explicit fail-closed report",
+      "passed": true
+    },
+    {
+      "name": "all-time reset restores aggregate",
+      "passed": true
+    },
+    {
+      "name": "refresh reloads live server report",
+      "passed": true
+    },
+    {
+      "name": "single-batch regression and combined navigation",
+      "passed": true
+    },
+    {
+      "name": "dedicated sidebar analytics navigation has one active item",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

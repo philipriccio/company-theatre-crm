@@ -18,10 +18,11 @@ export EMAIL_PROVIDER=disabled DOTENV_CONFIG_PATH=/dev/null CRM_ANALYTICS_PROOF=
 ./node_modules/.bin/prisma migrate deploy
 ./node_modules/.bin/prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
 ./node_modules/.bin/tsx --test tests/analytics.integration.test.ts
+./node_modules/.bin/tsx --test tests/combined-analytics.integration.test.ts
 if [ "${CRM_ANALYTICS_PREVIEW:-0}" = 1 ]; then
   ./node_modules/.bin/tsx scripts/seed-analytics-preview.ts
   ./node_modules/.bin/next start --hostname 127.0.0.1 --port 3194 > "$ANALYTICS_ROOT/server.log" 2>&1 &
   ANALYTICS_SERVER_PID=$!
-  echo "Synthetic preview starting at http://127.0.0.1:3194/campaigns/analytics-showcase/analytics"
+  echo "Synthetic preview starting at http://127.0.0.1:3194/campaigns/analytics"
   wait "$ANALYTICS_SERVER_PID"
 fi

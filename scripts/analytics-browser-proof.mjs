@@ -54,7 +54,7 @@ try {
   }
   await page.goto(`${base}/campaigns/analytics`)
   await page.screenshot({path:`${output}/comparison.png`})
-  assert.ok((await page.locator('body').innerText()).includes('Campaign comparison'))
+  assert.ok((await page.locator('body').innerText()).includes('All emails, together.'))
   results.push({check:'comparison',passed:true})
   const forbidden=await page.request.get(`${base}/campaigns/analytics-empty/analytics/recipients/showcase-recipient-0`)
   assert.equal(forbidden.status(),404)
