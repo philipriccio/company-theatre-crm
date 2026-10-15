@@ -6,7 +6,7 @@ test('combined analytics isolated proof', {skip:process.env.CRM_ANALYTICS_PROOF!
   assert.equal(url.pathname,'/crm_analytics_test')
   assert.match(url.searchParams.get('host')||'',/^\/tmp\/company-crm-analytics\.[A-Za-z0-9]+$/)
   const {prisma}=await import('../src/lib/db')
-  const {parseCombinedQuery,torontoMidnight,combinedSummary,combinedRecipientPage}=await import('../src/lib/email/combined-analytics')
+  const {parseCombinedQuery,torontoMidnight,combinedSummary,combinedRecipientPage,combinedLinks,combinedWhere}=await import('../src/lib/email/combined-analytics')
   const {GET:exportCsv}=await import('../src/app/api/campaigns/analytics/export/route')
   const query=(params='')=>parseCombinedQuery(new URLSearchParams(params))
   const prefix='combined-proof'
@@ -74,6 +74,58 @@ test('combined analytics isolated proof', {skip:process.env.CRM_ANALYTICS_PROOF!
       assert.equal((await combinedRecipientPage(query(search+'&filter=opened'))).total,0)
       const response=await exportCsv(new Request(`http://localhost?${search}&filter=opened`))
       assert.equal((await response.text()).trim().split('\r\n').length,1)
+    })
+    await t.test('combined links aggregate repeated placements across batches without provider mirrors or unsent records',async()=>{
+      const events = [
+        ['0','placement-1','Tickets',true,'unclassified'],
+        ['1','placement-1','Tickets',true,'unclassified'],
+        ['1','placement-1','Tickets',true,'unclassified'],
+        ['1','placement-1','Tickets',false,'unclassified'],
+        ['2','placement-1','Tickets',true,'likely_automated'],
+        ['2','placement-2','Tickets',true,'unclassified'],
+        ['3','placement-1','Different creative',true,'unclassified'],
+        ['held','placement-1','Tickets',true,'unclassified'],
+      ] as const
+      for (const [i,[suffix,key,label,canonical,automation]] of events.entries()) {
+        const r=await prisma.campaignRecipient.findUniqueOrThrow({where:{id:`${prefix}-${suffix}`}})
+        await prisma.emailAnalyticsEvent.create({data:{eventKey:`combined-link-${i}`,campaignId:r.campaignId,recipientId:r.id,kind:'CLICKED',source:canonical?'app':'ses',canonical,automation,linkKey:key,linkLabel:label,targetUrl:'https://example.test/tickets',occurredAt:new Date('2026-10-20T12:00:00Z')}})
+      }
+      const rows=await combinedLinks(query('q=combined-proof'))
+      assert.equal(rows.length,3)
+      assert.deepEqual(rows.map(r=>[r.label,r.linkKey,r.total,r.unique,r.batches]),[
+        ['Tickets','placement-1',4,3,2],['Different creative','placement-1',1,1,1],['Tickets','placement-2',1,1,1],
+      ])
+      assert.equal((await combinedLinks(query('q=combined-proof&automation=exclude_likely')))[0].total,3)
+      assert.equal((await combinedLinks(query('q=combined-proof&from=2026-10-14&to=2026-10-14')))[0].total,3)
+      assert.equal((await combinedLinks(query('q=combined-proof&from=2026-10-20'))).length,0)
+      assert.equal((await combinedLinks(query('from=bad'))).length,0)
+      assert.equal((await combinedLinks(query('q=combined-proof'),1,1))[0].label,'Different creative')
+      const first = await combinedLinks(query('q=combined-proof'),0,1,null)
+      const rest = await combinedLinks(query('q=combined-proof'),0,500,first[0])
+      assert.equal(rest.length,2)
+      assert.equal(new Set([...first,...rest].map(r=>JSON.stringify([r.linkKey,r.targetUrl,r.label]))).size,3)
+    })
+    await t.test('every outcome/search/date/automation/link filter agrees with shared recipient selection and link CSV',async()=>{
+      const {FILTERS}=await import('../src/lib/email/analytics')
+      for (const filter of Object.keys(FILTERS)) for (const automation of ['all','exclude_likely']) {
+        const search=`q=combined-proof&filter=${filter}&automation=${automation}`
+        const q=query(search)
+        const ids=(await prisma.campaignRecipient.findMany({where:combinedWhere(q),select:{id:true}})).map(r=>r.id)
+        const expected=await prisma.emailAnalyticsEvent.count({where:{recipientId:{in:ids},kind:'CLICKED',canonical:true,...(q.excludeLikely?{automation:{not:'likely_automated'}}:{})}})
+        const links=await combinedLinks(q)
+        assert.equal(links.reduce((n,r)=>n+r.total,0),expected,search)
+      }
+      const search='q=combined-proof&from=2026-10-14&to=2026-10-14&filter=soft&automation=exclude_likely&link=placement-2'
+      const rows=await combinedLinks(query(search))
+      assert.equal(rows.length,1);assert.equal(rows[0].linkKey,'placement-2');assert.equal(rows[0].total,1)
+      const response=await exportCsv(new Request(`http://localhost?${search}&view=links`))
+      assert.match(response.headers.get('cache-control')||'',/private/)
+      const csv=await response.text()
+      assert.equal(csv.trim().split('\r\n').length,2)
+      assert.match(csv,/Clicking emails \(recipient records\)/)
+      assert.match(csv,/placement-2/);assert.doesNotMatch(csv,/placement-1/)
+      assert.equal((await exportCsv(new Request('http://localhost?from=bad&view=links'))).status,400)
+      assert.equal((await combinedLinks(query('q=not-present'))).length,0)
     })
   } finally {await prisma.$disconnect()}
 })
