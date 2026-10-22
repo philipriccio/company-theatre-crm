@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci --no-audit --no-fund
 
 # Project the committed lock onto the actual worker runtime import closure.
 # Keep web dependencies and Prisma CLI outside this audited runtime image.
@@ -17,7 +17,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 COPY scripts/prepare-worker-runtime.mjs ./scripts/prepare-worker-runtime.mjs
 RUN node scripts/prepare-worker-runtime.mjs \
-  && npm ci --omit=dev --omit=peer \
+  && npm ci --omit=dev --omit=peer --no-audit --no-fund \
   && npm audit --omit=dev --omit=peer --audit-level=high \
   && npm cache clean --force
 
