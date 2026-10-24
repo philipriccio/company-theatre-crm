@@ -54,8 +54,12 @@ export async function recordWebsiteSignup(input: ReturnType<typeof parseWebsiteS
     const contact = existing
       ? await tx.contact.update({ where: { id: existing.id }, data: { solicitation: subscribed } })
       : await tx.contact.create({ data: { ...contactInput, fullName: [input.firstName, input.lastName].filter(Boolean).join(' ') || input.email.split('@')[0], solicitation: subscribed } })
-    const tag = await tx.tag.upsert({ where: { name: settings.tag }, update: {}, create: { name: settings.tag } })
-    await tx.contactTag.upsert({ where: { contactId_tagId: { contactId: contact.id, tagId: tag.id } }, update: {}, create: { contactId: contact.id, tagId: tag.id } })
+    // Shared acquisition label plus the existing site-specific segmentation.
+    // This records source only; it never overrides subscription exclusions.
+    for (const name of new Set(['Website Signup', settings.tag])) {
+      const tag = await tx.tag.upsert({ where: { name }, update: {}, create: { name } })
+      await tx.contactTag.upsert({ where: { contactId_tagId: { contactId: contact.id, tagId: tag.id } }, update: {}, create: { contactId: contact.id, tagId: tag.id } })
+    }
     await tx.consentEvidence.create({ data: {
       contactId: contact.id, email: input.email, source, status: subscribed ? 'express_opt_in_recorded' : 'express_opt_in_needs_review',
       metadata: { consent: 'express', textVersion: settings.version, consentText: WEBSITE_CONSENT_TEXT, subscribed },

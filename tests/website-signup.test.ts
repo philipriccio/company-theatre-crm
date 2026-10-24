@@ -39,18 +39,22 @@ test('isolated real HTTP website proxy → CRM route → PostgreSQL', {skip:proc
       assert.ok(results.every(r=>r.status===200))
       assert.equal(await prisma.contact.count({where:{email:'visitor@example.com'}}),1)
       assert.equal(await prisma.consentEvidence.count({where:{email:'visitor@example.com'}}),5)
+      const contact = await prisma.contact.findUniqueOrThrow({where:{email:'visitor@example.com'},include:{tags:{include:{tag:true}}}})
+      assert.deepEqual(contact.tags.map(t=>t.tag.name).sort(), ['Jackpot Website','Website Signup'])
     })
     await t.test('both real proxy implementations: source, tags, fail-closed downstream',async()=>{
-      for (const [dir,source,version,tag] of [['jt-signup-release','jackpottwins.ca','jt-site-signup-v2','Jackpot Website'],['ct-signup-release','companytheatre.ca','ct-site-signup-v1','Website Signup']]) {
+      for (const [dir,source,version,tag] of [['jt-signup-popup-20261022','jackpottwins.ca','jt-site-signup-v2','Jackpot Website'],['ct-signup-release','companytheatre.ca','ct-site-signup-v1','Website Signup']]) {
         const {handleSignup}=await import(`../../${dir}/lib/signup.ts`)
         const email=dir+'@example.com'
         const env={CRM_URL:'https://crm.companytheatre.ca',CRM_AUTH:'synthetic:local-proof',CRM_WEBSITE_SIGNUP_TOKEN:token}
-        const request=()=>new Request(`https://${source}/api/signup`,{method:'POST',headers:{origin:`https://${source}`,'content-type':'application/json'},body:JSON.stringify({email,consent:true,consentVersion:version})})
+        const request=()=>new Request(`https://${source}/api/signup`,{method:'POST',headers:{origin:`https://${source}`,'content-type':'application/json'},body:JSON.stringify({email,firstName:'Test',lastName:'Visitor',consent:true,consentVersion:version})})
         const fetcher:typeof fetch=async(_url,init)=>fetch(`http://127.0.0.1:${address.port}/api/website-signups`,init)
         const response=await handleSignup(request(),env,fetcher)
         assert.equal(response.status,200);assert.equal((await response.json()).subscribed,true)
         const contact=await prisma.contact.findUniqueOrThrow({where:{email},include:{tags:{include:{tag:true}}}})
         assert.equal(contact.solicitation,true);assert.ok(contact.tags.some(t=>t.tag.name===tag))
+        assert.ok(contact.tags.some(t=>t.tag.name==='Website Signup'))
+        assert.equal(contact.firstName,'Test');assert.equal(contact.lastName,'Visitor')
         const evidence=await prisma.consentEvidence.findFirstOrThrow({where:{contactId:contact.id}})
         assert.equal(evidence.source,source);assert.equal((evidence.metadata as {textVersion:string}).textVersion,version)
         assert.equal((await handleSignup(request(),{},fetcher)).status,503)
