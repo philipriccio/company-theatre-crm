@@ -10,14 +10,23 @@ cleanup() {
   rm -rf "$LOCAL_PROOF_ROOT"
 }
 trap cleanup EXIT
-"$PG_BIN/initdb" -D "$LOCAL_PROOF_ROOT/db" -U crm_proof -A trust --no-locale -E UTF8 > "$LOCAL_PROOF_ROOT/init.log"
+"$PG_BIN/initdb" -D "$LOCAL_PROOF_ROOT/db" -U theatre -A trust --no-locale -E UTF8 > "$LOCAL_PROOF_ROOT/init.log"
 "$PG_BIN/pg_ctl" -D "$LOCAL_PROOF_ROOT/db" -l "$LOCAL_PROOF_ROOT/postgres.log" -o "-h '' -k $LOCAL_PROOF_ROOT -p 55441" start >/dev/null
-"$PG_BIN/createdb" -U crm_proof -h "$LOCAL_PROOF_ROOT" -p 55441 crm_auth_test
-export DATABASE_URL="postgresql://crm_proof@localhost:55441/crm_auth_test?host=$LOCAL_PROOF_ROOT&port=55441"
+"$PG_BIN/createdb" -U theatre -h "$LOCAL_PROOF_ROOT" -p 55441 crm_auth_test
+export DATABASE_URL="postgresql://theatre@localhost:55441/crm_auth_test?host=$LOCAL_PROOF_ROOT&port=55441"
 export DOTENV_CONFIG_PATH=/dev/null EMAIL_PROVIDER=disabled NEXT_TELEMETRY_DISABLED=1 CRM_AUTH_ISOLATED_PROOF=1 CRM_AUTH_ORIGIN=http://127.0.0.1:3257
+"$PG_BIN/psql" -X -v ON_ERROR_STOP=1 -U theatre -h "$LOCAL_PROOF_ROOT" -p 55441 -d crm_auth_test <<'SQL'
+CREATE ROLE crm_review_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+GRANT USAGE ON SCHEMA public TO crm_review_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE theatre IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO crm_review_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE theatre IN SCHEMA public GRANT SELECT, USAGE ON SEQUENCES TO crm_review_app;
+SQL
 ./node_modules/.bin/prisma migrate deploy
 ./node_modules/.bin/prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
-./node_modules/.bin/tsx --test tests/auth.integration.test.ts tests/operator.integration.test.ts
+# DDL/migration history belongs to the owner; all runtime tests below use only DML grants.
+export DATABASE_URL="postgresql://crm_review_app@localhost:55441/crm_auth_test?host=$LOCAL_PROOF_ROOT&port=55441"
+./node_modules/.bin/tsx --test tests/auth-grants.integration.test.ts tests/auth.integration.test.ts tests/operator.integration.test.ts
 if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 ]]; then
   ./node_modules/.bin/next start --hostname 127.0.0.1 --port 3257 > "$LOCAL_PROOF_ROOT/web.log" 2>&1 & LOCAL_WEB_PID=$!
   for i in {1..60}; do if curl -fsS http://127.0.0.1:3257/login >/dev/null; then break; fi; sleep 1; done

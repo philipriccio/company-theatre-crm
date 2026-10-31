@@ -134,3 +134,9 @@ See AUTHENTICATION.md for fail-closed configuration, rollout gates and account/m
 
 ### Expanded October31 auth candidate
 `test-auth-local.sh` now also runs operator/machine lifecycle tests. Browser mode checks the private masked operator UI plus actual machine HTTP contact-read/draft-only/denied-send/revocation behavior. Corpus source/license/hash are recorded under security/; offline tests validate a long entry from the imported denylist without printing passwords. `npm run auth:operator` is a trusted-host-only private UI, NOT an application route or public service. `npm run auth:housekeeping` is a bounded operational command preserving all audit history. No live schedule is created by these scripts.
+
+### Limited-role activation rehearsal
+
+`scripts/test-auth-local.sh` now initializes its isolated cluster as owner `theatre`, establishes the observed schema/default DML grants for non-superuser `crm_review_app`, applies all migrations and checks Prisma drift as owner, then runs **all runtime suites/browser proof under crm_review_app**. No app fixture needs owner bypass. The added grant suite confirms both auth migration records, all five auth tables owned by theatre with inherited DML grants, no schema CREATE, and rejected table creation/alteration. This is an isolated reconstruction of catalog evidence, not production migration proof.
+
+`./node_modules/.bin/tsx --test tests/operator-relay.test.ts` exercises real local subprocess pipes/TCP, intact 512 KiB responses, target validation, 8-connection mechanism (test lowers cap to one), byte/idle/deadline/lifetime limits, spawn/upstream failure and cleanup. Operator integration also traverses that relay for actual metadata/Host/Origin/oversized-form checks. It substitutes a local Node process for `docker exec`, since Docker is unavailable; it does not prove real Docker/SSH namespace routing. No provider, secret store or live database is accessed.

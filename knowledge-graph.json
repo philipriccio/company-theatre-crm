@@ -1,14 +1,14 @@
 {
   "project": "crm-accounts-20261031",
-  "generatedAt": "2026-10-31T15:58:53.096Z",
+  "generatedAt": "2026-10-31T16:12:40.381Z",
   "stats": {
-    "nodes": 601,
-    "edges": 5180,
-    "files": 154,
-    "functions": 372,
+    "nodes": 605,
+    "edges": 5206,
+    "files": 156,
+    "functions": 374,
     "classes": 6,
     "types": 31,
-    "imports": 504
+    "imports": 516
   },
   "nodes": [
     {
@@ -5959,6 +5959,14 @@
       ]
     },
     {
+      "id": "file:tests/auth-grants.integration.test.ts:auth-grants.integration.test.ts",
+      "type": "file",
+      "name": "auth-grants.integration.test.ts",
+      "file": "tests/auth-grants.integration.test.ts",
+      "language": "typescript",
+      "lines": 27
+    },
+    {
       "id": "file:tests/auth.integration.test.ts:auth.integration.test.ts",
       "type": "file",
       "name": "auth.integration.test.ts",
@@ -6086,19 +6094,53 @@
       ]
     },
     {
+      "id": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "type": "file",
+      "name": "operator-relay.test.ts",
+      "file": "tests/operator-relay.test.ts",
+      "language": "typescript",
+      "lines": 65
+    },
+    {
+      "id": "function:tests/operator-relay.test.ts:listen",
+      "type": "function",
+      "name": "listen",
+      "file": "tests/operator-relay.test.ts",
+      "line": 10,
+      "exported": false,
+      "async": false,
+      "params": [
+        "server"
+      ]
+    },
+    {
       "id": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
       "type": "file",
       "name": "operator.integration.test.ts",
       "file": "tests/operator.integration.test.ts",
       "language": "typescript",
-      "lines": 47
+      "lines": 64
+    },
+    {
+      "id": "function:tests/operator.integration.test.ts:relayed",
+      "type": "function",
+      "name": "relayed",
+      "file": "tests/operator.integration.test.ts",
+      "line": 22,
+      "exported": false,
+      "arrow": true,
+      "params": [
+        "host",
+        "requestOrigin",
+        "body"
+      ]
     },
     {
       "id": "function:tests/operator.integration.test.ts:request",
       "type": "function",
       "name": "request",
       "file": "tests/operator.integration.test.ts",
-      "line": 26,
+      "line": 43,
       "exported": false,
       "arrow": true,
       "params": [
@@ -40339,6 +40381,33 @@
       "line": 28
     },
     {
+      "source": "file:tests/auth-grants.integration.test.ts:auth-grants.integration.test.ts",
+      "target": "import:node:test",
+      "relationship": "imports",
+      "path": "node:test",
+      "symbols": [
+        "test"
+      ]
+    },
+    {
+      "source": "file:tests/auth-grants.integration.test.ts:auth-grants.integration.test.ts",
+      "target": "import:node:assert/strict",
+      "relationship": "imports",
+      "path": "node:assert/strict",
+      "symbols": [
+        "assert"
+      ]
+    },
+    {
+      "source": "file:tests/auth-grants.integration.test.ts:auth-grants.integration.test.ts",
+      "target": "import:../src/lib/auth/store",
+      "relationship": "imports",
+      "path": "../src/lib/auth/store",
+      "symbols": [
+        "authPool"
+      ]
+    },
+    {
       "source": "file:tests/auth.integration.test.ts:auth.integration.test.ts",
       "target": "import:node:test",
       "relationship": "imports",
@@ -40798,6 +40867,111 @@
       "line": 22
     },
     {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "import:node:test",
+      "relationship": "imports",
+      "path": "node:test",
+      "symbols": [
+        "test"
+      ]
+    },
+    {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "import:node:assert/strict",
+      "relationship": "imports",
+      "path": "node:assert/strict",
+      "symbols": [
+        "assert"
+      ]
+    },
+    {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "import:node:net",
+      "relationship": "imports",
+      "path": "node:net",
+      "symbols": [
+        "net"
+      ]
+    },
+    {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "import:node:http",
+      "relationship": "imports",
+      "path": "node:http",
+      "symbols": [
+        "http"
+      ]
+    },
+    {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "import:node:child_process",
+      "relationship": "imports",
+      "path": "node:child_process",
+      "symbols": [
+        "spawn"
+      ]
+    },
+    {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "import:node:events",
+      "relationship": "imports",
+      "path": "node:events",
+      "symbols": [
+        "once"
+      ]
+    },
+    {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "import:../scripts/auth-operator/relay.mjs",
+      "relationship": "imports",
+      "path": "../scripts/auth-operator/relay.mjs",
+      "symbols": [
+        "createRelay",
+        "CONTAINER_PIPE",
+        "validateTarget"
+      ]
+    },
+    {
+      "source": "file:tests/operator-relay.test.ts:operator-relay.test.ts",
+      "target": "function:tests/operator-relay.test.ts:listen",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:tests/operator-relay.test.ts:listen",
+      "target": "call:server.listen",
+      "relationship": "calls",
+      "name": "server.listen",
+      "line": 11
+    },
+    {
+      "source": "function:tests/operator-relay.test.ts:listen",
+      "target": "call:once",
+      "relationship": "calls",
+      "name": "once",
+      "line": 11
+    },
+    {
+      "source": "function:tests/operator-relay.test.ts:listen",
+      "target": "call:server.address",
+      "relationship": "calls",
+      "name": "server.address",
+      "line": 12
+    },
+    {
+      "source": "function:tests/operator-relay.test.ts:listen",
+      "target": "call:assert.ok",
+      "relationship": "calls",
+      "name": "assert.ok",
+      "line": 12
+    },
+    {
+      "source": "function:tests/operator-relay.test.ts:listen",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 12
+    },
+    {
       "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
       "target": "import:node:test",
       "relationship": "imports",
@@ -40875,6 +41049,72 @@
       "symbols": [
         "createOperatorServer"
       ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:node:child_process",
+      "relationship": "imports",
+      "path": "node:child_process",
+      "symbols": [
+        "spawn"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:../scripts/auth-operator/relay.mjs",
+      "relationship": "imports",
+      "path": "../scripts/auth-operator/relay.mjs",
+      "symbols": [
+        "createRelay",
+        "CONTAINER_PIPE"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "function:tests/operator.integration.test.ts:relayed",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:tests/operator.integration.test.ts:relayed",
+      "target": "call:http.request",
+      "relationship": "calls",
+      "name": "http.request",
+      "line": 23
+    },
+    {
+      "source": "function:tests/operator.integration.test.ts:relayed",
+      "target": "call:res.resume",
+      "relationship": "calls",
+      "name": "res.resume",
+      "line": 23
+    },
+    {
+      "source": "function:tests/operator.integration.test.ts:relayed",
+      "target": "call:res.on",
+      "relationship": "calls",
+      "name": "res.on",
+      "line": 23
+    },
+    {
+      "source": "function:tests/operator.integration.test.ts:relayed",
+      "target": "call:resolve",
+      "relationship": "calls",
+      "name": "resolve",
+      "line": 23
+    },
+    {
+      "source": "function:tests/operator.integration.test.ts:relayed",
+      "target": "call:req.on",
+      "relationship": "calls",
+      "name": "req.on",
+      "line": 23
+    },
+    {
+      "source": "function:tests/operator.integration.test.ts:relayed",
+      "target": "call:req.end",
+      "relationship": "calls",
+      "name": "req.end",
+      "line": 23
     },
     {
       "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
@@ -42833,6 +43073,15 @@
         "audiencePresets"
       ],
       "originalPath": "../src/lib/audience-workspace"
+    },
+    {
+      "source": "file:tests/auth-grants.integration.test.ts:auth-grants.integration.test.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authPool"
+      ],
+      "originalPath": "../src/lib/auth/store"
     },
     {
       "source": "file:tests/auth.integration.test.ts:auth.integration.test.ts",

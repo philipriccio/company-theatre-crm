@@ -6,12 +6,29 @@ import { authPool, identity, login, cleanupAuth, tokenHash } from '../src/lib/au
 import { operatorAction, operatorMetadata } from '../src/lib/auth/operator'
 import { authorizeMachine, requiredMachineScope } from '../src/lib/auth/machine'
 import { createOperatorServer } from '../scripts/auth-operator/server'
+import { spawn } from 'node:child_process'
+import { createRelay, CONTAINER_PIPE } from '../scripts/auth-operator/relay.mjs'
 const enabled=process.env.CRM_AUTH_ISOLATED_PROOF==='1'
 test('operator enrollment/recovery, protected local HTTP, scoped machine lifecycle and audit', {skip:!enabled}, async()=>{
  assert.ok(process.env.DATABASE_URL?.includes('/crm_auth_test?host=/tmp/company-crm-auth.'))
  const email=`operator-${randomUUID()}@example.invalid`,name=`Machine ${randomUUID()}`,password=randomBytes(24).toString('hex'),next=randomBytes(24).toString('hex'),token=`mcrm_${randomBytes(32).toString('hex')}`,replacement=`mcrm_${randomBytes(32).toString('hex')}`
  const server=createOperatorServer();await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));const address=server.address();assert.ok(address&&typeof address!=='string');const origin=`http://127.0.0.1:${address.port}`
  try {
+  // Separate processes/pipes and real TCP, not mocked HTTP. Different local
+  // ports stand in for isolated host/container namespaces; preserve wire Host.
+  const relay=createRelay({container:'a'.repeat(64),port:address.port,connect:()=>spawn(process.execPath,['-e',CONTAINER_PIPE,String(address.port)],{stdio:['pipe','pipe','ignore']})})
+  await new Promise<void>(resolve=>relay.server.listen(0,'127.0.0.1',resolve))
+  const relayAddress=relay.server.address();assert.ok(relayAddress&&typeof relayAddress!=='string')
+  const relayed=(host:string,requestOrigin:string,body:string)=>new Promise<number|undefined>((resolve,reject)=>{
+    const req=http.request({host:'127.0.0.1',port:relayAddress.port,path:'/operation',method:'POST',headers:{host,origin:requestOrigin,'content-type':'application/json'}},res=>{res.resume();res.on('end',()=>resolve(res.statusCode))});req.on('error',reject);req.end(body)
+  })
+  try{
+   assert.equal(await relayed(`127.0.0.1:${address.port}`,origin,JSON.stringify({action:'metadata'})),200)
+   assert.equal(await relayed('attacker.invalid',origin,'{}'),403)
+   assert.equal(await relayed(`127.0.0.1:${address.port}`,'https://attacker.invalid','{}'),403)
+   assert.equal(await relayed(`127.0.0.1:${address.port}`,origin,'x'.repeat(8193)),413)
+   assert.equal(await relayed(`127.0.0.1:${address.port}`,origin,JSON.stringify({action:'metadata'})),200)
+  }finally{relay.stop()}
   assert.equal((await fetch(origin+'/operation',{method:'POST',headers:{origin:'https://attacker.invalid','content-type':'application/json'},body:'{}'})).status,403)
   const wrongHost=await new Promise<number|undefined>((resolve,reject)=>{const request=http.get(origin+'/',{headers:{host:'attacker.invalid'}},response=>{response.resume();resolve(response.statusCode)});request.on('error',reject)})
   assert.equal(wrongHost,403)
