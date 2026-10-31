@@ -1,14 +1,14 @@
 {
   "project": "crm-accounts-20261031",
-  "generatedAt": "2026-10-31T16:12:40.381Z",
+  "generatedAt": "2026-10-31T22:32:50.307Z",
   "stats": {
-    "nodes": 605,
-    "edges": 5206,
-    "files": 156,
-    "functions": 374,
+    "nodes": 617,
+    "edges": 5312,
+    "files": 160,
+    "functions": 381,
     "classes": 6,
-    "types": 31,
-    "imports": 516
+    "types": 32,
+    "imports": 529
   },
   "nodes": [
     {
@@ -136,6 +136,99 @@
       "line": 5,
       "exported": false,
       "async": false,
+      "params": []
+    },
+    {
+      "id": "file:scripts/crm-gateway-request.ts:crm-gateway-request.ts",
+      "type": "file",
+      "name": "crm-gateway-request.ts",
+      "file": "scripts/crm-gateway-request.ts",
+      "language": "typescript",
+      "lines": 21
+    },
+    {
+      "id": "function:scripts/crm-gateway-request.ts:main",
+      "type": "function",
+      "name": "main",
+      "file": "scripts/crm-gateway-request.ts",
+      "line": 3,
+      "exported": false,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "type": "file",
+      "name": "crm-gateway-transport.ts",
+      "file": "scripts/crm-gateway-transport.ts",
+      "language": "typescript",
+      "lines": 87
+    },
+    {
+      "id": "type:scripts/crm-gateway-transport.ts:Runner",
+      "type": "type",
+      "name": "Runner",
+      "file": "scripts/crm-gateway-transport.ts",
+      "line": 11,
+      "exported": false
+    },
+    {
+      "id": "function:scripts/crm-gateway-transport.ts:reject",
+      "type": "function",
+      "name": "reject",
+      "file": "scripts/crm-gateway-transport.ts",
+      "line": 12,
+      "exported": false,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "function:scripts/crm-gateway-transport.ts:quote",
+      "type": "function",
+      "name": "quote",
+      "file": "scripts/crm-gateway-transport.ts",
+      "line": 13,
+      "exported": false,
+      "arrow": true,
+      "params": [
+        "value"
+      ]
+    },
+    {
+      "id": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "type": "function",
+      "name": "gatewayRequest",
+      "file": "scripts/crm-gateway-transport.ts",
+      "line": 16,
+      "exported": true,
+      "async": false,
+      "params": [
+        "input",
+        "env",
+        "runner"
+      ]
+    },
+    {
+      "id": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "type": "function",
+      "name": "runCurl",
+      "file": "scripts/crm-gateway-transport.ts",
+      "line": 60,
+      "exported": true,
+      "async": false,
+      "params": [
+        "config",
+        "env"
+      ]
+    },
+    {
+      "id": "function:scripts/crm-gateway-transport.ts:abort",
+      "type": "function",
+      "name": "abort",
+      "file": "scripts/crm-gateway-transport.ts",
+      "line": 70,
+      "exported": false,
+      "arrow": true,
       "params": []
     },
     {
@@ -3748,27 +3841,27 @@
       ]
     },
     {
-      "id": "file:src/lib/auth/machine.ts:machine.ts",
+      "id": "file:src/lib/auth/machine-scopes.ts:machine-scopes.ts",
       "type": "file",
-      "name": "machine.ts",
-      "file": "src/lib/auth/machine.ts",
+      "name": "machine-scopes.ts",
+      "file": "src/lib/auth/machine-scopes.ts",
       "language": "typescript",
-      "lines": 32
+      "lines": 15
     },
     {
-      "id": "type:src/lib/auth/machine.ts:MachineScope",
+      "id": "type:src/lib/auth/machine-scopes.ts:MachineScope",
       "type": "type",
       "name": "MachineScope",
-      "file": "src/lib/auth/machine.ts",
-      "line": 3,
+      "file": "src/lib/auth/machine-scopes.ts",
+      "line": 2,
       "exported": true
     },
     {
-      "id": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "id": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
       "type": "function",
       "name": "requiredMachineScope",
-      "file": "src/lib/auth/machine.ts",
-      "line": 4,
+      "file": "src/lib/auth/machine-scopes.ts",
+      "line": 3,
       "exported": true,
       "async": false,
       "params": [
@@ -3777,11 +3870,19 @@
       ]
     },
     {
+      "id": "file:src/lib/auth/machine.ts:machine.ts",
+      "type": "file",
+      "name": "machine.ts",
+      "file": "src/lib/auth/machine.ts",
+      "language": "typescript",
+      "lines": 21
+    },
+    {
       "id": "function:src/lib/auth/machine.ts:authorizeMachine",
       "type": "function",
       "name": "authorizeMachine",
       "file": "src/lib/auth/machine.ts",
-      "line": 16,
+      "line": 5,
       "exported": true,
       "async": false,
       "params": [
@@ -6074,6 +6175,24 @@
       "exported": false
     },
     {
+      "id": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "type": "file",
+      "name": "gateway-adapter.test.ts",
+      "file": "tests/gateway-adapter.test.ts",
+      "language": "typescript",
+      "lines": 99
+    },
+    {
+      "id": "function:tests/gateway-adapter.test.ts:fixture",
+      "type": "function",
+      "name": "fixture",
+      "file": "tests/gateway-adapter.test.ts",
+      "line": 9,
+      "exported": false,
+      "async": false,
+      "params": []
+    },
+    {
       "id": "file:tests/inline-email-preview.test.ts:inline-email-preview.test.ts",
       "type": "file",
       "name": "inline-email-preview.test.ts",
@@ -8178,6 +8297,605 @@
       "relationship": "calls",
       "name": "JSON.stringify",
       "line": 13
+    },
+    {
+      "source": "file:scripts/crm-gateway-request.ts:crm-gateway-request.ts",
+      "target": "import:./crm-gateway-transport",
+      "relationship": "imports",
+      "path": "./crm-gateway-transport",
+      "symbols": [
+        "gatewayRequest",
+        "INPUT_LIMIT"
+      ]
+    },
+    {
+      "source": "file:scripts/crm-gateway-request.ts:crm-gateway-request.ts",
+      "target": "function:scripts/crm-gateway-request.ts:main",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 4
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:setTimeout",
+      "relationship": "calls",
+      "name": "setTimeout",
+      "line": 5
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:process.stdin.destroy",
+      "relationship": "calls",
+      "name": "process.stdin.destroy",
+      "line": 5
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 11
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:chunks.push",
+      "relationship": "calls",
+      "name": "chunks.push",
+      "line": 12
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:Buffer.from",
+      "relationship": "calls",
+      "name": "Buffer.from",
+      "line": 12
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:clearTimeout",
+      "relationship": "calls",
+      "name": "clearTimeout",
+      "line": 14
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:process.stdout.write",
+      "relationship": "calls",
+      "name": "process.stdout.write",
+      "line": 15
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:gatewayRequest",
+      "relationship": "calls",
+      "name": "gatewayRequest",
+      "line": 15
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:Buffer.concat(chunks).toString",
+      "relationship": "calls",
+      "name": "Buffer.concat(chunks).toString",
+      "line": 15
+    },
+    {
+      "source": "function:scripts/crm-gateway-request.ts:main",
+      "target": "call:Buffer.concat",
+      "relationship": "calls",
+      "name": "Buffer.concat",
+      "line": 15
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "import:node:child_process",
+      "relationship": "imports",
+      "path": "node:child_process",
+      "symbols": [
+        "spawn"
+      ]
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "import:node:fs/promises",
+      "relationship": "imports",
+      "path": "node:fs/promises",
+      "symbols": [
+        "access"
+      ]
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "import:node:path",
+      "relationship": "imports",
+      "path": "node:path",
+      "symbols": [
+        "isAbsolute"
+      ]
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "import:../src/lib/auth/machine-scopes",
+      "relationship": "imports",
+      "path": "../src/lib/auth/machine-scopes",
+      "symbols": [
+        "requiredMachineScope"
+      ]
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "type:scripts/crm-gateway-transport.ts:Runner",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "function:scripts/crm-gateway-transport.ts:reject",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "function:scripts/crm-gateway-transport.ts:quote",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:quote",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 13
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:Buffer.byteLength",
+      "relationship": "calls",
+      "name": "Buffer.byteLength",
+      "line": 18
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 18
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:/^oc-sent-v2\\.[A-Za-z0-9_-]+\\.end$/.test",
+      "relationship": "calls",
+      "name": "/^oc-sent-v2\\.[A-Za-z0-9_-]+\\.end$/.test",
+      "line": 20
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 20
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:['127.0.0.1', '[::1]'].includes",
+      "relationship": "calls",
+      "name": "['127.0.0.1', '[::1]'].includes",
+      "line": 22
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 24
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 25
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:isAbsolute",
+      "relationship": "calls",
+      "name": "isAbsolute",
+      "line": 27
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 27
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:access",
+      "relationship": "calls",
+      "name": "access",
+      "line": 28
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:JSON.parse",
+      "relationship": "calls",
+      "name": "JSON.parse",
+      "line": 29
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:Array.isArray",
+      "relationship": "calls",
+      "name": "Array.isArray",
+      "line": 30
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:Object.keys(request).some",
+      "relationship": "calls",
+      "name": "Object.keys(request).some",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:Object.keys",
+      "relationship": "calls",
+      "name": "Object.keys",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:['method', 'path', 'body'].includes",
+      "relationship": "calls",
+      "name": "['method', 'path', 'body'].includes",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:/[\\s#\\\\]/.test",
+      "relationship": "calls",
+      "name": "/[\\s#\\\\]/.test",
+      "line": 34
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:path.startsWith",
+      "relationship": "calls",
+      "name": "path.startsWith",
+      "line": 34
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 34
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:requiredMachineScope",
+      "relationship": "calls",
+      "name": "requiredMachineScope",
+      "line": 37
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:path.split",
+      "relationship": "calls",
+      "name": "path.split",
+      "line": 37
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 37
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 38
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:Array.isArray",
+      "relationship": "calls",
+      "name": "Array.isArray",
+      "line": 39
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 39
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:/oc-sent-v2\\.|mcrm_[a-f0-9]{64}/.test",
+      "relationship": "calls",
+      "name": "/oc-sent-v2\\.|mcrm_[a-f0-9]{64}/.test",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:[\n      `url = ${quote(url.href)}`, `request = ${quote(method)}`,\n      `header = ${quote('x-crm-mac...",
+      "relationship": "calls",
+      "name": "[\n      `url = ${quote(url.href)}`, `request = ${quote(method)}`,\n      `header = ${quote('x-crm-mac...",
+      "line": 42
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:quote",
+      "relationship": "calls",
+      "name": "quote",
+      "line": 43
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:quote",
+      "relationship": "calls",
+      "name": "quote",
+      "line": 43
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:quote",
+      "relationship": "calls",
+      "name": "quote",
+      "line": 44
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:quote",
+      "relationship": "calls",
+      "name": "quote",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:runner",
+      "relationship": "calls",
+      "name": "runner",
+      "line": 47
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 48
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:result.toString",
+      "relationship": "calls",
+      "name": "result.toString",
+      "line": 49
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:text.slice",
+      "relationship": "calls",
+      "name": "text.slice",
+      "line": 50
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:/^\\n2[0-9]{2}$/.test",
+      "relationship": "calls",
+      "name": "/^\\n2[0-9]{2}$/.test",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:text.slice",
+      "relationship": "calls",
+      "name": "text.slice",
+      "line": 52
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:/oc-sent-v2\\.|mcrm_[a-f0-9]{64}/.test",
+      "relationship": "calls",
+      "name": "/oc-sent-v2\\.|mcrm_[a-f0-9]{64}/.test",
+      "line": 54
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 54
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:gatewayRequest",
+      "target": "call:reject",
+      "relationship": "calls",
+      "name": "reject",
+      "line": 56
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:spawn",
+      "relationship": "calls",
+      "name": "spawn",
+      "line": 62
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:String",
+      "relationship": "calls",
+      "name": "String",
+      "line": 65
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:child.kill",
+      "relationship": "calls",
+      "name": "child.kill",
+      "line": 70
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:fail",
+      "relationship": "calls",
+      "name": "fail",
+      "line": 70
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:setTimeout",
+      "relationship": "calls",
+      "name": "setTimeout",
+      "line": 71
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:child.on",
+      "relationship": "calls",
+      "name": "child.on",
+      "line": 72
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:child.stdin.on",
+      "relationship": "calls",
+      "name": "child.stdin.on",
+      "line": 73
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:child.stdout.on",
+      "relationship": "calls",
+      "name": "child.stdout.on",
+      "line": 74
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:abort",
+      "relationship": "calls",
+      "name": "abort",
+      "line": 76
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:chunks.push",
+      "relationship": "calls",
+      "name": "chunks.push",
+      "line": 77
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:child.on",
+      "relationship": "calls",
+      "name": "child.on",
+      "line": 79
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:clearTimeout",
+      "relationship": "calls",
+      "name": "clearTimeout",
+      "line": 80
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:fail",
+      "relationship": "calls",
+      "name": "fail",
+      "line": 81
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:resolve",
+      "relationship": "calls",
+      "name": "resolve",
+      "line": 82
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:Buffer.concat",
+      "relationship": "calls",
+      "name": "Buffer.concat",
+      "line": 82
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:runCurl",
+      "target": "call:child.stdin.end",
+      "relationship": "calls",
+      "name": "child.stdin.end",
+      "line": 84
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "function:scripts/crm-gateway-transport.ts:abort",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:abort",
+      "target": "call:child.kill",
+      "relationship": "calls",
+      "name": "child.kill",
+      "line": 70
+    },
+    {
+      "source": "function:scripts/crm-gateway-transport.ts:abort",
+      "target": "call:fail",
+      "relationship": "calls",
+      "name": "fail",
+      "line": 70
     },
     {
       "source": "file:scripts/crm-machine-request.ts:crm-machine-request.ts",
@@ -31258,6 +31976,72 @@
       "line": 45
     },
     {
+      "source": "file:src/lib/auth/machine-scopes.ts:machine-scopes.ts",
+      "target": "type:src/lib/auth/machine-scopes.ts:MachineScope",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:src/lib/auth/machine-scopes.ts:machine-scopes.ts",
+      "target": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/%|\\\\|\\.|\\/\\//.test",
+      "relationship": "calls",
+      "name": "/%|\\\\|\\.|\\/\\//.test",
+      "line": 5
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/contacts(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/contacts(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "line": 7
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/(notes|interactions|follow-ups|connections|tags)$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/(notes|interactions|follow-ups|connections|tags)$/.test",
+      "line": 7
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/notes$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/notes$/.test",
+      "line": 8
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "line": 9
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns\\/(?:analytics\\/export|[a-zA-Z0-9_-]+\\/(?:analytics\\/export|status|copy))$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns\\/(?:analytics\\/export|[a-zA-Z0-9_-]+\\/(?:analytics\\/export|status|copy))$/.test",
+      "line": 9
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+$/.test",
+      "line": 11
+    },
+    {
+      "source": "function:src/lib/auth/machine-scopes.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+\\/copy$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+\\/copy$/.test",
+      "line": 12
+    },
+    {
       "source": "file:src/lib/auth/machine.ts:machine.ts",
       "target": "import:./store",
       "relationship": "imports",
@@ -31271,69 +32055,24 @@
     },
     {
       "source": "file:src/lib/auth/machine.ts:machine.ts",
-      "target": "type:src/lib/auth/machine.ts:MachineScope",
-      "relationship": "defines"
+      "target": "import:./machine-scopes",
+      "relationship": "imports",
+      "path": "./machine-scopes",
+      "symbols": [
+        "requiredMachineScope"
+      ]
     },
     {
       "source": "file:src/lib/auth/machine.ts:machine.ts",
-      "target": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "relationship": "defines"
+      "target": "export:./machine-scopes",
+      "relationship": "re_exports",
+      "path": "./machine-scopes"
     },
     {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/%|\\\\|\\.|\\/\\//.test",
-      "relationship": "calls",
-      "name": "/%|\\\\|\\.|\\/\\//.test",
-      "line": 6
-    },
-    {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/^\\/api\\/contacts(?:\\/[a-zA-Z0-9_-]+)?$/.test",
-      "relationship": "calls",
-      "name": "/^\\/api\\/contacts(?:\\/[a-zA-Z0-9_-]+)?$/.test",
-      "line": 8
-    },
-    {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/(notes|interactions|follow-ups|connections|tags)$/.test",
-      "relationship": "calls",
-      "name": "/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/(notes|interactions|follow-ups|connections|tags)$/.test",
-      "line": 8
-    },
-    {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/notes$/.test",
-      "relationship": "calls",
-      "name": "/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/notes$/.test",
-      "line": 9
-    },
-    {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/^\\/api\\/campaigns(?:\\/[a-zA-Z0-9_-]+)?$/.test",
-      "relationship": "calls",
-      "name": "/^\\/api\\/campaigns(?:\\/[a-zA-Z0-9_-]+)?$/.test",
-      "line": 10
-    },
-    {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/^\\/api\\/campaigns\\/(?:analytics\\/export|[a-zA-Z0-9_-]+\\/(?:analytics\\/export|status|copy))$/.test",
-      "relationship": "calls",
-      "name": "/^\\/api\\/campaigns\\/(?:analytics\\/export|[a-zA-Z0-9_-]+\\/(?:analytics\\/export|status|copy))$/.test",
-      "line": 10
-    },
-    {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+$/.test",
-      "relationship": "calls",
-      "name": "/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+$/.test",
-      "line": 12
-    },
-    {
-      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
-      "target": "call:/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+\\/copy$/.test",
-      "relationship": "calls",
-      "name": "/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+\\/copy$/.test",
-      "line": 13
+      "source": "file:src/lib/auth/machine.ts:machine.ts",
+      "target": "export:./machine-scopes",
+      "relationship": "re_exports",
+      "path": "./machine-scopes"
     },
     {
       "source": "file:src/lib/auth/machine.ts:machine.ts",
@@ -31345,70 +32084,70 @@
       "target": "call:request.headers.get",
       "relationship": "calls",
       "name": "request.headers.get",
-      "line": 17
+      "line": 6
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:/^mcrm_[a-f0-9]{64}$/.test",
       "relationship": "calls",
       "name": "/^mcrm_[a-f0-9]{64}$/.test",
-      "line": 18
+      "line": 7
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:authPool.query",
       "relationship": "calls",
       "name": "authPool.query",
-      "line": 19
+      "line": 8
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:tokenHash",
       "relationship": "calls",
       "name": "tokenHash",
-      "line": 19
+      "line": 8
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:requiredMachineScope",
       "relationship": "calls",
       "name": "requiredMachineScope",
-      "line": 22
+      "line": 11
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:machine.scopes.includes",
       "relationship": "calls",
       "name": "machine.scopes.includes",
-      "line": 23
+      "line": 12
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:audit",
       "relationship": "calls",
       "name": "audit",
-      "line": 24
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:request.headers.get",
       "relationship": "calls",
       "name": "request.headers.get",
-      "line": 28
+      "line": 17
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:request.headers.get",
       "relationship": "calls",
       "name": "request.headers.get",
-      "line": 28
+      "line": 17
     },
     {
       "source": "function:src/lib/auth/machine.ts:authorizeMachine",
       "target": "call:audit",
       "relationship": "calls",
       "name": "audit",
-      "line": 29
+      "line": 18
     },
     {
       "source": "file:src/lib/auth/operator.ts:operator.ts",
@@ -40777,6 +41516,114 @@
       "relationship": "defines"
     },
     {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "import:node:test",
+      "relationship": "imports",
+      "path": "node:test",
+      "symbols": [
+        "test"
+      ]
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "import:node:assert/strict",
+      "relationship": "imports",
+      "path": "node:assert/strict",
+      "symbols": [
+        "assert"
+      ]
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "import:node:fs/promises",
+      "relationship": "imports",
+      "path": "node:fs/promises",
+      "symbols": [
+        "mkdtemp",
+        "writeFile",
+        "rm"
+      ]
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "import:node:os",
+      "relationship": "imports",
+      "path": "node:os",
+      "symbols": [
+        "tmpdir"
+      ]
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "import:node:path",
+      "relationship": "imports",
+      "path": "node:path",
+      "symbols": [
+        "join"
+      ]
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "import:node:net",
+      "relationship": "imports",
+      "path": "node:net",
+      "symbols": [
+        "createServer"
+      ]
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "import:../scripts/crm-gateway-transport",
+      "relationship": "imports",
+      "path": "../scripts/crm-gateway-transport",
+      "symbols": [
+        "gatewayRequest",
+        "SECRET_NAME",
+        "OUTPUT_LIMIT",
+        "INPUT_LIMIT"
+      ]
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "function:tests/gateway-adapter.test.ts:fixture",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:tests/gateway-adapter.test.ts:fixture",
+      "target": "call:mkdtemp",
+      "relationship": "calls",
+      "name": "mkdtemp",
+      "line": 10
+    },
+    {
+      "source": "function:tests/gateway-adapter.test.ts:fixture",
+      "target": "call:join",
+      "relationship": "calls",
+      "name": "join",
+      "line": 10
+    },
+    {
+      "source": "function:tests/gateway-adapter.test.ts:fixture",
+      "target": "call:tmpdir",
+      "relationship": "calls",
+      "name": "tmpdir",
+      "line": 10
+    },
+    {
+      "source": "function:tests/gateway-adapter.test.ts:fixture",
+      "target": "call:join",
+      "relationship": "calls",
+      "name": "join",
+      "line": 11
+    },
+    {
+      "source": "function:tests/gateway-adapter.test.ts:fixture",
+      "target": "call:writeFile",
+      "relationship": "calls",
+      "name": "writeFile",
+      "line": 12
+    },
+    {
       "source": "file:tests/inline-email-preview.test.ts:inline-email-preview.test.ts",
       "target": "import:node:test",
       "relationship": "imports",
@@ -42551,6 +43398,25 @@
       "originalPath": "../src/lib/email/analytics-history"
     },
     {
+      "source": "file:scripts/crm-gateway-request.ts:crm-gateway-request.ts",
+      "target": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "gatewayRequest",
+        "INPUT_LIMIT"
+      ],
+      "originalPath": "./crm-gateway-transport"
+    },
+    {
+      "source": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "target": "file:src/lib/auth/machine-scopes.ts:machine-scopes.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "requiredMachineScope"
+      ],
+      "originalPath": "../src/lib/auth/machine-scopes"
+    },
+    {
       "source": "file:scripts/crm-machine-request.ts:crm-machine-request.ts",
       "target": "file:src/lib/auth/machine.ts:machine.ts",
       "relationship": "imports_file",
@@ -42675,6 +43541,15 @@
         "audit"
       ],
       "originalPath": "./store"
+    },
+    {
+      "source": "file:src/lib/auth/machine.ts:machine.ts",
+      "target": "file:src/lib/auth/machine-scopes.ts:machine-scopes.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "requiredMachineScope"
+      ],
+      "originalPath": "./machine-scopes"
     },
     {
       "source": "file:src/lib/auth/operator.ts:operator.ts",
@@ -43224,6 +44099,18 @@
         "SnsEnvelope"
       ],
       "originalPath": "../src/lib/email/sns"
+    },
+    {
+      "source": "file:tests/gateway-adapter.test.ts:gateway-adapter.test.ts",
+      "target": "file:scripts/crm-gateway-transport.ts:crm-gateway-transport.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "gatewayRequest",
+        "SECRET_NAME",
+        "OUTPUT_LIMIT",
+        "INPUT_LIMIT"
+      ],
+      "originalPath": "../scripts/crm-gateway-transport"
     },
     {
       "source": "file:tests/inline-email-preview.test.ts:inline-email-preview.test.ts",

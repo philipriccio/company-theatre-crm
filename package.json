@@ -11,7 +11,8 @@
     "lint": "eslint",
     "auth:operator": "tsx scripts/auth-operator.ts",
     "auth:housekeeping": "tsx scripts/auth-housekeeping.ts",
-    "crm:machine-request": "tsx scripts/crm-machine-request.ts"
+    "crm:machine-request": "tsx scripts/crm-machine-request.ts",
+    "crm:gateway-request": "tsx scripts/crm-gateway-request.ts"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.1135.0",
