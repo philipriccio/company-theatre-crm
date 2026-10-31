@@ -1,14 +1,14 @@
 {
   "project": "crm-accounts-20261031",
-  "generatedAt": "2026-10-31T15:17:41.958Z",
+  "generatedAt": "2026-10-31T15:30:55.315Z",
   "stats": {
-    "nodes": 580,
-    "edges": 4883,
-    "files": 146,
-    "functions": 360,
+    "nodes": 601,
+    "edges": 5180,
+    "files": 154,
+    "functions": 372,
     "classes": 6,
-    "types": 30,
-    "imports": 472
+    "types": 31,
+    "imports": 504
   },
   "nodes": [
     {
@@ -41,16 +41,83 @@
       "name": "auth-browser-proof.ts",
       "file": "scripts/auth-browser-proof.ts",
       "language": "typescript",
-      "lines": 69
+      "lines": 103
     },
     {
       "id": "function:scripts/auth-browser-proof.ts:main",
       "type": "function",
       "name": "main",
       "file": "scripts/auth-browser-proof.ts",
-      "line": 9,
+      "line": 12,
       "exported": false,
       "async": false,
+      "params": []
+    },
+    {
+      "id": "file:scripts/auth-housekeeping.ts:auth-housekeeping.ts",
+      "type": "file",
+      "name": "auth-housekeeping.ts",
+      "file": "scripts/auth-housekeeping.ts",
+      "language": "typescript",
+      "lines": 4
+    },
+    {
+      "id": "function:scripts/auth-housekeeping.ts:main",
+      "type": "function",
+      "name": "main",
+      "file": "scripts/auth-housekeeping.ts",
+      "line": 2,
+      "exported": false,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "file:scripts/auth-operator/server.ts:server.ts",
+      "type": "file",
+      "name": "server.ts",
+      "file": "scripts/auth-operator/server.ts",
+      "language": "typescript",
+      "lines": 37
+    },
+    {
+      "id": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "type": "function",
+      "name": "createOperatorServer",
+      "file": "scripts/auth-operator/server.ts",
+      "line": 8,
+      "exported": true,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "function:scripts/auth-operator/server.ts:json",
+      "type": "function",
+      "name": "json",
+      "file": "scripts/auth-operator/server.ts",
+      "line": 16,
+      "exported": false,
+      "arrow": true,
+      "params": [
+        "status",
+        "value"
+      ]
+    },
+    {
+      "id": "file:scripts/auth-operator.ts:auth-operator.ts",
+      "type": "file",
+      "name": "auth-operator.ts",
+      "file": "scripts/auth-operator.ts",
+      "language": "typescript",
+      "lines": 10
+    },
+    {
+      "id": "function:scripts/auth-operator.ts:stop",
+      "type": "function",
+      "name": "stop",
+      "file": "scripts/auth-operator.ts",
+      "line": 7,
+      "exported": false,
+      "arrow": true,
       "params": []
     },
     {
@@ -67,6 +134,24 @@
       "name": "main",
       "file": "scripts/backfill-email-analytics.ts",
       "line": 5,
+      "exported": false,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "file:scripts/crm-machine-request.ts:crm-machine-request.ts",
+      "type": "file",
+      "name": "crm-machine-request.ts",
+      "file": "scripts/crm-machine-request.ts",
+      "language": "typescript",
+      "lines": 20
+    },
+    {
+      "id": "function:scripts/crm-machine-request.ts:main",
+      "type": "function",
+      "name": "main",
+      "file": "scripts/crm-machine-request.ts",
+      "line": 4,
       "exported": false,
       "async": false,
       "params": []
@@ -172,6 +257,14 @@
       "exported": false,
       "async": false,
       "params": []
+    },
+    {
+      "id": "file:scripts/update-password-denylist.ts:update-password-denylist.ts",
+      "type": "file",
+      "name": "update-password-denylist.ts",
+      "file": "scripts/update-password-denylist.ts",
+      "language": "typescript",
+      "lines": 12
     },
     {
       "id": "file:src/app/(admin)/campaigns/[id]/CampaignControls.tsx:CampaignControls.tsx",
@@ -3570,14 +3663,14 @@
       "name": "access.ts",
       "file": "src/lib/auth/access.ts",
       "language": "typescript",
-      "lines": 40
+      "lines": 48
     },
     {
       "id": "function:src/lib/auth/access.ts:authOrigin",
       "type": "function",
       "name": "authOrigin",
       "file": "src/lib/auth/access.ts",
-      "line": 3,
+      "line": 4,
       "exported": true,
       "async": false,
       "params": []
@@ -3587,7 +3680,7 @@
       "type": "function",
       "name": "cookieName",
       "file": "src/lib/auth/access.ts",
-      "line": 10,
+      "line": 11,
       "exported": true,
       "async": false,
       "params": []
@@ -3597,7 +3690,7 @@
       "type": "function",
       "name": "requestToken",
       "file": "src/lib/auth/access.ts",
-      "line": 11,
+      "line": 12,
       "exported": true,
       "async": false,
       "params": [
@@ -3609,7 +3702,7 @@
       "type": "function",
       "name": "sameOrigin",
       "file": "src/lib/auth/access.ts",
-      "line": 14,
+      "line": 15,
       "exported": true,
       "async": false,
       "params": [
@@ -3621,7 +3714,7 @@
       "type": "function",
       "name": "publicRoute",
       "file": "src/lib/auth/access.ts",
-      "line": 17,
+      "line": 18,
       "exported": true,
       "async": false,
       "params": [
@@ -3634,7 +3727,7 @@
       "type": "function",
       "name": "authFailure",
       "file": "src/lib/auth/access.ts",
-      "line": 26,
+      "line": 27,
       "exported": true,
       "async": false,
       "params": [
@@ -3646,7 +3739,7 @@
       "type": "function",
       "name": "guard",
       "file": "src/lib/auth/access.ts",
-      "line": 31,
+      "line": 32,
       "exported": true,
       "async": false,
       "params": [
@@ -3655,19 +3748,92 @@
       ]
     },
     {
+      "id": "file:src/lib/auth/machine.ts:machine.ts",
+      "type": "file",
+      "name": "machine.ts",
+      "file": "src/lib/auth/machine.ts",
+      "language": "typescript",
+      "lines": 32
+    },
+    {
+      "id": "type:src/lib/auth/machine.ts:MachineScope",
+      "type": "type",
+      "name": "MachineScope",
+      "file": "src/lib/auth/machine.ts",
+      "line": 3,
+      "exported": true
+    },
+    {
+      "id": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "type": "function",
+      "name": "requiredMachineScope",
+      "file": "src/lib/auth/machine.ts",
+      "line": 4,
+      "exported": true,
+      "async": false,
+      "params": [
+        "path",
+        "method"
+      ]
+    },
+    {
+      "id": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "type": "function",
+      "name": "authorizeMachine",
+      "file": "src/lib/auth/machine.ts",
+      "line": 16,
+      "exported": true,
+      "async": false,
+      "params": [
+        "request",
+        "record"
+      ]
+    },
+    {
+      "id": "file:src/lib/auth/operator.ts:operator.ts",
+      "type": "file",
+      "name": "operator.ts",
+      "file": "src/lib/auth/operator.ts",
+      "language": "typescript",
+      "lines": 64
+    },
+    {
+      "id": "function:src/lib/auth/operator.ts:operatorMetadata",
+      "type": "function",
+      "name": "operatorMetadata",
+      "file": "src/lib/auth/operator.ts",
+      "line": 5,
+      "exported": true,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "function:src/lib/auth/operator.ts:operatorAction",
+      "type": "function",
+      "name": "operatorAction",
+      "file": "src/lib/auth/operator.ts",
+      "line": 13,
+      "exported": true,
+      "async": false,
+      "params": [
+        "body",
+        "operator"
+      ]
+    },
+    {
       "id": "file:src/lib/auth/password.ts:password.ts",
       "type": "file",
       "name": "password.ts",
       "file": "src/lib/auth/password.ts",
       "language": "typescript",
-      "lines": 24
+      "lines": 25
     },
     {
       "id": "function:src/lib/auth/password.ts:passwordError",
       "type": "function",
       "name": "passwordError",
       "file": "src/lib/auth/password.ts",
-      "line": 3,
+      "line": 4,
       "exported": true,
       "async": false,
       "params": [
@@ -3679,7 +3845,7 @@
       "type": "function",
       "name": "derive",
       "file": "src/lib/auth/password.ts",
-      "line": 9,
+      "line": 10,
       "exported": false,
       "async": false,
       "params": [
@@ -3692,7 +3858,7 @@
       "type": "function",
       "name": "hashPassword",
       "file": "src/lib/auth/password.ts",
-      "line": 12,
+      "line": 13,
       "exported": true,
       "async": false,
       "params": [
@@ -3704,7 +3870,7 @@
       "type": "function",
       "name": "verifyPassword",
       "file": "src/lib/auth/password.ts",
-      "line": 18,
+      "line": 19,
       "exported": true,
       "async": false,
       "params": [
@@ -3718,7 +3884,7 @@
       "name": "store.ts",
       "file": "src/lib/auth/store.ts",
       "language": "typescript",
-      "lines": 68
+      "lines": 94
     },
     {
       "id": "function:src/lib/auth/store.ts:tokenHash",
@@ -3757,11 +3923,25 @@
       "className": "AuthError"
     },
     {
+      "id": "function:src/lib/auth/store.ts:audit",
+      "type": "function",
+      "name": "audit",
+      "file": "src/lib/auth/store.ts",
+      "line": 10,
+      "exported": true,
+      "async": false,
+      "params": [
+        "kind",
+        "actorId",
+        "details"
+      ]
+    },
+    {
       "id": "function:src/lib/auth/store.ts:throttle",
       "type": "function",
       "name": "throttle",
       "file": "src/lib/auth/store.ts",
-      "line": 10,
+      "line": 13,
       "exported": true,
       "async": false,
       "params": [
@@ -3774,7 +3954,7 @@
       "type": "function",
       "name": "identity",
       "file": "src/lib/auth/store.ts",
-      "line": 14,
+      "line": 20,
       "exported": true,
       "async": false,
       "params": [
@@ -3786,7 +3966,7 @@
       "type": "function",
       "name": "issue",
       "file": "src/lib/auth/store.ts",
-      "line": 19,
+      "line": 25,
       "exported": false,
       "async": false,
       "params": [
@@ -3799,7 +3979,7 @@
       "type": "function",
       "name": "login",
       "file": "src/lib/auth/store.ts",
-      "line": 24,
+      "line": 30,
       "exported": true,
       "async": false,
       "params": [
@@ -3812,7 +3992,7 @@
       "type": "function",
       "name": "changePassword",
       "file": "src/lib/auth/store.ts",
-      "line": 43,
+      "line": 49,
       "exported": true,
       "async": false,
       "params": [
@@ -3826,12 +4006,22 @@
       "type": "function",
       "name": "logout",
       "file": "src/lib/auth/store.ts",
-      "line": 65,
+      "line": 71,
       "exported": true,
       "async": false,
       "params": [
         "token"
       ]
+    },
+    {
+      "id": "function:src/lib/auth/store.ts:cleanupAuth",
+      "type": "function",
+      "name": "cleanupAuth",
+      "file": "src/lib/auth/store.ts",
+      "line": 82,
+      "exported": true,
+      "async": false,
+      "params": []
     },
     {
       "id": "file:src/lib/campaign-copy-rebase.ts:campaign-copy-rebase.ts",
@@ -5773,7 +5963,7 @@
       "name": "auth.integration.test.ts",
       "file": "tests/auth.integration.test.ts",
       "language": "typescript",
-      "lines": 50
+      "lines": 52
     },
     {
       "id": "function:tests/auth.integration.test.ts:request",
@@ -5796,7 +5986,7 @@
       "name": "auth.test.ts",
       "file": "tests/auth.test.ts",
       "language": "typescript",
-      "lines": 27
+      "lines": 31
     },
     {
       "id": "file:tests/campaign-content.test.ts:campaign-content.test.ts",
@@ -5892,6 +6082,28 @@
       "async": false,
       "params": [
         "n"
+      ]
+    },
+    {
+      "id": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "type": "file",
+      "name": "operator.integration.test.ts",
+      "file": "tests/operator.integration.test.ts",
+      "language": "typescript",
+      "lines": 47
+    },
+    {
+      "id": "function:tests/operator.integration.test.ts:request",
+      "type": "function",
+      "name": "request",
+      "file": "tests/operator.integration.test.ts",
+      "line": 26,
+      "exported": false,
+      "arrow": true,
+      "params": [
+        "path",
+        "method",
+        "credential"
       ]
     },
     {
@@ -6148,6 +6360,15 @@
     },
     {
       "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
+      "target": "import:node:child_process",
+      "relationship": "imports",
+      "path": "node:child_process",
+      "symbols": [
+        "spawn"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
       "target": "import:node:module",
       "relationship": "imports",
       "path": "node:module",
@@ -6175,6 +6396,24 @@
     },
     {
       "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
+      "target": "import:../src/lib/auth/operator",
+      "relationship": "imports",
+      "path": "../src/lib/auth/operator",
+      "symbols": [
+        "operatorAction"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
+      "target": "import:./auth-operator/server",
+      "relationship": "imports",
+      "path": "./auth-operator/server",
+      "symbols": [
+        "createOperatorServer"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
       "target": "import:../src/lib/auth/password",
       "relationship": "imports",
       "path": "../src/lib/auth/password",
@@ -6192,707 +6431,1659 @@
       "target": "call:assert.equal",
       "relationship": "calls",
       "name": "assert.equal",
-      "line": 12
+      "line": 15
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:assert.ok",
       "relationship": "calls",
       "name": "assert.ok",
-      "line": 13
+      "line": 16
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:process.env.DATABASE_URL?.includes",
       "relationship": "calls",
       "name": "process.env.DATABASE_URL?.includes",
-      "line": 13
+      "line": 16
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:mkdir",
       "relationship": "calls",
       "name": "mkdir",
-      "line": 14
+      "line": 17
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:randomUUID",
       "relationship": "calls",
       "name": "randomUUID",
-      "line": 15
+      "line": 18
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:randomBytes(24).toString",
       "relationship": "calls",
       "name": "randomBytes(24).toString",
-      "line": 15
+      "line": 18
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:randomBytes",
       "relationship": "calls",
       "name": "randomBytes",
-      "line": 15
+      "line": 18
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:randomBytes(24).toString",
       "relationship": "calls",
       "name": "randomBytes(24).toString",
-      "line": 15
+      "line": 18
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:randomBytes",
       "relationship": "calls",
       "name": "randomBytes",
-      "line": 15
+      "line": 18
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:authPool.query",
       "relationship": "calls",
       "name": "authPool.query",
-      "line": 16
+      "line": 19
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:hashPassword",
       "relationship": "calls",
       "name": "hashPassword",
-      "line": 16
+      "line": 19
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:chromium.launch",
       "relationship": "calls",
       "name": "chromium.launch",
-      "line": 17
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:fetch",
-      "relationship": "calls",
-      "name": "fetch",
       "line": 20
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.equal",
+      "target": "call:fetch",
       "relationship": "calls",
-      "name": "assert.equal",
-      "line": 21
+      "name": "fetch",
+      "line": 23
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:assert.equal",
       "relationship": "calls",
       "name": "assert.equal",
-      "line": 23
+      "line": 24
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 26
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:fetch",
       "relationship": "calls",
       "name": "fetch",
-      "line": 23
+      "line": 26
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:JSON.stringify",
       "relationship": "calls",
       "name": "JSON.stringify",
-      "line": 23
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.notEqual",
-      "relationship": "calls",
-      "name": "assert.notEqual",
-      "line": 24
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:fetch",
-      "relationship": "calls",
-      "name": "fetch",
-      "line": 24
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.notEqual",
-      "relationship": "calls",
-      "name": "assert.notEqual",
-      "line": 25
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:fetch",
-      "relationship": "calls",
-      "name": "fetch",
-      "line": 25
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:browser.newContext",
-      "relationship": "calls",
-      "name": "browser.newContext",
       "line": 26
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:context.newPage",
+      "target": "call:assert.notEqual",
       "relationship": "calls",
-      "name": "context.newPage",
+      "name": "assert.notEqual",
       "line": 27
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.on",
+      "target": "call:fetch",
       "relationship": "calls",
-      "name": "page.on",
+      "name": "fetch",
+      "line": 27
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.notEqual",
+      "relationship": "calls",
+      "name": "assert.notEqual",
       "line": 28
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:errors.push",
+      "target": "call:fetch",
       "relationship": "calls",
-      "name": "errors.push",
+      "name": "fetch",
       "line": 28
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.goto",
+      "target": "call:randomUUID",
       "relationship": "calls",
-      "name": "page.goto",
+      "name": "randomUUID",
       "line": 29
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.waitForURL",
+      "target": "call:randomBytes(32).toString",
       "relationship": "calls",
-      "name": "page.waitForURL",
+      "name": "randomBytes(32).toString",
       "line": 29
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('Email',{exact:true}).fill",
+      "target": "call:randomBytes",
       "relationship": "calls",
-      "name": "page.getByLabel('Email',{exact:true}).fill",
+      "name": "randomBytes",
+      "line": 29
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorAction",
+      "relationship": "calls",
+      "name": "operatorAction",
       "line": 30
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
+      "target": "call:assert.equal",
       "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 30
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('Password',{exact:true}).fill",
-      "relationship": "calls",
-      "name": "page.getByLabel('Password',{exact:true}).fill",
-      "line": 31
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
-      "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 31
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('button',{name:'Sign in',exact:true}).click",
-      "relationship": "calls",
-      "name": "page.getByRole('button',{name:'Sign in',exact:true}).click",
+      "name": "assert.equal",
       "line": 32
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
+      "target": "call:fetch",
       "relationship": "calls",
-      "name": "page.getByRole",
+      "name": "fetch",
       "line": 32
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.waitForURL",
+      "target": "call:spawn",
       "relationship": "calls",
-      "name": "page.waitForURL",
-      "line": 32
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.goto",
-      "relationship": "calls",
-      "name": "page.goto",
+      "name": "spawn",
       "line": 33
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:context.cookies",
+      "target": "call:child.stdout.on",
       "relationship": "calls",
-      "name": "context.cookies",
+      "name": "child.stdout.on",
+      "line": 33
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:child.stderr.on",
+      "relationship": "calls",
+      "name": "child.stderr.on",
+      "line": 33
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:child.on",
+      "relationship": "calls",
+      "name": "child.on",
+      "line": 33
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:resolve",
+      "relationship": "calls",
+      "name": "resolve",
+      "line": 33
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:child.stdin.end",
+      "relationship": "calls",
+      "name": "child.stdin.end",
+      "line": 33
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 33
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
       "line": 34
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:browser.newContext",
-      "relationship": "calls",
-      "name": "browser.newContext",
-      "line": 35
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:other.addCookies",
-      "relationship": "calls",
-      "name": "other.addCookies",
-      "line": 35
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('Current password',{exact:true}).fill",
-      "relationship": "calls",
-      "name": "page.getByLabel('Current password',{exact:true}).fill",
-      "line": 36
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
-      "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 36
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('New password',{exact:true}).fill",
-      "relationship": "calls",
-      "name": "page.getByLabel('New password',{exact:true}).fill",
-      "line": 37
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
-      "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 37
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('Confirm new password',{exact:true}).fill",
-      "relationship": "calls",
-      "name": "page.getByLabel('Confirm new password',{exact:true}).fill",
-      "line": 38
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
-      "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 38
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('button',{name:'Change password',exact:true}).click",
-      "relationship": "calls",
-      "name": "page.getByRole('button',{name:'Change password',exact:true}).click",
-      "line": 39
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
-      "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 39
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('alert').filter({hasText:'Current password is incorrect'}).waitFor",
-      "relationship": "calls",
-      "name": "page.getByRole('alert').filter({hasText:'Current password is incorrect'}).waitFor",
-      "line": 40
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('alert').filter",
-      "relationship": "calls",
-      "name": "page.getByRole('alert').filter",
-      "line": 40
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
-      "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 40
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.equal",
-      "relationship": "calls",
-      "name": "assert.equal",
-      "line": 41
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('New password',{exact:true}).inputValue",
-      "relationship": "calls",
-      "name": "page.getByLabel('New password',{exact:true}).inputValue",
-      "line": 41
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
-      "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 41
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('Current password',{exact:true}).fill",
-      "relationship": "calls",
-      "name": "page.getByLabel('Current password',{exact:true}).fill",
-      "line": 42
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
-      "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 42
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('button',{name:'Change password',exact:true}).click",
-      "relationship": "calls",
-      "name": "page.getByRole('button',{name:'Change password',exact:true}).click",
-      "line": 43
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
-      "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 43
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('status').filter({hasText:'Password changed'}).waitFor",
-      "relationship": "calls",
-      "name": "page.getByRole('status').filter({hasText:'Password changed'}).waitFor",
-      "line": 44
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('status').filter",
-      "relationship": "calls",
-      "name": "page.getByRole('status').filter",
-      "line": 44
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
-      "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 44
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.equal",
-      "relationship": "calls",
-      "name": "assert.equal",
-      "line": 45
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:(await other.request.get(base+'/api/contacts')).status",
-      "relationship": "calls",
-      "name": "(await other.request.get(base+'/api/contacts')).status",
-      "line": 45
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:other.request.get",
-      "relationship": "calls",
-      "name": "other.request.get",
-      "line": 45
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.equal",
-      "relationship": "calls",
-      "name": "assert.equal",
-      "line": 46
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:(await context.request.get(base+'/api/contacts')).status",
-      "relationship": "calls",
-      "name": "(await context.request.get(base+'/api/contacts')).status",
-      "line": 46
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:context.request.get",
-      "relationship": "calls",
-      "name": "context.request.get",
-      "line": 46
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.equal",
-      "relationship": "calls",
-      "name": "assert.equal",
-      "line": 47
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:(await context.request.post(base+'/api/settings',{headers:{origin:'https://attacker.invalid'},data:{...",
-      "relationship": "calls",
-      "name": "(await context.request.post(base+'/api/settings',{headers:{origin:'https://attacker.invalid'},data:{...",
-      "line": 47
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:context.request.post",
-      "relationship": "calls",
-      "name": "context.request.post",
-      "line": 47
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.equal",
-      "relationship": "calls",
-      "name": "assert.equal",
-      "line": 48
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:(await context.request.get(base+'/api/cron/send-scheduled')).status",
-      "relationship": "calls",
-      "name": "(await context.request.get(base+'/api/cron/send-scheduled')).status",
-      "line": 48
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:context.request.get",
-      "relationship": "calls",
-      "name": "context.request.get",
-      "line": 48
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.setViewportSize",
-      "relationship": "calls",
-      "name": "page.setViewportSize",
-      "line": 50
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.equal",
-      "relationship": "calls",
-      "name": "assert.equal",
-      "line": 51
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.evaluate",
-      "relationship": "calls",
-      "name": "page.evaluate",
-      "line": 51
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.screenshot",
-      "relationship": "calls",
-      "name": "page.screenshot",
-      "line": 52
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('button',{name:'Sign out',exact:true}).scrollIntoViewIfNeeded",
-      "relationship": "calls",
-      "name": "page.getByRole('button',{name:'Sign out',exact:true}).scrollIntoViewIfNeeded",
-      "line": 53
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
-      "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 53
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('button',{name:'Sign out',exact:true}).boundingBox",
-      "relationship": "calls",
-      "name": "page.getByRole('button',{name:'Sign out',exact:true}).boundingBox",
-      "line": 54
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
-      "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 54
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:assert.ok",
       "relationship": "calls",
       "name": "assert.ok",
-      "line": 55
+      "line": 34
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.screenshot",
+      "target": "call:adapterResult.stdout.includes",
       "relationship": "calls",
-      "name": "page.screenshot",
-      "line": 56
+      "name": "adapterResult.stdout.includes",
+      "line": 34
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('button',{name:'Sign out',exact:true}).click",
+      "target": "call:assert.ok",
       "relationship": "calls",
-      "name": "page.getByRole('button',{name:'Sign out',exact:true}).click",
-      "line": 58
+      "name": "assert.ok",
+      "line": 34
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
+      "target": "call:adapterResult.stderr.includes",
       "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 58
+      "name": "adapterResult.stderr.includes",
+      "line": 34
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.waitForURL",
+      "target": "call:fetch",
       "relationship": "calls",
-      "name": "page.waitForURL",
-      "line": 58
+      "name": "fetch",
+      "line": 35
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 35
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:assert.equal",
       "relationship": "calls",
       "name": "assert.equal",
-      "line": 59
+      "line": 36
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:(await context.request.get(base+'/api/contacts')).status",
+      "target": "call:draftResponse.json",
       "relationship": "calls",
-      "name": "(await context.request.get(base+'/api/contacts')).status",
-      "line": 59
+      "name": "draftResponse.json",
+      "line": 36
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:context.request.get",
+      "target": "call:assert.equal",
       "relationship": "calls",
-      "name": "context.request.get",
-      "line": 59
+      "name": "assert.equal",
+      "line": 36
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('Email',{exact:true}).fill",
+      "target": "call:assert.equal",
       "relationship": "calls",
-      "name": "page.getByLabel('Email',{exact:true}).fill",
-      "line": 60
+      "name": "assert.equal",
+      "line": 37
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
+      "target": "call:fetch",
       "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 60
+      "name": "fetch",
+      "line": 37
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel('Password',{exact:true}).fill",
+      "target": "call:operatorAction",
       "relationship": "calls",
-      "name": "page.getByLabel('Password',{exact:true}).fill",
-      "line": 60
+      "name": "operatorAction",
+      "line": 38
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByLabel",
+      "target": "call:assert.equal",
       "relationship": "calls",
-      "name": "page.getByLabel",
-      "line": 60
+      "name": "assert.equal",
+      "line": 38
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole('button',{name:'Sign in',exact:true}).click",
+      "target": "call:fetch",
       "relationship": "calls",
-      "name": "page.getByRole('button',{name:'Sign in',exact:true}).click",
-      "line": 61
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.getByRole",
-      "relationship": "calls",
-      "name": "page.getByRole",
-      "line": 61
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:page.waitForURL",
-      "relationship": "calls",
-      "name": "page.waitForURL",
-      "line": 61
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:assert.deepEqual",
-      "relationship": "calls",
-      "name": "assert.deepEqual",
-      "line": 62
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:other.close",
-      "relationship": "calls",
-      "name": "other.close",
-      "line": 63
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:context.close",
-      "relationship": "calls",
-      "name": "context.close",
-      "line": 63
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:console.log",
-      "relationship": "calls",
-      "name": "console.log",
-      "line": 64
-    },
-    {
-      "source": "function:scripts/auth-browser-proof.ts:main",
-      "target": "call:browser.close",
-      "relationship": "calls",
-      "name": "browser.close",
-      "line": 65
+      "name": "fetch",
+      "line": 38
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:authPool.query",
       "relationship": "calls",
       "name": "authPool.query",
+      "line": 39
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 39
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:createOperatorServer",
+      "relationship": "calls",
+      "name": "createOperatorServer",
+      "line": 40
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:localOperator.listen",
+      "relationship": "calls",
+      "name": "localOperator.listen",
+      "line": 40
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:localOperator.address",
+      "relationship": "calls",
+      "name": "localOperator.address",
+      "line": 40
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.ok",
+      "relationship": "calls",
+      "name": "assert.ok",
+      "line": 40
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:browser.newPage",
+      "relationship": "calls",
+      "name": "browser.newPage",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.goto",
+      "relationship": "calls",
+      "name": "operatorPage.goto",
+      "line": 42
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.getByText(/Configured target:/).waitFor",
+      "relationship": "calls",
+      "name": "operatorPage.getByText(/Configured target:/).waitFor",
+      "line": 43
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.getByText",
+      "relationship": "calls",
+      "name": "operatorPage.getByText",
+      "line": 43
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 44
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=password]').getAttribute",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=password]').getAttribute",
+      "line": 44
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 44
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=token]').getAttribute",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=token]').getAttribute",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.screenshot",
+      "relationship": "calls",
+      "name": "operatorPage.screenshot",
+      "line": 46
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 47
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:randomBytes(24).toString",
+      "relationship": "calls",
+      "name": "randomBytes(24).toString",
+      "line": 47
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:randomBytes",
+      "relationship": "calls",
+      "name": "randomBytes",
+      "line": 47
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=name]').fill",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=name]').fill",
+      "line": 48
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 48
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=email]').fill",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=email]').fill",
+      "line": 49
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 49
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=password]').fill",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=password]').fill",
+      "line": 50
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 50
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=confirmPassword]').fill",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=confirmPassword]').fill",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('#generate').click",
+      "relationship": "calls",
+      "name": "operatorPage.locator('#generate').click",
+      "line": 52
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 52
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.match",
+      "relationship": "calls",
+      "name": "assert.match",
+      "line": 53
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=token]').inputValue",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=token]').inputValue",
+      "line": 53
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 53
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.getByRole('button',{name:'Apply operation',exact:true}).click",
+      "relationship": "calls",
+      "name": "operatorPage.getByRole('button',{name:'Apply operation',exact:true}).click",
+      "line": 54
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.getByRole",
+      "relationship": "calls",
+      "name": "operatorPage.getByRole",
+      "line": 54
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('#result').filter({hasText:'\"ok\": true'}).waitFor",
+      "relationship": "calls",
+      "name": "operatorPage.locator('#result').filter({hasText:'\"ok\": true'}).waitFor",
+      "line": 55
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('#result').filter",
+      "relationship": "calls",
+      "name": "operatorPage.locator('#result').filter",
+      "line": 55
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 55
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 56
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=password]').inputValue",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=password]').inputValue",
+      "line": 56
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 56
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 57
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator('input[name=token]').inputValue",
+      "relationship": "calls",
+      "name": "operatorPage.locator('input[name=token]').inputValue",
+      "line": 57
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.locator",
+      "relationship": "calls",
+      "name": "operatorPage.locator",
+      "line": 57
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 58
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:operatorPage.close",
+      "relationship": "calls",
+      "name": "operatorPage.close",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:localOperator.close",
+      "relationship": "calls",
+      "name": "localOperator.close",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:resolve",
+      "relationship": "calls",
+      "name": "resolve",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:browser.newContext",
+      "relationship": "calls",
+      "name": "browser.newContext",
+      "line": 60
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:context.newPage",
+      "relationship": "calls",
+      "name": "context.newPage",
+      "line": 61
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.on",
+      "relationship": "calls",
+      "name": "page.on",
+      "line": 62
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:errors.push",
+      "relationship": "calls",
+      "name": "errors.push",
+      "line": 62
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 63
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.waitForURL",
+      "relationship": "calls",
+      "name": "page.waitForURL",
+      "line": 63
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Email',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('Email',{exact:true}).fill",
+      "line": 64
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 64
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Password',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('Password',{exact:true}).fill",
       "line": 65
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 65
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Sign in',exact:true}).click",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Sign in',exact:true}).click",
+      "line": 66
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 66
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.waitForURL",
+      "relationship": "calls",
+      "name": "page.waitForURL",
+      "line": 66
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 67
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:context.cookies",
+      "relationship": "calls",
+      "name": "context.cookies",
+      "line": 68
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:browser.newContext",
+      "relationship": "calls",
+      "name": "browser.newContext",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:other.addCookies",
+      "relationship": "calls",
+      "name": "other.addCookies",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Current password',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('Current password',{exact:true}).fill",
+      "line": 70
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 70
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('New password',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('New password',{exact:true}).fill",
+      "line": 71
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 71
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Confirm new password',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('Confirm new password',{exact:true}).fill",
+      "line": 72
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 72
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Change password',exact:true}).click",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Change password',exact:true}).click",
+      "line": 73
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 73
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('alert').filter({hasText:'Current password is incorrect'}).waitFor",
+      "relationship": "calls",
+      "name": "page.getByRole('alert').filter({hasText:'Current password is incorrect'}).waitFor",
+      "line": 74
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('alert').filter",
+      "relationship": "calls",
+      "name": "page.getByRole('alert').filter",
+      "line": 74
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 74
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 75
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('New password',{exact:true}).inputValue",
+      "relationship": "calls",
+      "name": "page.getByLabel('New password',{exact:true}).inputValue",
+      "line": 75
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 75
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Current password',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('Current password',{exact:true}).fill",
+      "line": 76
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 76
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Change password',exact:true}).click",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Change password',exact:true}).click",
+      "line": 77
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 77
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('status').filter({hasText:'Password changed'}).waitFor",
+      "relationship": "calls",
+      "name": "page.getByRole('status').filter({hasText:'Password changed'}).waitFor",
+      "line": 78
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('status').filter",
+      "relationship": "calls",
+      "name": "page.getByRole('status').filter",
+      "line": 78
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 78
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 79
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:(await other.request.get(base+'/api/contacts')).status",
+      "relationship": "calls",
+      "name": "(await other.request.get(base+'/api/contacts')).status",
+      "line": 79
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:other.request.get",
+      "relationship": "calls",
+      "name": "other.request.get",
+      "line": 79
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 80
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:(await context.request.get(base+'/api/contacts')).status",
+      "relationship": "calls",
+      "name": "(await context.request.get(base+'/api/contacts')).status",
+      "line": 80
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:context.request.get",
+      "relationship": "calls",
+      "name": "context.request.get",
+      "line": 80
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 81
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:(await context.request.post(base+'/api/settings',{headers:{origin:'https://attacker.invalid'},data:{...",
+      "relationship": "calls",
+      "name": "(await context.request.post(base+'/api/settings',{headers:{origin:'https://attacker.invalid'},data:{...",
+      "line": 81
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:context.request.post",
+      "relationship": "calls",
+      "name": "context.request.post",
+      "line": 81
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 82
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:(await context.request.get(base+'/api/cron/send-scheduled')).status",
+      "relationship": "calls",
+      "name": "(await context.request.get(base+'/api/cron/send-scheduled')).status",
+      "line": 82
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:context.request.get",
+      "relationship": "calls",
+      "name": "context.request.get",
+      "line": 82
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.setViewportSize",
+      "relationship": "calls",
+      "name": "page.setViewportSize",
+      "line": 84
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 85
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.evaluate",
+      "relationship": "calls",
+      "name": "page.evaluate",
+      "line": 85
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.screenshot",
+      "relationship": "calls",
+      "name": "page.screenshot",
+      "line": 86
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Sign out',exact:true}).scrollIntoViewIfNeeded",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Sign out',exact:true}).scrollIntoViewIfNeeded",
+      "line": 87
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 87
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Sign out',exact:true}).boundingBox",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Sign out',exact:true}).boundingBox",
+      "line": 88
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 88
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.ok",
+      "relationship": "calls",
+      "name": "assert.ok",
+      "line": 89
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.screenshot",
+      "relationship": "calls",
+      "name": "page.screenshot",
+      "line": 90
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Sign out',exact:true}).click",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Sign out',exact:true}).click",
+      "line": 92
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 92
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.waitForURL",
+      "relationship": "calls",
+      "name": "page.waitForURL",
+      "line": 92
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 93
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:(await context.request.get(base+'/api/contacts')).status",
+      "relationship": "calls",
+      "name": "(await context.request.get(base+'/api/contacts')).status",
+      "line": 93
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:context.request.get",
+      "relationship": "calls",
+      "name": "context.request.get",
+      "line": 93
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Email',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('Email',{exact:true}).fill",
+      "line": 94
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 94
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Password',{exact:true}).fill",
+      "relationship": "calls",
+      "name": "page.getByLabel('Password',{exact:true}).fill",
+      "line": 94
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 94
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Sign in',exact:true}).click",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Sign in',exact:true}).click",
+      "line": 95
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 95
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:page.waitForURL",
+      "relationship": "calls",
+      "name": "page.waitForURL",
+      "line": 95
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:assert.deepEqual",
+      "relationship": "calls",
+      "name": "assert.deepEqual",
+      "line": 96
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:other.close",
+      "relationship": "calls",
+      "name": "other.close",
+      "line": 97
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:context.close",
+      "relationship": "calls",
+      "name": "context.close",
+      "line": 97
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:console.log",
+      "relationship": "calls",
+      "name": "console.log",
+      "line": 98
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:browser.close",
+      "relationship": "calls",
+      "name": "browser.close",
+      "line": 99
+    },
+    {
+      "source": "function:scripts/auth-browser-proof.ts:main",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 99
     },
     {
       "source": "function:scripts/auth-browser-proof.ts:main",
       "target": "call:authPool.end",
       "relationship": "calls",
       "name": "authPool.end",
-      "line": 65
+      "line": 99
+    },
+    {
+      "source": "file:scripts/auth-housekeeping.ts:auth-housekeeping.ts",
+      "target": "import:../src/lib/auth/store",
+      "relationship": "imports",
+      "path": "../src/lib/auth/store",
+      "symbols": [
+        "authPool",
+        "cleanupAuth"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-housekeeping.ts:auth-housekeeping.ts",
+      "target": "function:scripts/auth-housekeeping.ts:main",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/auth-housekeeping.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 2
+    },
+    {
+      "source": "function:scripts/auth-housekeeping.ts:main",
+      "target": "call:console.log",
+      "relationship": "calls",
+      "name": "console.log",
+      "line": 2
+    },
+    {
+      "source": "function:scripts/auth-housekeeping.ts:main",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 2
+    },
+    {
+      "source": "function:scripts/auth-housekeeping.ts:main",
+      "target": "call:cleanupAuth",
+      "relationship": "calls",
+      "name": "cleanupAuth",
+      "line": 2
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "import:node:http",
+      "relationship": "imports",
+      "path": "node:http",
+      "symbols": [
+        "http"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "import:node:crypto",
+      "relationship": "imports",
+      "path": "node:crypto",
+      "symbols": [
+        "randomBytes"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "import:node:fs/promises",
+      "relationship": "imports",
+      "path": "node:fs/promises",
+      "symbols": [
+        "readFile"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "import:node:path",
+      "relationship": "imports",
+      "path": "node:path",
+      "symbols": [
+        "path"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "import:node:os",
+      "relationship": "imports",
+      "path": "node:os",
+      "symbols": [
+        "os"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "import:../../src/lib/auth/operator",
+      "relationship": "imports",
+      "path": "../../src/lib/auth/operator",
+      "symbols": [
+        "operatorAction",
+        "operatorMetadata"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "import:../../src/lib/auth/store",
+      "relationship": "imports",
+      "path": "../../src/lib/auth/store",
+      "symbols": [
+        "AuthError"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:http.createServer",
+      "relationship": "calls",
+      "name": "http.createServer",
+      "line": 10
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:server.address",
+      "relationship": "calls",
+      "name": "server.address",
+      "line": 11
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:response.writeHead",
+      "relationship": "calls",
+      "name": "response.writeHead",
+      "line": 12
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:response.end",
+      "relationship": "calls",
+      "name": "response.end",
+      "line": 12
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:response.writeHead",
+      "relationship": "calls",
+      "name": "response.writeHead",
+      "line": 16
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:response.end",
+      "relationship": "calls",
+      "name": "response.end",
+      "line": 16
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 16
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:json",
+      "relationship": "calls",
+      "name": "json",
+      "line": 17
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:randomBytes(24).toString",
+      "relationship": "calls",
+      "name": "randomBytes(24).toString",
+      "line": 20
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:randomBytes",
+      "relationship": "calls",
+      "name": "randomBytes",
+      "line": 20
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:(await readFile(path.join(process.cwd(),'scripts/auth-operator/index.html'),'utf8')).replaceAll",
+      "relationship": "calls",
+      "name": "(await readFile(path.join(process.cwd(),'scripts/auth-operator/index.html'),'utf8')).replaceAll",
+      "line": 21
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:readFile",
+      "relationship": "calls",
+      "name": "readFile",
+      "line": 21
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:path.join",
+      "relationship": "calls",
+      "name": "path.join",
+      "line": 21
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:process.cwd",
+      "relationship": "calls",
+      "name": "process.cwd",
+      "line": 21
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:response.writeHead",
+      "relationship": "calls",
+      "name": "response.writeHead",
+      "line": 22
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:response.end",
+      "relationship": "calls",
+      "name": "response.end",
+      "line": 22
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:json",
+      "relationship": "calls",
+      "name": "json",
+      "line": 24
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:json",
+      "relationship": "calls",
+      "name": "json",
+      "line": 25
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:setTimeout",
+      "relationship": "calls",
+      "name": "setTimeout",
+      "line": 27
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:request.destroy",
+      "relationship": "calls",
+      "name": "request.destroy",
+      "line": 27
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:chunks.push",
+      "relationship": "calls",
+      "name": "chunks.push",
+      "line": 28
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:Buffer.from",
+      "relationship": "calls",
+      "name": "Buffer.from",
+      "line": 28
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:clearTimeout",
+      "relationship": "calls",
+      "name": "clearTimeout",
+      "line": 28
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:JSON.parse",
+      "relationship": "calls",
+      "name": "JSON.parse",
+      "line": 30
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:Buffer.concat(chunks).toString",
+      "relationship": "calls",
+      "name": "Buffer.concat(chunks).toString",
+      "line": 30
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:Buffer.concat",
+      "relationship": "calls",
+      "name": "Buffer.concat",
+      "line": 30
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:Array.isArray",
+      "relationship": "calls",
+      "name": "Array.isArray",
+      "line": 30
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 30
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:json",
+      "relationship": "calls",
+      "name": "json",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:operatorMetadata",
+      "relationship": "calls",
+      "name": "operatorMetadata",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:operatorAction",
+      "relationship": "calls",
+      "name": "operatorAction",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:os.userInfo",
+      "relationship": "calls",
+      "name": "os.userInfo",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:createOperatorServer",
+      "target": "call:json",
+      "relationship": "calls",
+      "name": "json",
+      "line": 32
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "function:scripts/auth-operator/server.ts:json",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:json",
+      "target": "call:response.writeHead",
+      "relationship": "calls",
+      "name": "response.writeHead",
+      "line": 16
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:json",
+      "target": "call:response.end",
+      "relationship": "calls",
+      "name": "response.end",
+      "line": 16
+    },
+    {
+      "source": "function:scripts/auth-operator/server.ts:json",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 16
+    },
+    {
+      "source": "file:scripts/auth-operator.ts:auth-operator.ts",
+      "target": "import:./auth-operator/server",
+      "relationship": "imports",
+      "path": "./auth-operator/server",
+      "symbols": [
+        "createOperatorServer"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator.ts:auth-operator.ts",
+      "target": "import:../src/lib/auth/store",
+      "relationship": "imports",
+      "path": "../src/lib/auth/store",
+      "symbols": [
+        "authPool"
+      ]
+    },
+    {
+      "source": "file:scripts/auth-operator.ts:auth-operator.ts",
+      "target": "function:scripts/auth-operator.ts:stop",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/auth-operator.ts:stop",
+      "target": "call:server.close",
+      "relationship": "calls",
+      "name": "server.close",
+      "line": 7
+    },
+    {
+      "source": "function:scripts/auth-operator.ts:stop",
+      "target": "call:authPool.end().then",
+      "relationship": "calls",
+      "name": "authPool.end().then",
+      "line": 7
+    },
+    {
+      "source": "function:scripts/auth-operator.ts:stop",
+      "target": "call:authPool.end",
+      "relationship": "calls",
+      "name": "authPool.end",
+      "line": 7
+    },
+    {
+      "source": "function:scripts/auth-operator.ts:stop",
+      "target": "call:process.exit",
+      "relationship": "calls",
+      "name": "process.exit",
+      "line": 7
     },
     {
       "source": "file:scripts/backfill-email-analytics.ts:backfill-email-analytics.ts",
@@ -6944,6 +8135,160 @@
       "relationship": "calls",
       "name": "JSON.stringify",
       "line": 13
+    },
+    {
+      "source": "file:scripts/crm-machine-request.ts:crm-machine-request.ts",
+      "target": "import:../src/lib/auth/machine",
+      "relationship": "imports",
+      "path": "../src/lib/auth/machine",
+      "symbols": [
+        "requiredMachineScope"
+      ]
+    },
+    {
+      "source": "file:scripts/crm-machine-request.ts:crm-machine-request.ts",
+      "target": "function:scripts/crm-machine-request.ts:main",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 5
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 7
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:chunks.push",
+      "relationship": "calls",
+      "name": "chunks.push",
+      "line": 7
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Buffer.from",
+      "relationship": "calls",
+      "name": "Buffer.from",
+      "line": 7
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:JSON.parse",
+      "relationship": "calls",
+      "name": "JSON.parse",
+      "line": 8
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Buffer.concat(chunks).toString",
+      "relationship": "calls",
+      "name": "Buffer.concat(chunks).toString",
+      "line": 8
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Buffer.concat",
+      "relationship": "calls",
+      "name": "Buffer.concat",
+      "line": 8
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 10
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:/^mcrm_[a-f0-9]{64}$/.test",
+      "relationship": "calls",
+      "name": "/^mcrm_[a-f0-9]{64}$/.test",
+      "line": 11
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:requiredMachineScope",
+      "relationship": "calls",
+      "name": "requiredMachineScope",
+      "line": 11
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:input.path.split",
+      "relationship": "calls",
+      "name": "input.path.split",
+      "line": 11
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 11
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:input.path.startsWith",
+      "relationship": "calls",
+      "name": "input.path.startsWith",
+      "line": 13
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 13
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:fetch",
+      "relationship": "calls",
+      "name": "fetch",
+      "line": 14
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 14
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:AbortSignal.timeout",
+      "relationship": "calls",
+      "name": "AbortSignal.timeout",
+      "line": 14
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:Error",
+      "relationship": "calls",
+      "name": "Error",
+      "line": 15
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:response.text",
+      "relationship": "calls",
+      "name": "response.text",
+      "line": 16
+    },
+    {
+      "source": "function:scripts/crm-machine-request.ts:main",
+      "target": "call:process.stdout.write",
+      "relationship": "calls",
+      "name": "process.stdout.write",
+      "line": 17
     },
     {
       "source": "file:scripts/email-worker.ts:email-worker.ts",
@@ -7788,6 +9133,25 @@
       "relationship": "calls",
       "name": "console.log",
       "line": 49
+    },
+    {
+      "source": "file:scripts/update-password-denylist.ts:update-password-denylist.ts",
+      "target": "import:node:fs",
+      "relationship": "imports",
+      "path": "node:fs",
+      "symbols": [
+        "readFileSync",
+        "writeFileSync"
+      ]
+    },
+    {
+      "source": "file:scripts/update-password-denylist.ts:update-password-denylist.ts",
+      "target": "import:node:crypto",
+      "relationship": "imports",
+      "path": "node:crypto",
+      "symbols": [
+        "createHash"
+      ]
     },
     {
       "source": "file:src/app/(admin)/campaigns/[id]/CampaignControls.tsx:CampaignControls.tsx",
@@ -29570,7 +30934,18 @@
       "path": "./store",
       "symbols": [
         "identity",
-        "AuthError"
+        "AuthError",
+        "audit",
+        "throttle"
+      ]
+    },
+    {
+      "source": "file:src/lib/auth/access.ts:access.ts",
+      "target": "import:./machine",
+      "relationship": "imports",
+      "path": "./machine",
+      "symbols": [
+        "authorizeMachine"
       ]
     },
     {
@@ -29583,7 +30958,7 @@
       "target": "call:['127.0.0.1', 'localhost', '[::1]'].includes",
       "relationship": "calls",
       "name": "['127.0.0.1', 'localhost', '[::1]'].includes",
-      "line": 7
+      "line": 8
     },
     {
       "source": "file:src/lib/auth/access.ts:access.ts",
@@ -29595,14 +30970,14 @@
       "target": "call:authOrigin().startsWith",
       "relationship": "calls",
       "name": "authOrigin().startsWith",
-      "line": 10
+      "line": 11
     },
     {
       "source": "function:src/lib/auth/access.ts:cookieName",
       "target": "call:authOrigin",
       "relationship": "calls",
       "name": "authOrigin",
-      "line": 10
+      "line": 11
     },
     {
       "source": "file:src/lib/auth/access.ts:access.ts",
@@ -29614,63 +30989,63 @@
       "target": "call:request.headers.get('cookie')?.split(';').map(v => v.trim()).find(v => v.startsWith(`${cookieName()}...",
       "relationship": "calls",
       "name": "request.headers.get('cookie')?.split(';').map(v => v.trim()).find(v => v.startsWith(`${cookieName()}...",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:request.headers.get('cookie')?.split(';').map(v => v.trim()).find",
       "relationship": "calls",
       "name": "request.headers.get('cookie')?.split(';').map(v => v.trim()).find",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:request.headers.get('cookie')?.split(';').map",
       "relationship": "calls",
       "name": "request.headers.get('cookie')?.split(';').map",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:request.headers.get('cookie')?.split",
       "relationship": "calls",
       "name": "request.headers.get('cookie')?.split",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:request.headers.get",
       "relationship": "calls",
       "name": "request.headers.get",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:v.trim",
       "relationship": "calls",
       "name": "v.trim",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:v.startsWith",
       "relationship": "calls",
       "name": "v.startsWith",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:cookieName",
       "relationship": "calls",
       "name": "cookieName",
-      "line": 12
+      "line": 13
     },
     {
       "source": "function:src/lib/auth/access.ts:requestToken",
       "target": "call:cookieName",
       "relationship": "calls",
       "name": "cookieName",
-      "line": 12
+      "line": 13
     },
     {
       "source": "file:src/lib/auth/access.ts:access.ts",
@@ -29682,28 +31057,28 @@
       "target": "call:request.headers.get",
       "relationship": "calls",
       "name": "request.headers.get",
-      "line": 15
+      "line": 16
     },
     {
       "source": "function:src/lib/auth/access.ts:sameOrigin",
       "target": "call:authOrigin",
       "relationship": "calls",
       "name": "authOrigin",
-      "line": 15
+      "line": 16
     },
     {
       "source": "function:src/lib/auth/access.ts:sameOrigin",
       "target": "call:['cross-site', 'same-site'].includes",
       "relationship": "calls",
       "name": "['cross-site', 'same-site'].includes",
-      "line": 15
+      "line": 16
     },
     {
       "source": "function:src/lib/auth/access.ts:sameOrigin",
       "target": "call:request.headers.get",
       "relationship": "calls",
       "name": "request.headers.get",
-      "line": 15
+      "line": 16
     },
     {
       "source": "file:src/lib/auth/access.ts:access.ts",
@@ -29715,35 +31090,35 @@
       "target": "call:path.startsWith",
       "relationship": "calls",
       "name": "path.startsWith",
-      "line": 19
+      "line": 20
     },
     {
       "source": "function:src/lib/auth/access.ts:publicRoute",
       "target": "call:/^\\/unsubscribe\\/[^/]+$/.test",
       "relationship": "calls",
       "name": "/^\\/unsubscribe\\/[^/]+$/.test",
-      "line": 20
+      "line": 21
     },
     {
       "source": "function:src/lib/auth/access.ts:publicRoute",
       "target": "call:/^\\/api\\/track\\/(click|open)\\/[^/]+$/.test",
       "relationship": "calls",
       "name": "/^\\/api\\/track\\/(click|open)\\/[^/]+$/.test",
-      "line": 21
+      "line": 22
     },
     {
       "source": "function:src/lib/auth/access.ts:publicRoute",
       "target": "call:['/api/auth/login', '/api/webhooks/ses', '/api/webhooks/sendgrid', '/api/website-signups', '/api/int...",
       "relationship": "calls",
       "name": "['/api/auth/login', '/api/webhooks/ses', '/api/webhooks/sendgrid', '/api/website-signups', '/api/int...",
-      "line": 23
+      "line": 24
     },
     {
       "source": "function:src/lib/auth/access.ts:publicRoute",
       "target": "call:/^\\/api\\/unsubscribe\\/[^/]+$/.test",
       "relationship": "calls",
       "name": "/^\\/api\\/unsubscribe\\/[^/]+$/.test",
-      "line": 24
+      "line": 25
     },
     {
       "source": "file:src/lib/auth/access.ts:access.ts",
@@ -29755,7 +31130,7 @@
       "target": "call:NextResponse.json",
       "relationship": "calls",
       "name": "NextResponse.json",
-      "line": 28
+      "line": 29
     },
     {
       "source": "file:src/lib/auth/access.ts:access.ts",
@@ -29767,42 +31142,610 @@
       "target": "call:publicRoute",
       "relationship": "calls",
       "name": "publicRoute",
-      "line": 34
+      "line": 35
+    },
+    {
+      "source": "function:src/lib/auth/access.ts:guard",
+      "target": "call:request.headers.has",
+      "relationship": "calls",
+      "name": "request.headers.has",
+      "line": 36
+    },
+    {
+      "source": "function:src/lib/auth/access.ts:guard",
+      "target": "call:authorizeMachine",
+      "relationship": "calls",
+      "name": "authorizeMachine",
+      "line": 36
     },
     {
       "source": "function:src/lib/auth/access.ts:guard",
       "target": "call:['GET', 'HEAD', 'OPTIONS'].includes",
       "relationship": "calls",
       "name": "['GET', 'HEAD', 'OPTIONS'].includes",
-      "line": 35
+      "line": 37
     },
     {
       "source": "function:src/lib/auth/access.ts:guard",
       "target": "call:sameOrigin",
       "relationship": "calls",
       "name": "sameOrigin",
-      "line": 35
+      "line": 37
     },
     {
       "source": "function:src/lib/auth/access.ts:guard",
       "target": "call:identity",
       "relationship": "calls",
       "name": "identity",
-      "line": 36
+      "line": 38
     },
     {
       "source": "function:src/lib/auth/access.ts:guard",
       "target": "call:requestToken",
       "relationship": "calls",
       "name": "requestToken",
-      "line": 36
+      "line": 38
+    },
+    {
+      "source": "function:src/lib/auth/access.ts:guard",
+      "target": "call:throttle",
+      "relationship": "calls",
+      "name": "throttle",
+      "line": 42
+    },
+    {
+      "source": "function:src/lib/auth/access.ts:guard",
+      "target": "call:audit",
+      "relationship": "calls",
+      "name": "audit",
+      "line": 42
     },
     {
       "source": "function:src/lib/auth/access.ts:guard",
       "target": "call:authFailure",
       "relationship": "calls",
       "name": "authFailure",
+      "line": 43
+    },
+    {
+      "source": "function:src/lib/auth/access.ts:guard",
+      "target": "call:authFailure",
+      "relationship": "calls",
+      "name": "authFailure",
+      "line": 45
+    },
+    {
+      "source": "file:src/lib/auth/machine.ts:machine.ts",
+      "target": "import:./store",
+      "relationship": "imports",
+      "path": "./store",
+      "symbols": [
+        "AuthError",
+        "authPool",
+        "tokenHash",
+        "audit"
+      ]
+    },
+    {
+      "source": "file:src/lib/auth/machine.ts:machine.ts",
+      "target": "type:src/lib/auth/machine.ts:MachineScope",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:src/lib/auth/machine.ts:machine.ts",
+      "target": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/%|\\\\|\\.|\\/\\//.test",
+      "relationship": "calls",
+      "name": "/%|\\\\|\\.|\\/\\//.test",
+      "line": 6
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/contacts(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/contacts(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "line": 8
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/(notes|interactions|follow-ups|connections|tags)$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/(notes|interactions|follow-ups|connections|tags)$/.test",
+      "line": 8
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/notes$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/contacts\\/[a-zA-Z0-9_-]+\\/notes$/.test",
+      "line": 9
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns(?:\\/[a-zA-Z0-9_-]+)?$/.test",
+      "line": 10
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns\\/(?:analytics\\/export|[a-zA-Z0-9_-]+\\/(?:analytics\\/export|status|copy))$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns\\/(?:analytics\\/export|[a-zA-Z0-9_-]+\\/(?:analytics\\/export|status|copy))$/.test",
+      "line": 10
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+$/.test",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:requiredMachineScope",
+      "target": "call:/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+\\/copy$/.test",
+      "relationship": "calls",
+      "name": "/^\\/api\\/campaigns\\/[a-zA-Z0-9_-]+\\/copy$/.test",
+      "line": 13
+    },
+    {
+      "source": "file:src/lib/auth/machine.ts:machine.ts",
+      "target": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:request.headers.get",
+      "relationship": "calls",
+      "name": "request.headers.get",
+      "line": 17
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:/^mcrm_[a-f0-9]{64}$/.test",
+      "relationship": "calls",
+      "name": "/^mcrm_[a-f0-9]{64}$/.test",
+      "line": 18
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 19
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:tokenHash",
+      "relationship": "calls",
+      "name": "tokenHash",
+      "line": 19
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:requiredMachineScope",
+      "relationship": "calls",
+      "name": "requiredMachineScope",
+      "line": 22
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:machine.scopes.includes",
+      "relationship": "calls",
+      "name": "machine.scopes.includes",
+      "line": 23
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:audit",
+      "relationship": "calls",
+      "name": "audit",
+      "line": 24
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:request.headers.get",
+      "relationship": "calls",
+      "name": "request.headers.get",
+      "line": 28
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:request.headers.get",
+      "relationship": "calls",
+      "name": "request.headers.get",
+      "line": 28
+    },
+    {
+      "source": "function:src/lib/auth/machine.ts:authorizeMachine",
+      "target": "call:audit",
+      "relationship": "calls",
+      "name": "audit",
+      "line": 29
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "import:node:crypto",
+      "relationship": "imports",
+      "path": "node:crypto",
+      "symbols": [
+        "randomUUID"
+      ]
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "import:./store",
+      "relationship": "imports",
+      "path": "./store",
+      "symbols": [
+        "authPool",
+        "AuthError",
+        "cleanupAuth",
+        "tokenHash",
+        "audit"
+      ]
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "import:./password",
+      "relationship": "imports",
+      "path": "./password",
+      "symbols": [
+        "hashPassword",
+        "passwordError"
+      ]
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "import:./machine",
+      "relationship": "imports",
+      "path": "./machine",
+      "symbols": [
+        "MACHINE_SCOPES"
+      ]
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "function:src/lib/auth/operator.ts:operatorMetadata",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorMetadata",
+      "target": "call:Promise.all",
+      "relationship": "calls",
+      "name": "Promise.all",
+      "line": 6
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorMetadata",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 7
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorMetadata",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 8
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorMetadata",
+      "target": "call:target.pathname.slice",
+      "relationship": "calls",
+      "name": "target.pathname.slice",
+      "line": 11
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "function:src/lib/auth/operator.ts:operatorAction",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:['enroll','recover','disable-human','machine-issue','machine-rotate','machine-revoke','cleanup'].inc...",
+      "relationship": "calls",
+      "name": "['enroll','recover','disable-human','machine-issue','machine-rotate','machine-revoke','cleanup'].inc...",
+      "line": 15
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:String",
+      "relationship": "calls",
+      "name": "String",
+      "line": 15
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:cleanupAuth",
+      "relationship": "calls",
+      "name": "cleanupAuth",
+      "line": 16
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:authPool.connect",
+      "relationship": "calls",
+      "name": "authPool.connect",
+      "line": 17
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 19
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:body.email.trim().toLowerCase",
+      "relationship": "calls",
+      "name": "body.email.trim().toLowerCase",
+      "line": 22
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:body.email.trim",
+      "relationship": "calls",
+      "name": "body.email.trim",
+      "line": 22
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test",
+      "relationship": "calls",
+      "name": "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test",
+      "line": 23
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 24
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 27
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 29
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:passwordError",
+      "relationship": "calls",
+      "name": "passwordError",
+      "line": 31
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:hashPassword",
+      "relationship": "calls",
+      "name": "hashPassword",
+      "line": 34
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:body.name.trim",
+      "relationship": "calls",
+      "name": "body.name.trim",
+      "line": 36
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
       "line": 38
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 39
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 41
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:body.name.trim",
+      "relationship": "calls",
+      "name": "body.name.trim",
+      "line": 43
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:/^[a-zA-Z][a-zA-Z0-9 _-]{1,79}$/.test",
+      "relationship": "calls",
+      "name": "/^[a-zA-Z][a-zA-Z0-9 _-]{1,79}$/.test",
+      "line": 44
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 45
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 48
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 49
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:/^mcrm_[a-f0-9]{64}$/.test",
+      "relationship": "calls",
+      "name": "/^mcrm_[a-f0-9]{64}$/.test",
+      "line": 51
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:Array.isArray",
+      "relationship": "calls",
+      "name": "Array.isArray",
+      "line": 52
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:body.scopes.some",
+      "relationship": "calls",
+      "name": "body.scopes.some",
+      "line": 52
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:MACHINE_SCOPES.includes",
+      "relationship": "calls",
+      "name": "MACHINE_SCOPES.includes",
+      "line": 52
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:Number.isInteger",
+      "relationship": "calls",
+      "name": "Number.isInteger",
+      "line": 53
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:Number",
+      "relationship": "calls",
+      "name": "Number",
+      "line": 53
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:Number",
+      "relationship": "calls",
+      "name": "Number",
+      "line": 53
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:Date.now",
+      "relationship": "calls",
+      "name": "Date.now",
+      "line": 54
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:Number",
+      "relationship": "calls",
+      "name": "Number",
+      "line": 54
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 55
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:tokenHash",
+      "relationship": "calls",
+      "name": "tokenHash",
+      "line": 55
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 56
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:tokenHash",
+      "relationship": "calls",
+      "name": "tokenHash",
+      "line": 56
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 59
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 59
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 59
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 60
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 62
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:audit",
+      "relationship": "calls",
+      "name": "audit",
+      "line": 62
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:String",
+      "relationship": "calls",
+      "name": "String",
+      "line": 62
+    },
+    {
+      "source": "function:src/lib/auth/operator.ts:operatorAction",
+      "target": "call:client.release",
+      "relationship": "calls",
+      "name": "client.release",
+      "line": 62
     },
     {
       "source": "file:src/lib/auth/password.ts:password.ts",
@@ -29817,6 +31760,15 @@
     },
     {
       "source": "file:src/lib/auth/password.ts:password.ts",
+      "target": "import:../../../security/common-passwords.json",
+      "relationship": "imports",
+      "path": "../../../security/common-passwords.json",
+      "symbols": [
+        "commonPasswords"
+      ]
+    },
+    {
+      "source": "file:src/lib/auth/password.ts:password.ts",
       "target": "function:src/lib/auth/password.ts:passwordError",
       "relationship": "defines"
     },
@@ -29825,49 +31777,49 @@
       "target": "call:value.normalize",
       "relationship": "calls",
       "name": "value.normalize",
-      "line": 4
+      "line": 5
     },
     {
       "source": "function:src/lib/auth/password.ts:passwordError",
       "target": "call:value.normalize",
       "relationship": "calls",
       "name": "value.normalize",
-      "line": 5
+      "line": 6
     },
     {
       "source": "function:src/lib/auth/password.ts:passwordError",
       "target": "call:Buffer.byteLength",
       "relationship": "calls",
       "name": "Buffer.byteLength",
-      "line": 5
+      "line": 6
     },
     {
       "source": "function:src/lib/auth/password.ts:passwordError",
       "target": "call:blocked.has",
       "relationship": "calls",
       "name": "blocked.has",
-      "line": 6
+      "line": 7
     },
     {
       "source": "function:src/lib/auth/password.ts:passwordError",
       "target": "call:value.normalize('NFC').toLowerCase",
       "relationship": "calls",
       "name": "value.normalize('NFC').toLowerCase",
-      "line": 6
+      "line": 7
     },
     {
       "source": "function:src/lib/auth/password.ts:passwordError",
       "target": "call:value.normalize",
       "relationship": "calls",
       "name": "value.normalize",
-      "line": 6
+      "line": 7
     },
     {
       "source": "function:src/lib/auth/password.ts:passwordError",
       "target": "call:/^(.)\\1+$/u.test",
       "relationship": "calls",
       "name": "/^(.)\\1+$/u.test",
-      "line": 6
+      "line": 7
     },
     {
       "source": "file:src/lib/auth/password.ts:password.ts",
@@ -29879,28 +31831,28 @@
       "target": "call:scryptCallback",
       "relationship": "calls",
       "name": "scryptCallback",
-      "line": 10
+      "line": 11
     },
     {
       "source": "function:src/lib/auth/password.ts:derive",
       "target": "call:password.normalize",
       "relationship": "calls",
       "name": "password.normalize",
-      "line": 10
+      "line": 11
     },
     {
       "source": "function:src/lib/auth/password.ts:derive",
       "target": "call:reject",
       "relationship": "calls",
       "name": "reject",
-      "line": 10
+      "line": 11
     },
     {
       "source": "function:src/lib/auth/password.ts:derive",
       "target": "call:resolve",
       "relationship": "calls",
       "name": "resolve",
-      "line": 10
+      "line": 11
     },
     {
       "source": "file:src/lib/auth/password.ts:password.ts",
@@ -29912,35 +31864,35 @@
       "target": "call:passwordError",
       "relationship": "calls",
       "name": "passwordError",
-      "line": 13
+      "line": 14
     },
     {
       "source": "function:src/lib/auth/password.ts:hashPassword",
       "target": "call:randomBytes(24).toString",
       "relationship": "calls",
       "name": "randomBytes(24).toString",
-      "line": 15
+      "line": 16
     },
     {
       "source": "function:src/lib/auth/password.ts:hashPassword",
       "target": "call:randomBytes",
       "relationship": "calls",
       "name": "randomBytes",
-      "line": 15
+      "line": 16
     },
     {
       "source": "function:src/lib/auth/password.ts:hashPassword",
       "target": "call:(await derive(password, salt)).toString",
       "relationship": "calls",
       "name": "(await derive(password, salt)).toString",
-      "line": 16
+      "line": 17
     },
     {
       "source": "function:src/lib/auth/password.ts:hashPassword",
       "target": "call:derive",
       "relationship": "calls",
       "name": "derive",
-      "line": 16
+      "line": 17
     },
     {
       "source": "file:src/lib/auth/password.ts:password.ts",
@@ -29952,49 +31904,49 @@
       "target": "call:Buffer.byteLength",
       "relationship": "calls",
       "name": "Buffer.byteLength",
-      "line": 19
+      "line": 20
     },
     {
       "source": "function:src/lib/auth/password.ts:verifyPassword",
       "target": "call:encoded.split",
       "relationship": "calls",
       "name": "encoded.split",
-      "line": 20
+      "line": 21
     },
     {
       "source": "function:src/lib/auth/password.ts:verifyPassword",
       "target": "call:/^[a-f0-9]{48}$/.test",
       "relationship": "calls",
       "name": "/^[a-f0-9]{48}$/.test",
-      "line": 21
+      "line": 22
     },
     {
       "source": "function:src/lib/auth/password.ts:verifyPassword",
       "target": "call:/^[a-f0-9]{128}$/.test",
       "relationship": "calls",
       "name": "/^[a-f0-9]{128}$/.test",
-      "line": 21
+      "line": 22
     },
     {
       "source": "function:src/lib/auth/password.ts:verifyPassword",
       "target": "call:timingSafeEqual",
       "relationship": "calls",
       "name": "timingSafeEqual",
-      "line": 22
+      "line": 23
     },
     {
       "source": "function:src/lib/auth/password.ts:verifyPassword",
       "target": "call:derive",
       "relationship": "calls",
       "name": "derive",
-      "line": 22
+      "line": 23
     },
     {
       "source": "function:src/lib/auth/password.ts:verifyPassword",
       "target": "call:Buffer.from",
       "relationship": "calls",
       "name": "Buffer.from",
-      "line": 22
+      "line": 23
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
@@ -30076,6 +32028,32 @@
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
+      "target": "function:src/lib/auth/store.ts:audit",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:audit",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 11
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:audit",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 11
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:audit",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 11
+    },
+    {
+      "source": "file:src/lib/auth/store.ts:store.ts",
       "target": "function:src/lib/auth/store.ts:throttle",
       "relationship": "defines"
     },
@@ -30084,14 +32062,28 @@
       "target": "call:authPool.query",
       "relationship": "calls",
       "name": "authPool.query",
-      "line": 11
+      "line": 14
     },
     {
       "source": "function:src/lib/auth/store.ts:throttle",
       "target": "call:tokenHash",
       "relationship": "calls",
       "name": "tokenHash",
-      "line": 11
+      "line": 14
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:throttle",
+      "target": "call:audit",
+      "relationship": "calls",
+      "name": "audit",
+      "line": 16
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:throttle",
+      "target": "call:tokenHash",
+      "relationship": "calls",
+      "name": "tokenHash",
+      "line": 16
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
@@ -30103,21 +32095,21 @@
       "target": "call:/^[a-f0-9]{64}$/.test",
       "relationship": "calls",
       "name": "/^[a-f0-9]{64}$/.test",
-      "line": 15
+      "line": 21
     },
     {
       "source": "function:src/lib/auth/store.ts:identity",
       "target": "call:authPool.query",
       "relationship": "calls",
       "name": "authPool.query",
-      "line": 16
+      "line": 22
     },
     {
       "source": "function:src/lib/auth/store.ts:identity",
       "target": "call:tokenHash",
       "relationship": "calls",
       "name": "tokenHash",
-      "line": 16
+      "line": 22
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
@@ -30129,28 +32121,28 @@
       "target": "call:randomBytes(32).toString",
       "relationship": "calls",
       "name": "randomBytes(32).toString",
-      "line": 20
+      "line": 26
     },
     {
       "source": "function:src/lib/auth/store.ts:issue",
       "target": "call:randomBytes",
       "relationship": "calls",
       "name": "randomBytes",
-      "line": 20
+      "line": 26
     },
     {
       "source": "function:src/lib/auth/store.ts:issue",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 21
+      "line": 27
     },
     {
       "source": "function:src/lib/auth/store.ts:issue",
       "target": "call:tokenHash",
       "relationship": "calls",
       "name": "tokenHash",
-      "line": 21
+      "line": 27
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
@@ -30162,76 +32154,41 @@
       "target": "call:emailInput.trim().toLowerCase",
       "relationship": "calls",
       "name": "emailInput.trim().toLowerCase",
-      "line": 25
+      "line": 31
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:emailInput.trim",
       "relationship": "calls",
       "name": "emailInput.trim",
-      "line": 25
+      "line": 31
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:throttle",
       "relationship": "calls",
       "name": "throttle",
-      "line": 27
+      "line": 33
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:throttle",
       "relationship": "calls",
       "name": "throttle",
-      "line": 28
+      "line": 34
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:authPool.connect",
       "relationship": "calls",
       "name": "authPool.connect",
-      "line": 29
+      "line": 35
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 31
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:login",
-      "target": "call:client.query",
-      "relationship": "calls",
-      "name": "client.query",
-      "line": 32
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:login",
-      "target": "call:verifyPassword",
-      "relationship": "calls",
-      "name": "verifyPassword",
-      "line": 35
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:login",
-      "target": "call:'0'.repeat",
-      "relationship": "calls",
-      "name": "'0'.repeat",
-      "line": 35
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:login",
-      "target": "call:'0'.repeat",
-      "relationship": "calls",
-      "name": "'0'.repeat",
-      "line": 35
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:login",
-      "target": "call:issue",
-      "relationship": "calls",
-      "name": "issue",
       "line": 37
     },
     {
@@ -30243,31 +32200,80 @@
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
+      "target": "call:verifyPassword",
+      "relationship": "calls",
+      "name": "verifyPassword",
+      "line": 41
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:login",
+      "target": "call:'0'.repeat",
+      "relationship": "calls",
+      "name": "'0'.repeat",
+      "line": 41
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:login",
+      "target": "call:'0'.repeat",
+      "relationship": "calls",
+      "name": "'0'.repeat",
+      "line": 41
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:login",
+      "target": "call:issue",
+      "relationship": "calls",
+      "name": "issue",
+      "line": 43
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:login",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 44
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:login",
       "target": "call:randomUUID",
       "relationship": "calls",
       "name": "randomUUID",
-      "line": 38
+      "line": 44
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 39
+      "line": 45
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 41
+      "line": 47
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:login",
+      "target": "call:audit",
+      "relationship": "calls",
+      "name": "audit",
+      "line": 47
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:login",
+      "target": "call:tokenHash",
+      "relationship": "calls",
+      "name": "tokenHash",
+      "line": 47
     },
     {
       "source": "function:src/lib/auth/store.ts:login",
       "target": "call:client.release",
       "relationship": "calls",
       "name": "client.release",
-      "line": 41
+      "line": 47
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
@@ -30279,77 +32285,35 @@
       "target": "call:identity",
       "relationship": "calls",
       "name": "identity",
-      "line": 44
+      "line": 50
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:throttle",
       "relationship": "calls",
       "name": "throttle",
-      "line": 46
+      "line": 52
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:authPool.connect",
       "relationship": "calls",
       "name": "authPool.connect",
-      "line": 47
+      "line": 53
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 49
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:changePassword",
-      "target": "call:client.query",
-      "relationship": "calls",
-      "name": "client.query",
-      "line": 50
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:changePassword",
-      "target": "call:client.query",
-      "relationship": "calls",
-      "name": "client.query",
-      "line": 52
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:changePassword",
-      "target": "call:tokenHash",
-      "relationship": "calls",
-      "name": "tokenHash",
-      "line": 52
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:changePassword",
-      "target": "call:verifyPassword",
-      "relationship": "calls",
-      "name": "verifyPassword",
-      "line": 54
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:changePassword",
-      "target": "call:verifyPassword",
-      "relationship": "calls",
-      "name": "verifyPassword",
       "line": 55
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
-      "target": "call:hashPassword",
-      "relationship": "calls",
-      "name": "hashPassword",
-      "line": 56
-    },
-    {
-      "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 57
+      "line": 56
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
@@ -30360,45 +32324,94 @@
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
-      "target": "call:issue",
+      "target": "call:tokenHash",
       "relationship": "calls",
-      "name": "issue",
-      "line": 59
+      "name": "tokenHash",
+      "line": 58
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:changePassword",
+      "target": "call:verifyPassword",
+      "relationship": "calls",
+      "name": "verifyPassword",
+      "line": 60
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:changePassword",
+      "target": "call:verifyPassword",
+      "relationship": "calls",
+      "name": "verifyPassword",
+      "line": 61
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:changePassword",
+      "target": "call:hashPassword",
+      "relationship": "calls",
+      "name": "hashPassword",
+      "line": 62
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 60
+      "line": 63
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:changePassword",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 64
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:changePassword",
+      "target": "call:issue",
+      "relationship": "calls",
+      "name": "issue",
+      "line": 65
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:changePassword",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 66
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:randomUUID",
       "relationship": "calls",
       "name": "randomUUID",
-      "line": 60
+      "line": 66
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 61
+      "line": 67
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:client.query",
       "relationship": "calls",
       "name": "client.query",
-      "line": 63
+      "line": 69
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:changePassword",
+      "target": "call:audit",
+      "relationship": "calls",
+      "name": "audit",
+      "line": 69
     },
     {
       "source": "function:src/lib/auth/store.ts:changePassword",
       "target": "call:client.release",
       "relationship": "calls",
       "name": "client.release",
-      "line": 63
+      "line": 69
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
@@ -30407,17 +32420,141 @@
     },
     {
       "source": "function:src/lib/auth/store.ts:logout",
-      "target": "call:authPool.query",
+      "target": "call:authPool.connect",
       "relationship": "calls",
-      "name": "authPool.query",
-      "line": 66
+      "name": "authPool.connect",
+      "line": 73
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:logout",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 75
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:logout",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 76
     },
     {
       "source": "function:src/lib/auth/store.ts:logout",
       "target": "call:tokenHash",
       "relationship": "calls",
       "name": "tokenHash",
-      "line": 66
+      "line": 76
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:logout",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 77
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:logout",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 77
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:logout",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 78
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:logout",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 79
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:logout",
+      "target": "call:client.release",
+      "relationship": "calls",
+      "name": "client.release",
+      "line": 79
+    },
+    {
+      "source": "file:src/lib/auth/store.ts:store.ts",
+      "target": "function:src/lib/auth/store.ts:cleanupAuth",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:authPool.connect",
+      "relationship": "calls",
+      "name": "authPool.connect",
+      "line": 83
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 85
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 86
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 87
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 89
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 89
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:JSON.stringify",
+      "relationship": "calls",
+      "name": "JSON.stringify",
+      "line": 89
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 90
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:client.query",
+      "relationship": "calls",
+      "name": "client.query",
+      "line": 92
+    },
+    {
+      "source": "function:src/lib/auth/store.ts:cleanupAuth",
+      "target": "call:client.release",
+      "relationship": "calls",
+      "name": "client.release",
+      "line": 92
     },
     {
       "source": "file:src/lib/campaign-copy-rebase.ts:campaign-copy-rebase.ts",
@@ -38306,6 +40443,15 @@
     },
     {
       "source": "file:tests/auth.test.ts:auth.test.ts",
+      "target": "import:../security/common-passwords.json",
+      "relationship": "imports",
+      "path": "../security/common-passwords.json",
+      "symbols": [
+        "commonPasswords"
+      ]
+    },
+    {
+      "source": "file:tests/auth.test.ts:auth.test.ts",
       "target": "import:node:crypto",
       "relationship": "imports",
       "path": "node:crypto",
@@ -38649,6 +40795,90 @@
       "relationship": "calls",
       "name": "n.childNodes.forEach",
       "line": 22
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:node:test",
+      "relationship": "imports",
+      "path": "node:test",
+      "symbols": [
+        "test"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:node:http",
+      "relationship": "imports",
+      "path": "node:http",
+      "symbols": [
+        "http"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:node:assert/strict",
+      "relationship": "imports",
+      "path": "node:assert/strict",
+      "symbols": [
+        "assert"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:node:crypto",
+      "relationship": "imports",
+      "path": "node:crypto",
+      "symbols": [
+        "randomBytes",
+        "randomUUID"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:../src/lib/auth/store",
+      "relationship": "imports",
+      "path": "../src/lib/auth/store",
+      "symbols": [
+        "authPool",
+        "identity",
+        "login",
+        "cleanupAuth",
+        "tokenHash"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:../src/lib/auth/operator",
+      "relationship": "imports",
+      "path": "../src/lib/auth/operator",
+      "symbols": [
+        "operatorAction",
+        "operatorMetadata"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:../src/lib/auth/machine",
+      "relationship": "imports",
+      "path": "../src/lib/auth/machine",
+      "symbols": [
+        "authorizeMachine",
+        "requiredMachineScope"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "import:../scripts/auth-operator/server",
+      "relationship": "imports",
+      "path": "../scripts/auth-operator/server",
+      "symbols": [
+        "createOperatorServer"
+      ]
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "function:tests/operator.integration.test.ts:request",
+      "relationship": "defines"
     },
     {
       "source": "file:tests/presend-render.test.ts:presend-render.test.ts",
@@ -39989,12 +42219,77 @@
     },
     {
       "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
+      "target": "file:src/lib/auth/operator.ts:operator.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "operatorAction"
+      ],
+      "originalPath": "../src/lib/auth/operator"
+    },
+    {
+      "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
+      "target": "file:scripts/auth-operator/server.ts:server.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "createOperatorServer"
+      ],
+      "originalPath": "./auth-operator/server"
+    },
+    {
+      "source": "file:scripts/auth-browser-proof.ts:auth-browser-proof.ts",
       "target": "file:src/lib/auth/password.ts:password.ts",
       "relationship": "imports_file",
       "symbols": [
         "hashPassword"
       ],
       "originalPath": "../src/lib/auth/password"
+    },
+    {
+      "source": "file:scripts/auth-housekeeping.ts:auth-housekeeping.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authPool",
+        "cleanupAuth"
+      ],
+      "originalPath": "../src/lib/auth/store"
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "file:src/lib/auth/operator.ts:operator.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "operatorAction",
+        "operatorMetadata"
+      ],
+      "originalPath": "../../src/lib/auth/operator"
+    },
+    {
+      "source": "file:scripts/auth-operator/server.ts:server.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "AuthError"
+      ],
+      "originalPath": "../../src/lib/auth/store"
+    },
+    {
+      "source": "file:scripts/auth-operator.ts:auth-operator.ts",
+      "target": "file:scripts/auth-operator/server.ts:server.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "createOperatorServer"
+      ],
+      "originalPath": "./auth-operator/server"
+    },
+    {
+      "source": "file:scripts/auth-operator.ts:auth-operator.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authPool"
+      ],
+      "originalPath": "../src/lib/auth/store"
     },
     {
       "source": "file:scripts/backfill-email-analytics.ts:backfill-email-analytics.ts",
@@ -40013,6 +42308,15 @@
         "backfillAnalyticsBatch"
       ],
       "originalPath": "../src/lib/email/analytics-history"
+    },
+    {
+      "source": "file:scripts/crm-machine-request.ts:crm-machine-request.ts",
+      "target": "file:src/lib/auth/machine.ts:machine.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "requiredMachineScope"
+      ],
+      "originalPath": "../src/lib/auth/machine"
     },
     {
       "source": "file:scripts/email-worker.ts:email-worker.ts",
@@ -40104,9 +42408,64 @@
       "relationship": "imports_file",
       "symbols": [
         "identity",
-        "AuthError"
+        "AuthError",
+        "audit",
+        "throttle"
       ],
       "originalPath": "./store"
+    },
+    {
+      "source": "file:src/lib/auth/access.ts:access.ts",
+      "target": "file:src/lib/auth/machine.ts:machine.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authorizeMachine"
+      ],
+      "originalPath": "./machine"
+    },
+    {
+      "source": "file:src/lib/auth/machine.ts:machine.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "AuthError",
+        "authPool",
+        "tokenHash",
+        "audit"
+      ],
+      "originalPath": "./store"
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authPool",
+        "AuthError",
+        "cleanupAuth",
+        "tokenHash",
+        "audit"
+      ],
+      "originalPath": "./store"
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "file:src/lib/auth/password.ts:password.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "hashPassword",
+        "passwordError"
+      ],
+      "originalPath": "./password"
+    },
+    {
+      "source": "file:src/lib/auth/operator.ts:operator.ts",
+      "target": "file:src/lib/auth/machine.ts:machine.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "MACHINE_SCOPES"
+      ],
+      "originalPath": "./machine"
     },
     {
       "source": "file:src/lib/auth/store.ts:store.ts",
@@ -40635,6 +42994,48 @@
         "inlineEmailPreview"
       ],
       "originalPath": "../src/lib/inline-email-preview"
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authPool",
+        "identity",
+        "login",
+        "cleanupAuth",
+        "tokenHash"
+      ],
+      "originalPath": "../src/lib/auth/store"
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "file:src/lib/auth/operator.ts:operator.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "operatorAction",
+        "operatorMetadata"
+      ],
+      "originalPath": "../src/lib/auth/operator"
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "file:src/lib/auth/machine.ts:machine.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authorizeMachine",
+        "requiredMachineScope"
+      ],
+      "originalPath": "../src/lib/auth/machine"
+    },
+    {
+      "source": "file:tests/operator.integration.test.ts:operator.integration.test.ts",
+      "target": "file:scripts/auth-operator/server.ts:server.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "createOperatorServer"
+      ],
+      "originalPath": "../scripts/auth-operator/server"
     },
     {
       "source": "file:tests/presend-render.test.ts:presend-render.test.ts",

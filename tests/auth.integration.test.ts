@@ -44,6 +44,8 @@ test('isolated real-DB auth: credentials, revocation, password races, durable th
     await authPool.query(`UPDATE "CrmSession" SET "expiresAt"=NOW()-INTERVAL '1 second' WHERE "userId"=$1`,[id]); assert.equal(await identity(disabled),null)
     const beforeDisabled = await login(email, race[0].status==='fulfilled' ? replacement : alternative)
     await authPool.query('UPDATE "CrmUser" SET "disabled"=true WHERE "id"=$1',[id]); assert.equal(await identity(beforeDisabled),null)
+    const auditRows=await authPool.query('SELECT "kind" FROM "CrmAuthEvent"')
+    for(const kind of ['login_failed','password_change_failed','logout','password_changed_all_sessions_rotated','throttle_blocked','access_denied']) assert.ok(auditRows.rows.some(row=>row.kind===kind),kind)
     const stored=await authPool.query('SELECT "tokenHash" FROM "CrmSession" WHERE "userId"=$1',[id]); assert.ok(stored.rows.every(row=>row.tokenHash!==first && row.tokenHash!==second))
   } finally { await authPool.query('DELETE FROM "CrmUser" WHERE "id"=$1',[id]); await authPool.end() }
 })

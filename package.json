@@ -8,7 +8,10 @@
     "test": "tsx --test tests/*.test.ts",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "auth:operator": "tsx scripts/auth-operator.ts",
+    "auth:housekeeping": "tsx scripts/auth-housekeeping.ts",
+    "crm:machine-request": "tsx scripts/crm-machine-request.ts"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.1135.0",

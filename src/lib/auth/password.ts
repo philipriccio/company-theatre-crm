@@ -1,5 +1,6 @@
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto'
-const blocked = new Set(['passwordpassword', 'passwordpassword123', '123456789012345', '1234567890123456', 'qwertyuiopasdfgh', 'companytheatre123', 'thecompanytheatre', 'letmeinletmeinletmein'])
+import commonPasswords from '../../../security/common-passwords.json'
+const blocked = new Set([...commonPasswords.map(value => value.normalize('NFC').toLowerCase()), 'passwordpassword', 'passwordpassword123', '123456789012345', '1234567890123456', 'qwertyuiopasdfgh', 'companytheatre123', 'thecompanytheatre', 'letmeinletmeinletmein'])
 export function passwordError(value: unknown): string | null {
   if (typeof value !== 'string' || [...value.normalize('NFC')].length < 15) return 'Use at least 15 characters. A few unrelated words work well.'
   if ([...value.normalize('NFC')].length > 128 || Buffer.byteLength(value) > 1024) return 'Use no more than 128 characters.'

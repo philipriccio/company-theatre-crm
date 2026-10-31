@@ -7,9 +7,15 @@ export const SESSION_SECONDS = 7 * 24 * 60 * 60
 export const tokenHash = (value: string) => createHash('sha256').update(value).digest('hex')
 export type Identity = { id: string; name: string; email: string }
 export class AuthError extends Error { constructor(public status: number, message: string) { super(message) } }
+export async function audit(kind: string, actorId: string | null = null, details: Record<string, string | number> = {}) {
+  await authPool.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind","details") VALUES ($1,$2,$3,$4)', [randomUUID(), actorId, kind, JSON.stringify(details)])
+}
 export async function throttle(key: string, limit: number) {
   const result = await authPool.query(`INSERT INTO "CrmAuthThrottle" ("key", "count", "expiresAt") VALUES ($1,1,NOW()+INTERVAL '15 minutes') ON CONFLICT ("key") DO UPDATE SET "count"=CASE WHEN "CrmAuthThrottle"."expiresAt" <= NOW() THEN 1 ELSE "CrmAuthThrottle"."count"+1 END, "expiresAt"=CASE WHEN "CrmAuthThrottle"."expiresAt" <= NOW() THEN NOW()+INTERVAL '15 minutes' ELSE "CrmAuthThrottle"."expiresAt" END RETURNING "count"`, [tokenHash(key)])
-  if (result.rows[0].count > limit) throw new AuthError(429, 'Too many attempts. Please wait 15 minutes before trying again.')
+  if (result.rows[0].count > limit) {
+    if (result.rows[0].count === limit + 1) await audit('throttle_blocked',null,{subject:tokenHash(key)})
+    throw new AuthError(429, 'Too many attempts. Please wait 15 minutes before trying again.')
+  }
 }
 export async function identity(token?: string): Promise<Identity | null> {
   if (!token || !/^[a-f0-9]{64}$/.test(token)) return null
@@ -38,7 +44,7 @@ export async function login(emailInput: unknown, password: unknown) {
     await client.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind") VALUES ($1,$2,$3)', [randomUUID(), user.id, 'login'])
     await client.query('COMMIT')
     return token
-  } catch (error) { await client.query('ROLLBACK'); throw error } finally { client.release() }
+  } catch (error) { await client.query('ROLLBACK'); if (error instanceof AuthError) await audit('login_failed',null,{subject:tokenHash(email),status:error.status}); throw error } finally { client.release() }
 }
 export async function changePassword(token: string, current: unknown, replacement: string) {
   const user = await identity(token)
@@ -60,8 +66,28 @@ export async function changePassword(token: string, current: unknown, replacemen
     await client.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind") VALUES ($1,$2,$3)', [randomUUID(), user.id, 'password_changed_all_sessions_rotated'])
     await client.query('COMMIT')
     return next
-  } catch (error) { await client.query('ROLLBACK'); throw error } finally { client.release() }
+  } catch (error) { await client.query('ROLLBACK'); if (error instanceof AuthError) await audit('password_change_failed',user.id,{status:error.status}); throw error } finally { client.release() }
 }
 export async function logout(token?: string) {
-  if (token) await authPool.query('DELETE FROM "CrmSession" WHERE "tokenHash"=$1', [tokenHash(token)])
+  if (!token) return
+  const client = await authPool.connect()
+  try {
+    await client.query('BEGIN')
+    const result = await client.query('DELETE FROM "CrmSession" WHERE "tokenHash"=$1 RETURNING "userId"',[tokenHash(token)])
+    await client.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind") VALUES ($1,$2,$3)',[randomUUID(),result.rows[0]?.userId ?? null,'logout'])
+    await client.query('COMMIT')
+  } catch(error) {await client.query('ROLLBACK');throw error} finally {client.release()}
+}
+// Bounded lifecycle cleanup; never removes security audit evidence.
+export async function cleanupAuth() {
+  const client=await authPool.connect()
+  try {
+    await client.query('BEGIN')
+    const sessions = await client.query('DELETE FROM "CrmSession" WHERE "tokenHash" IN (SELECT "tokenHash" FROM "CrmSession" WHERE "expiresAt"<NOW() LIMIT 1000)')
+    const throttles = await client.query(`DELETE FROM "CrmAuthThrottle" WHERE "key" IN (SELECT "key" FROM "CrmAuthThrottle" WHERE "expiresAt"<NOW()-INTERVAL '1 day' LIMIT 1000)`)
+    const counts={sessions:sessions.rowCount ?? 0,throttles:throttles.rowCount ?? 0}
+    await client.query('INSERT INTO "CrmAuthEvent" ("id","kind","details") VALUES ($1,$2,$3)',[randomUUID(),'auth_housekeeping',JSON.stringify(counts)])
+    await client.query('COMMIT')
+    return counts
+  } catch(error) {await client.query('ROLLBACK');throw error} finally {client.release()}
 }

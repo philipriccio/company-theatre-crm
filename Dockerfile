@@ -58,12 +58,17 @@ COPY --from=worker-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=worker-client --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/security ./security
 COPY --from=builder --chown=nextjs:nodejs /app/src ./src
 COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
 
 USER nextjs
 
 CMD ["./node_modules/.bin/tsx", "scripts/email-worker.ts"]
+
+# Explicit operator image: never deploy as a public web service.
+FROM worker AS account-operator
+CMD ["./node_modules/.bin/tsx", "scripts/auth-operator.ts"]
 
 # Production image
 FROM base AS runner

@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict'
 import { randomBytes, randomUUID } from 'node:crypto'
+import { spawn } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { mkdir } from 'node:fs/promises'
 import { authPool } from '../src/lib/auth/store'
+import { operatorAction } from '../src/lib/auth/operator'
+import { createOperatorServer } from './auth-operator/server'
 import { hashPassword } from '../src/lib/auth/password'
 const require = createRequire(process.cwd() + '/package.json')
 const { chromium } = require('/opt/homebrew/lib/node_modules/agent-browser/node_modules/playwright-core')
@@ -23,6 +26,37 @@ try {
  assert.equal((await fetch(base+'/api/auth/login',{method:'POST',headers:{origin:'https://attacker.invalid','content-type':'application/json'},body:JSON.stringify({email,password})})).status,403)
  assert.notEqual((await fetch(base+'/api/website-signups',{method:'POST',headers:{'content-type':'application/json'},body:'{}'})).status,200)
  assert.notEqual((await fetch(base+'/api/unsubscribe/invalid',{method:'POST'})).status,200)
+ const machineName=`Proof ${randomUUID()}`, machineToken=`mcrm_${randomBytes(32).toString('hex')}`
+ await operatorAction({action:'machine-issue',name:machineName,token:machineToken,scopes:['contacts:read','campaigns:drafts'],days:1},'synthetic-browser')
+ const headers={'x-crm-machine-token':machineToken,'content-type':'application/json'}
+ assert.equal((await fetch(base+'/api/contacts',{headers})).status,200)
+ const adapterResult=await new Promise<{code:number|null;stdout:string;stderr:string}>(resolve=>{const child=spawn('./node_modules/.bin/tsx',['scripts/crm-machine-request.ts'],{stdio:['pipe','pipe','pipe']});let stdout='',stderr='';child.stdout.on('data',chunk=>stdout+=chunk);child.stderr.on('data',chunk=>stderr+=chunk);child.on('close',code=>resolve({code,stdout,stderr}));child.stdin.end(JSON.stringify({origin:base,method:'GET',path:'/api/contacts',token:machineToken}))})
+ assert.equal(adapterResult.code,0);assert.ok(!adapterResult.stdout.includes(machineToken));assert.ok(!adapterResult.stderr.includes(machineToken))
+ const draftResponse=await fetch(base+'/api/campaigns',{method:'POST',headers,body:JSON.stringify({name:'Synthetic machine draft',subject:'No delivery',fromName:'Synthetic',fromEmail:'synthetic@example.invalid',replyToEmail:'synthetic@example.invalid',previewText:'',content:'<p>Synthetic only</p>',status:'SENDING'})})
+ assert.equal(draftResponse.status,201);const draft=await draftResponse.json();assert.equal(draft.status,'DRAFT')
+ for(const action of ['send','test','resume','retry','review'])assert.equal((await fetch(`${base}/api/campaigns/${draft.id}/${action}`,{method:'POST',headers,body:'{}'})).status,403)
+ await operatorAction({action:'machine-revoke',name:machineName},'synthetic-browser');assert.equal((await fetch(base+'/api/contacts',{headers})).status,401)
+ await authPool.query('DELETE FROM "Campaign" WHERE "id"=$1',[draft.id]);await authPool.query('DELETE FROM "CrmMachineIdentity" WHERE "name"=$1',[machineName])
+ const localOperator=createOperatorServer();await new Promise<void>(resolve=>localOperator.listen(0,'127.0.0.1',resolve));const localAddress=localOperator.address();assert.ok(localAddress&&typeof localAddress!=='string')
+ const operatorPage=await browser.newPage({viewport:{width:390,height:844}})
+ await operatorPage.goto(`http://127.0.0.1:${localAddress.port}/`)
+ await operatorPage.getByText(/Configured target:/).waitFor()
+ assert.equal(await operatorPage.locator('input[name=password]').getAttribute('type'),'password')
+ assert.equal(await operatorPage.locator('input[name=token]').getAttribute('type'),'password')
+ await operatorPage.screenshot({path:`${out}/operator-390.png`,fullPage:true})
+ const operatorEmail=`private-ui-${randomUUID()}@example.invalid`, operatorPassword=randomBytes(24).toString('hex')
+ await operatorPage.locator('input[name=name]').fill('Synthetic private UI')
+ await operatorPage.locator('input[name=email]').fill(operatorEmail)
+ await operatorPage.locator('input[name=password]').fill(operatorPassword)
+ await operatorPage.locator('input[name=confirmPassword]').fill(operatorPassword)
+ await operatorPage.locator('#generate').click()
+ assert.match(await operatorPage.locator('input[name=token]').inputValue(),/^mcrm_[a-f0-9]{64}$/)
+ await operatorPage.getByRole('button',{name:'Apply operation',exact:true}).click()
+ await operatorPage.locator('#result').filter({hasText:'"ok": true'}).waitFor()
+ assert.equal(await operatorPage.locator('input[name=password]').inputValue(),'')
+ assert.equal(await operatorPage.locator('input[name=token]').inputValue(),'')
+ await authPool.query('DELETE FROM "CrmUser" WHERE "email"=$1',[operatorEmail])
+ await operatorPage.close();await new Promise<void>(resolve=>localOperator.close(()=>resolve()))
  const context=await browser.newContext({viewport:{width:1440,height:1000}})
  const page=await context.newPage(); const errors:string[]=[]
  page.on('pageerror',(error:Error)=>errors.push(error.message))
@@ -61,7 +95,7 @@ try {
  await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.waitForURL(base+'/')
  assert.deepEqual(errors,[])
  await other.close();await context.close()
- console.log('Browser proof PASS: anonymous/spoofed access, cross-origin login/mutation rejection, correct-current-password check, failed-form preservation, rotation/other-session revocation, logout, new-password login, 1440/390/320 no-overflow and screenshots, no page errors. Synthetic fixture only.')
+ console.log('Browser proof PASS: anonymous/spoofed access, cross-origin login/mutation rejection, correct-current-password check, failed-form preservation, rotation/other-session revocation, logout, new-password login, 1440/390/320 no-overflow and screenshots, no page errors; machine HTTP read/draft-only/no-send/revocation parity and private operator UI masked fields. Synthetic fixture only.')
 } finally {await browser.close();await authPool.query('DELETE FROM "CrmUser" WHERE "id"=$1',[id]);await authPool.end()}
 
 }

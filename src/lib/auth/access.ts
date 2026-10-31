@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { identity, AuthError } from './store'
+import { identity, AuthError, audit, throttle } from './store'
+import { authorizeMachine } from './machine'
 export function authOrigin() {
   const value = process.env.CRM_AUTH_ORIGIN
   if (!value) throw new Error('CRM_AUTH_ORIGIN must be configured')
@@ -32,8 +33,15 @@ export async function guard(request: Request, allowPublic = false) {
   try {
     const path = new URL(request.url).pathname
     if (allowPublic && publicRoute(path, request.method)) return null
+    if (request.headers.has('x-crm-machine-token')) { await authorizeMachine(request, !allowPublic); return null }
     if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method) && !sameOrigin(request)) throw new AuthError(403, 'Request origin could not be verified.')
     if (!await identity(requestToken(request))) throw new AuthError(401, 'Your session has ended. Sign in again; your unsaved form has not been cleared.')
     return null
-  } catch (error) { return authFailure(error) }
+  } catch (error) {
+    if (error instanceof AuthError && error.status !== 429) {
+      try { await throttle('denial-audit',60); await audit('access_denied',null,{status:error.status,method:request.method}) }
+      catch (auditError) { if (!(auditError instanceof AuthError && auditError.status === 429)) return authFailure(auditError) }
+    }
+    return authFailure(error)
+  }
 }

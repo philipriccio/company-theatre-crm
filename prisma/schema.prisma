@@ -425,9 +425,21 @@ model CrmAuthThrottle {
   @@index([expiresAt])
 }
 model CrmAuthEvent {
+  details Json?
   id String @id
   userId String?
   kind String
   createdAt DateTime @default(now())
   @@index([createdAt])
+}
+
+model CrmMachineIdentity {
+  id String @id
+  name String @unique
+  tokenHash String @unique
+  scopes String[]
+  disabled Boolean @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  @@index([expiresAt])
 }

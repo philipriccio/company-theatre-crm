@@ -2,8 +2,12 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { passwordError, hashPassword, verifyPassword } from '../src/lib/auth/password'
 import { publicRoute, sameOrigin } from '../src/lib/auth/access'
+import commonPasswords from '../security/common-passwords.json'
 import { randomBytes } from 'node:crypto'
 test('passwords permit long Unicode/passphrases without composition rules; reject short/common values', async () => {
+  assert.ok(commonPasswords.length >= 90000)
+  const longCommon=commonPasswords.find(value=>[...value].length>=15)
+  assert.ok(longCommon); assert.ok(passwordError(longCommon))
   assert.ok(passwordError('short'))
   assert.ok(passwordError('123456789012345'))
   assert.equal(passwordError('unrelated calm theatre window'), null)

@@ -17,7 +17,7 @@ export DATABASE_URL="postgresql://crm_proof@localhost:55441/crm_auth_test?host=$
 export DOTENV_CONFIG_PATH=/dev/null EMAIL_PROVIDER=disabled NEXT_TELEMETRY_DISABLED=1 CRM_AUTH_ISOLATED_PROOF=1 CRM_AUTH_ORIGIN=http://127.0.0.1:3257
 ./node_modules/.bin/prisma migrate deploy
 ./node_modules/.bin/prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
-./node_modules/.bin/tsx --test tests/auth.integration.test.ts
+./node_modules/.bin/tsx --test tests/auth.integration.test.ts tests/operator.integration.test.ts
 if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 ]]; then
   ./node_modules/.bin/next start --hostname 127.0.0.1 --port 3257 > "$LOCAL_PROOF_ROOT/web.log" 2>&1 & LOCAL_WEB_PID=$!
   for i in {1..60}; do if curl -fsS http://127.0.0.1:3257/login >/dev/null; then break; fi; sleep 1; done
