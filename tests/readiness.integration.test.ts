@@ -13,6 +13,13 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
   process.env.SCRATCH_INTAKE_TOKEN = randomBytes(32).toString('hex')
   process.env.SCRATCH_PROMOTION_IDS = 'local-proof'
   const { prisma } = await import('../src/lib/db')
+  process.env.CRM_AUTH_ORIGIN = 'http://localhost'
+  const { authPool, login } = await import('../src/lib/auth/store')
+  const { hashPassword } = await import('../src/lib/auth/password')
+  const localPassword = randomBytes(24).toString('hex')
+  await authPool.query('INSERT INTO "CrmUser" ("id","email","name","passwordHash") VALUES ($1,$2,$3,$4)', ['readiness-user','readiness@example.invalid','Readiness fixture',await hashPassword(localPassword)])
+  const accountHeaders = { origin: 'http://localhost', cookie: `crm-local-session=${await login('readiness@example.invalid',localPassword)}` }
+
   const queue = await import('../src/lib/email/queue')
   const { POST: intake } = await import('../src/app/api/intake/scratch/route')
   const { POST: seed } = await import('../src/app/api/campaigns/[id]/test/route')
@@ -25,7 +32,7 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
   const base = { submissionId: 'submission-001', promotionId: 'local-proof', email: ' Entrant@Example.com ' }
   const consent = { granted: true, textVersion: CONSENT_VERSION, capturedAt: new Date().toISOString() }
   const request = (body: unknown, authenticated = true) => new NextRequest('http://localhost/api/intake/scratch', {
-    method: 'POST', headers: { 'content-type': 'application/json', ...(authenticated ? { authorization: `Bearer ${process.env.SCRATCH_INTAKE_TOKEN}` } : {}) }, body: JSON.stringify(body),
+    method: 'POST', headers: { ...accountHeaders, 'content-type': 'application/json', ...(authenticated ? { authorization: `Bearer ${process.env.SCRATCH_INTAKE_TOKEN}` } : {}) }, body: JSON.stringify(body),
   })
   let sends = 0
   const accepted: EmailProvider = { name: 'mock', send: async () => {
@@ -158,7 +165,7 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
       assert.deepEqual(rows.map(r => r.email), ['optin@example.com'])
       assert.equal(await prisma.consentEvidence.count({ where: { source: 'campaign_enqueue' } }), 1)
       await prisma.campaign.update({ where: { id: campaign.id }, data: { status: 'PAUSED' } })
-      const invalid = await send(new NextRequest('http://localhost', { method: 'POST', body: JSON.stringify({ mode: 'typo', approvalName: 'Fixture' }) }), { params: Promise.resolve({ id: campaign.id }) })
+      const invalid = await send(new NextRequest('http://localhost', { method: 'POST', headers: accountHeaders, body: JSON.stringify({ mode: 'typo', approvalName: 'Fixture' }) }), { params: Promise.resolve({ id: campaign.id }) })
       assert.equal(invalid.status, 400)
     })
     await t.test('worker honors suppression, absent consent, pause/cancel, wrong owner and expired leases without sends', async () => {
@@ -227,7 +234,7 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
       assert.equal((await unsubscribe(new NextRequest('http://localhost', { method: 'POST' }), { params: Promise.resolve({ token }) })).status, 200)
       assert.equal((await prisma.contact.findUniqueOrThrow({ where: { id: contact.id } })).solicitation, false)
       assert.ok(await prisma.globalSuppression.findUnique({ where: { email: contact.email } }))
-      const result = await seed(new NextRequest('http://localhost', { method: 'POST', body: JSON.stringify({ email: contact.email }) }), { params: Promise.resolve({ id: campaign.id }) })
+      const result = await seed(new NextRequest('http://localhost', { method: 'POST', headers: accountHeaders, body: JSON.stringify({ email: contact.email }) }), { params: Promise.resolve({ id: campaign.id }) })
       assert.equal(result.status, 400)
     })
     await t.test('SES events reconcile UNKNOWN, deduplicate and never downgrade complaint with late delivery', async () => {
@@ -354,6 +361,7 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
       await assert.rejects(recordReview(c.id,{action:'CHANGES',author:'Philip',note:'',contentHash:reviewHash(changed)}),/notes/)
     })
   } finally {
+    await authPool.end()
     await prisma.$disconnect()
     const shared = globalThis as unknown as { pool?: { end(): Promise<void> } }
     await shared.pool?.end()

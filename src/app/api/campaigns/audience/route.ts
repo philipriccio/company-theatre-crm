@@ -1,6 +1,10 @@
+import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from "next/server";
 import { selectAudience } from "@/lib/email/audience";
 export async function POST(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     const { mode, tagIds } = await request.json();
     const { eligible, excluded, matched } = await selectAudience(mode, tagIds);

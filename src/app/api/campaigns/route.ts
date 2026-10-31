@@ -1,12 +1,19 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { draftData } from "@/lib/campaign-draft";
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   return NextResponse.json(
     await prisma.campaign.findMany({ orderBy: { createdAt: "desc" } }),
   );
 }
 export async function POST(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     const data = draftData(await request.json());
     return NextResponse.json(

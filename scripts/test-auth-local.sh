@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+export LC_ALL=C LANG=C
+cd "$(dirname "$0")/.."
+PG_BIN="${PG_BIN:-/opt/homebrew/opt/postgresql@16/bin}"
+LOCAL_PROOF_ROOT="$(mktemp -d /tmp/company-crm-auth.XXXXXX)"
+cleanup() {
+  if [[ -n "${LOCAL_WEB_PID:-}" ]]; then kill "$LOCAL_WEB_PID" >/dev/null 2>&1 || true; fi
+  "$PG_BIN/pg_ctl" -D "$LOCAL_PROOF_ROOT/db" -m immediate stop >/dev/null 2>&1 || true
+  rm -rf "$LOCAL_PROOF_ROOT"
+}
+trap cleanup EXIT
+"$PG_BIN/initdb" -D "$LOCAL_PROOF_ROOT/db" -U crm_proof -A trust --no-locale -E UTF8 > "$LOCAL_PROOF_ROOT/init.log"
+"$PG_BIN/pg_ctl" -D "$LOCAL_PROOF_ROOT/db" -l "$LOCAL_PROOF_ROOT/postgres.log" -o "-h '' -k $LOCAL_PROOF_ROOT -p 55441" start >/dev/null
+"$PG_BIN/createdb" -U crm_proof -h "$LOCAL_PROOF_ROOT" -p 55441 crm_auth_test
+export DATABASE_URL="postgresql://crm_proof@localhost:55441/crm_auth_test?host=$LOCAL_PROOF_ROOT&port=55441"
+export DOTENV_CONFIG_PATH=/dev/null EMAIL_PROVIDER=disabled NEXT_TELEMETRY_DISABLED=1 CRM_AUTH_ISOLATED_PROOF=1 CRM_AUTH_ORIGIN=http://127.0.0.1:3257
+./node_modules/.bin/prisma migrate deploy
+./node_modules/.bin/prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
+./node_modules/.bin/tsx --test tests/auth.integration.test.ts
+if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 ]]; then
+  ./node_modules/.bin/next start --hostname 127.0.0.1 --port 3257 > "$LOCAL_PROOF_ROOT/web.log" 2>&1 & LOCAL_WEB_PID=$!
+  for i in {1..60}; do if curl -fsS http://127.0.0.1:3257/login >/dev/null; then break; fi; sleep 1; done
+  ./node_modules/.bin/tsx scripts/auth-browser-proof.ts
+fi

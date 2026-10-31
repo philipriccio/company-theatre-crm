@@ -1,10 +1,14 @@
+import { guard } from '@/lib/auth/access'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 // This endpoint is called by cron to process scheduled campaigns
-export async function GET() {
+export async function POST(request: Request) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     // Find campaigns that are scheduled and due
     const now = new Date()
@@ -48,3 +52,5 @@ export async function GET() {
     )
   }
 }
+
+export async function GET() { return NextResponse.json({ error: "Use an authenticated same-origin POST." }, { status: 405, headers: { Allow: "POST" } }) }

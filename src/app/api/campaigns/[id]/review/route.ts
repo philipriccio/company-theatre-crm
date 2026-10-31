@@ -1,6 +1,10 @@
+import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server'
 import { recordReview } from '@/lib/campaign-review'
 export async function POST(request:NextRequest,{params}:{params:Promise<{id:string}>}) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     const body=await request.json()
     if(!body || typeof body!=='object' || Array.isArray(body)) throw Error('Invalid review request')

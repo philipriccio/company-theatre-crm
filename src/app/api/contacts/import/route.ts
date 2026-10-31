@@ -1,7 +1,11 @@
+import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File

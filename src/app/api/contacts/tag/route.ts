@@ -1,7 +1,11 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const auth = request.headers.get('authorization')
   if (!auth) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

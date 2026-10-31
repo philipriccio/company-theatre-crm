@@ -1,9 +1,13 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { analyticsReport, filteredTimestamps, csvLine, parseAnalyticsQuery, recipientSelect, recipientWhere } from '@/lib/email/analytics'
 export const dynamic = 'force-dynamic'
 // Auth: same reverse-proxy authenticated admin catch-all as /api/contacts/export.
 // This route MUST NOT be included in public tracking/unsubscribe exceptions.
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const { id } = await params
   const campaign = await prisma.campaign.findUnique({ where: { id }, select: { id: true } })
   if (!campaign) return Response.json({ error: 'Campaign not found' }, { status: 404, headers: { 'Cache-Control': 'no-store, private' } })

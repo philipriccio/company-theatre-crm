@@ -63,6 +63,7 @@ export default function SettingsPage() {
   return <div className="p-4 sm:p-8 page-enter max-w-5xl">
     <p className="text-sm font-medium text-stone-500 mb-2">Your email workspace</p>
     <h1 className="text-3xl font-semibold tracking-tight text-stone-900">Settings</h1>
+    <Link href="/settings/account" className="underline">Your account · Change password or sign out</Link>
     <p className="text-stone-600 mt-2 mb-8">Set the sender details you want to start each new campaign with.</p>
     {error && <div role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">{error}{!settings && <button className="btn btn-secondary btn-sm ml-3" onClick={load} disabled={loading}>Try again</button>}</div>}
     {loading ? <p role="status">Loading your settings…</p> : settings && <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">

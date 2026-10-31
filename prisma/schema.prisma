@@ -398,3 +398,36 @@ model EmailAnalyticsEvent {
   @@index([campaignId, linkKey, recipientId])
   @@index([recipientId, occurredAt])
 }
+
+model CrmUser {
+  id String @id
+  email String @unique
+  name String
+  passwordHash String
+  disabled Boolean @default(false)
+  createdAt DateTime @default(now())
+  passwordChangedAt DateTime @default(now())
+  sessions CrmSession[]
+}
+model CrmSession {
+  tokenHash String @id
+  userId String
+  user CrmUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  @@index([userId])
+  @@index([expiresAt])
+}
+model CrmAuthThrottle {
+  key String @id
+  count Int
+  expiresAt DateTime
+  @@index([expiresAt])
+}
+model CrmAuthEvent {
+  id String @id
+  userId String?
+  kind String
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+}

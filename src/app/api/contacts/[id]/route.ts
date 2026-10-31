@@ -1,3 +1,4 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -19,6 +20,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const { id } = await params
 
   const contact = await prisma.contact.findUnique({
@@ -36,6 +40,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const { id } = await params
   const body = await request.json()
 
@@ -69,6 +76,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const { id } = await params
 
   await prisma.contact.delete({

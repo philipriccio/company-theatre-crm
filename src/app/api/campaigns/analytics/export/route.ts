@@ -1,3 +1,4 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { csvLine, filteredTimestamps } from '@/lib/email/analytics'
 import { CombinedLink, combinedLinks, combinedSelect, combinedWhere, parseCombinedQuery } from '@/lib/email/combined-analytics'
@@ -5,6 +6,9 @@ export const dynamic = 'force-dynamic'
 // Private admin route: protected by the same authenticated reverse-proxy
 // catch-all as individual exports. Never add this to public delivery routes.
 export async function GET(request: Request) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const query = parseCombinedQuery(new URL(request.url).searchParams)
   const headers = { 'Cache-Control':'no-store, private', 'X-Content-Type-Options':'nosniff' }
   if (query.error) return Response.json({error:query.error},{status:400,headers})

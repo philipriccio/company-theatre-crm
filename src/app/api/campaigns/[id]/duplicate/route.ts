@@ -1,3 +1,4 @@
+import { guard } from '@/lib/auth/access'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
@@ -6,6 +7,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const { id } = await params
 
   const campaign = await prisma.campaign.findUnique({

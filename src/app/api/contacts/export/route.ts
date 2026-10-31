@@ -1,7 +1,11 @@
+import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server';
 import { audienceRows, csvCell, parseAudience, permissionLabels } from '@/lib/audience-workspace';
 export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
     try {
         const contacts = await audienceRows(parseAudience(Object.fromEntries(request.nextUrl.searchParams)));
         const headers = ['email', 'firstName', 'lastName', 'fullName', 'organization', 'context', 'city', 'state', 'country', 'solicitation', 'permission', 'source', 'vip', 'tags', 'createdAt'];

@@ -1,7 +1,11 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     const body = await request.json()
     if (!body || typeof body !== 'object' || Array.isArray(body)) return NextResponse.json({error:'Invalid contact details'}, {status:400})
@@ -22,6 +26,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const searchParams = request.nextUrl.searchParams
   const email = searchParams.get('email')
   const name = searchParams.get('name')

@@ -1,3 +1,4 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -5,6 +6,9 @@ export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await guard(_request)
+  if (denied) return denied
+
   const { id } = await params
   const campaign = await prisma.campaign.findUnique({ where: { id } })
   if (!campaign) return NextResponse.json({ error: 'Campaign not found' }, { status: 404 })

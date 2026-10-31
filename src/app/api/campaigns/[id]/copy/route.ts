@@ -1,3 +1,4 @@
+import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { reviewHash } from '@/lib/campaign-review'
@@ -5,11 +6,17 @@ import { copyFields } from '@/lib/campaign-copy'
 import { inlineEmailPreview } from '@/lib/inline-email-preview'
 import { saveCampaignCopy } from '@/lib/campaign-copy-save'
 export async function GET(_request:NextRequest,{params}:{params:Promise<{id:string}>}) {
+  const denied = await guard(_request)
+  if (denied) return denied
+
  const c=await prisma.campaign.findUnique({where:{id:(await params).id}})
  if(!c||c.status!=='DRAFT'||c.design!==null)return NextResponse.json({error:'Only unstructured drafts can be edited here'},{status:409})
  return NextResponse.json({hash:reviewHash(c),subject:c.subject,previewText:c.previewText||'',fields:copyFields(c.content),document:inlineEmailPreview(c.content,c.previewText||'')},{headers:{'Cache-Control':'no-store'}})
 }
 export async function PUT(request:NextRequest,{params}:{params:Promise<{id:string}>}) {
+  const denied = await guard(request)
+  if (denied) return denied
+
  try {
   const body=await request.json()
   if(!body||typeof body!=='object'||Array.isArray(body))throw Error('Invalid text changes')

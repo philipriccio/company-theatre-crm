@@ -1,8 +1,12 @@
+import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { CAMPAIGN_DEFAULTS_KEY, DEFAULT_CAMPAIGN_DEFAULTS, normalizeCampaignDefaults } from '@/lib/campaign-settings'
 
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     const saved = await prisma.setting.findUnique({ where: { key: CAMPAIGN_DEFAULTS_KEY } })
     const defaults = saved ? normalizeCampaignDefaults(JSON.parse(saved.value)) : DEFAULT_CAMPAIGN_DEFAULTS
@@ -15,6 +19,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   // Admin routes remain behind the authentication gate; reject cross-site writes too.
   const origin = request.headers.get('origin')
   // Next may normalize a loopback nextUrl to localhost. Compare the browser

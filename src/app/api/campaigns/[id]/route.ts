@@ -1,8 +1,12 @@
+import { guard } from '@/lib/auth/access'
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { draftData } from "@/lib/campaign-draft";
 type Context = { params: Promise<{ id: string }> };
 export async function GET(_request: NextRequest, { params }: Context) {
+  const denied = await guard(_request)
+  if (denied) return denied
+
   const { id } = await params;
   const campaign = await prisma.campaign.findUnique({ where: { id } });
   return NextResponse.json(campaign || { error: "Campaign not found" }, {
@@ -10,6 +14,9 @@ export async function GET(_request: NextRequest, { params }: Context) {
   });
 }
 export async function PUT(request: NextRequest, { params }: Context) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   try {
     const { id } = await params;
     const data = draftData(await request.json());

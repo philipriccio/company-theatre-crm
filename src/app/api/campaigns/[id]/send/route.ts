@@ -1,3 +1,5 @@
+import { guard, requestToken } from '@/lib/auth/access'
+import { identity } from '@/lib/auth/store'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 import { enqueueCampaign } from '@/lib/email/queue'
@@ -6,6 +8,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const denied = await guard(request)
+  if (denied) return denied
+
   const { id } = await params
   const body = await request.json()
   const { mode, tagIds, scheduledAt, approvalName, approvalNote } = body
@@ -32,11 +37,13 @@ export async function POST(
   }
 
   try {
+    const actor = await identity(requestToken(request))
+    if (!actor) return NextResponse.json({ error: 'Sign in again before approving delivery.' }, { status: 401 })
     const result = await enqueueCampaign(id, {
       mode: mode === 'tags' ? 'tags' : 'all',
       tagIds: mode === 'tags' ? tagIds || [] : [],
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-      approvedBy: approvalName,
+      approvedBy: `${actor.name} <${actor.email}> [${actor.id}]`,
       approvalNote,
     })
 
