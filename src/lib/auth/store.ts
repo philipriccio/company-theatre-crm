@@ -7,8 +7,8 @@ export const SESSION_SECONDS = 7 * 24 * 60 * 60
 export const tokenHash = (value: string) => createHash('sha256').update(value).digest('hex')
 export type Identity = { id: string; name: string; email: string }
 export class AuthError extends Error { constructor(public status: number, message: string) { super(message) } }
-export async function audit(kind: string, actorId: string | null = null, details: Record<string, string | number> = {}) {
-  await authPool.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind","details") VALUES ($1,$2,$3,$4)', [randomUUID(), actorId, kind, JSON.stringify(details)])
+export async function audit(kind: string, actorId: string | null = null, details: Record<string, string | number> = {}, connection: pg.Pool | pg.PoolClient = authPool) {
+  await connection.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind","details") VALUES ($1,$2,$3,$4)', [randomUUID(), actorId, kind, JSON.stringify(details)])
 }
 export async function throttle(key: string, limit: number) {
   const result = await authPool.query(`INSERT INTO "CrmAuthThrottle" ("key", "count", "expiresAt") VALUES ($1,1,NOW()+INTERVAL '15 minutes') ON CONFLICT ("key") DO UPDATE SET "count"=CASE WHEN "CrmAuthThrottle"."expiresAt" <= NOW() THEN 1 ELSE "CrmAuthThrottle"."count"+1 END, "expiresAt"=CASE WHEN "CrmAuthThrottle"."expiresAt" <= NOW() THEN NOW()+INTERVAL '15 minutes' ELSE "CrmAuthThrottle"."expiresAt" END RETURNING "count"`, [tokenHash(key)])
@@ -44,7 +44,7 @@ export async function login(emailInput: unknown, password: unknown) {
     await client.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind") VALUES ($1,$2,$3)', [randomUUID(), user.id, 'login'])
     await client.query('COMMIT')
     return token
-  } catch (error) { await client.query('ROLLBACK'); if (error instanceof AuthError) await audit('login_failed',null,{subject:tokenHash(email),status:error.status}); throw error } finally { client.release() }
+  } catch (error) { await client.query('ROLLBACK'); if (error instanceof AuthError) await audit('login_failed',null,{subject:tokenHash(email),status:error.status},client); throw error } finally { client.release() }
 }
 export async function changePassword(token: string, current: unknown, replacement: string) {
   const user = await identity(token)
@@ -66,7 +66,7 @@ export async function changePassword(token: string, current: unknown, replacemen
     await client.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind") VALUES ($1,$2,$3)', [randomUUID(), user.id, 'password_changed_all_sessions_rotated'])
     await client.query('COMMIT')
     return next
-  } catch (error) { await client.query('ROLLBACK'); if (error instanceof AuthError) await audit('password_change_failed',user.id,{status:error.status}); throw error } finally { client.release() }
+  } catch (error) { await client.query('ROLLBACK'); if (error instanceof AuthError) await audit('password_change_failed',user.id,{status:error.status},client); throw error } finally { client.release() }
 }
 export async function logout(token?: string) {
   if (!token) return

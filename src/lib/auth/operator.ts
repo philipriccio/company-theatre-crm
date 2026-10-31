@@ -59,5 +59,5 @@ export async function operatorAction(body: Record<string,unknown>, operator: str
     await client.query('INSERT INTO "CrmAuthEvent" ("id","userId","kind","details") VALUES ($1,$2,$3,$4)',[randomUUID(),actorId,`operator_${action}`,JSON.stringify({operator})])
     await client.query('COMMIT')
     return {ok:true,action,id:actorId}
-  } catch(error) {await client.query('ROLLBACK');if(error instanceof AuthError)await audit('operator_failed',null,{operation:String(action),operator,status:error.status});throw error} finally {client.release()}
+  } catch(error) {await client.query('ROLLBACK');if(error instanceof AuthError)await audit('operator_failed',null,{operation:String(action),operator,status:error.status},client);throw error} finally {client.release()}
 }

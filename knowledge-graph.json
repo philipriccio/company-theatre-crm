@@ -1,6 +1,6 @@
 {
   "project": "crm-accounts-20261031",
-  "generatedAt": "2026-10-31T15:30:55.315Z",
+  "generatedAt": "2026-10-31T15:58:53.096Z",
   "stats": {
     "nodes": 601,
     "edges": 5180,
@@ -3933,7 +3933,8 @@
       "params": [
         "kind",
         "actorId",
-        "details"
+        "details",
+        "connection"
       ]
     },
     {
@@ -5963,14 +5964,14 @@
       "name": "auth.integration.test.ts",
       "file": "tests/auth.integration.test.ts",
       "language": "typescript",
-      "lines": 52
+      "lines": 59
     },
     {
       "id": "function:tests/auth.integration.test.ts:request",
       "type": "function",
       "name": "request",
       "file": "tests/auth.integration.test.ts",
-      "line": 36,
+      "line": 43,
       "exported": false,
       "arrow": true,
       "params": [
@@ -32033,9 +32034,9 @@
     },
     {
       "source": "function:src/lib/auth/store.ts:audit",
-      "target": "call:authPool.query",
+      "target": "call:connection.query",
       "relationship": "calls",
-      "name": "authPool.query",
+      "name": "connection.query",
       "line": 11
     },
     {

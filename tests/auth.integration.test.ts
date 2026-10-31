@@ -11,7 +11,14 @@ test('isolated real-DB auth: credentials, revocation, password races, durable th
   const id = randomUUID(), email = `${id}@example.invalid`
   await authPool.query('INSERT INTO "CrmUser" ("id","email","name","passwordHash") VALUES ($1,$2,$3,$4)',[id,email,'Synthetic Account',await hashPassword(password)])
   try {
-    await assert.rejects(login(email,'wrong'), /not recognised/)
+    // Exhaust the pool before auditing: failure events must use the transaction's
+    // existing connection, not wait for a sixth connection while holding five.
+    const held = await Promise.all(Array.from({length:4},()=>authPool.connect()))
+    try {
+      await assert.rejects(login(`${randomUUID()}@example.invalid`,'wrong'), /not recognised/)
+      await assert.rejects(login(email,'wrong'), /not recognised/)
+    } finally { held.forEach(client=>client.release()) }
+
     const first = await login(email,password), second = await login(email,password)
     assert.equal((await identity(first))?.id,id)
     await assert.rejects(changePassword(first,'wrong',replacement),/incorrect/)
