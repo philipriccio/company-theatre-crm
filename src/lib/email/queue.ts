@@ -1,3 +1,4 @@
+import { businessEvent } from '../security/history'
 import { selectAudience } from './audience'
 import { LEGACY_NEGATIVE_TAGS } from './legacy-exclusions'
 import { prisma } from '@/lib/db'
@@ -13,6 +14,7 @@ export interface AudienceSelection {
   tagIds?: string[]
   scheduledAt?: Date | null
   approvedBy: string
+  securityActorId?: string
   approvalNote?: string
 }
 
@@ -34,6 +36,7 @@ export async function enqueueCampaign(campaignId: string, selection: AudienceSel
   if (contacts.length === 0) throw new Error('No recipients found')
 
   await prisma.$transaction(async (tx) => {
+    await businessEvent(tx, selection.securityActorId ?? null, 'campaign_send_approved', campaignId)
     // Atomic draft claim: concurrent approvals cannot refreeze the audience.
     const claimed = await tx.campaign.updateMany({ where: { id: campaignId, status: 'DRAFT' }, data: { status: 'QUEUED' } })
     if (claimed.count !== 1) throw new Error('Campaign is no longer a draft')

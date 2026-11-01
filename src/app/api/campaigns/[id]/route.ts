@@ -1,3 +1,4 @@
+import { actorFor, businessEvent } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
@@ -20,10 +21,15 @@ export async function PUT(request: NextRequest, { params }: Context) {
   try {
     const { id } = await params;
     const data = draftData(await request.json());
-    const result = await prisma.campaign.updateMany({
+    const actor=await actorFor(request)
+    const result=await prisma.$transaction(async tx=>{
+    const updated = await tx.campaign.updateMany({
       where: { id, status: "DRAFT" },
       data,
     });
+    if(updated.count)await businessEvent(tx,actor,'campaign_draft_updated',id)
+    return updated
+    })
     if (!result.count)
       return NextResponse.json(
         {

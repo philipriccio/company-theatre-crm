@@ -133,3 +133,12 @@ Added bounded host-loopback/Docker-pipe operator relay and documented same-port 
 
 ### October31 protected Gateway adapter — local only
 Added fixed-HTTPS machine request adapter using inherited protected-store sentinels and explicitly proxy-bound system curl. Shared pure scope mapping preserves existing server authorization; no new capabilities or database imports in the adapter. Fifty offline tests pass (nine DB suites skip), TypeScript/scoped lint pass, including real curl loopback407 rejection. Issuance-to-store binding, live proxy substitution and final production cutover are not proved. See AUTHENTICATION.md and ../../audits/company-crm-fortification-20261031/GATEWAY-ADAPTER.md. No production, secret-store or gateway config changes.
+
+## October 31 — basic profile/settings follow-up, local only
+Philip requested name and basic account controls. Added editable name, read-only sign-in email, and sign-out-other-sessions alongside existing password change/sign-out. Synthetic real-DB and desktop/mobile browser proof, build/typecheck/scoped lint pass. No new schema. No commit/push/deploy; rollout remains paused until tomorrow. Previously prepared candidate/images do not include these changes and must be refreshed before activation. Evidence: `../../audits/company-crm-fortification-20261031/PROFILE-SETTINGS.md`.
+
+## November 1 — security history, local candidate only
+Added `/security` and human-admin-only history/review API, trusted actor/outcome/UTC/resource evidence, atomic business events, immutable event storage and deterministic in-app alerts. Existing profile edits preserved. No production changes, sends, push or deployment. Coverage is explicit—not every legacy route or out-of-band operation. Migration/permissions/retention/rollback, checks and screenshots: `../../audits/crm-security-history-20261101/COMPANY.md`.
+
+## November 1 — combined release candidate preparation
+Combined existing profile and security-history work reverified locally for a single release candidate. Fixed trusted campaign-review attribution accepting the full 120-character account-name limit (previous 100-character review limit could block legitimate approvals). Synthetic real-DB regression added. No production operations, push or deployment. Exact candidate/checks and concrete migration/image/machine-enrollment gates: `../../audits/crm-release-readiness-20261101/COMPANY.md`. Historical rollout images and packets pinned to 893db42 do not contain these changes; use ten-migration manifest and refreshed exact-candidate images.

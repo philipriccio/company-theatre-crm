@@ -1,3 +1,4 @@
+import { exportStarted } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server';
 import { audienceRows, csvCell, parseAudience, permissionLabels } from '@/lib/audience-workspace';
@@ -10,6 +11,7 @@ export async function GET(request: NextRequest) {
         const contacts = await audienceRows(parseAudience(Object.fromEntries(request.nextUrl.searchParams)));
         const headers = ['email', 'firstName', 'lastName', 'fullName', 'organization', 'context', 'city', 'state', 'country', 'solicitation', 'permission', 'source', 'vip', 'tags', 'createdAt'];
         const rows = contacts.map(c => [c.email, c.firstName, c.lastName, c.fullName, c.organization, c.context, c.city, c.state, c.country, c.solicitation, permissionLabels[c.permission], c.latestSource, c.vip, c.tags.map(t => t.tag.name).join(', '), c.createdAt.toISOString()].map(csvCell).join(','));
+        await exportStarted(request)
         return new NextResponse([headers.join(','), ...rows].join('\r\n'), { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename="audience-export.csv"', 'Cache-Control': 'no-store' } });
     }
     catch {

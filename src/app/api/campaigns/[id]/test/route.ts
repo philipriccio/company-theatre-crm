@@ -1,3 +1,5 @@
+import { observeAction } from '@/lib/security/history'
+import { requestEvent } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
@@ -5,7 +7,7 @@ import { wrapInTemplate, personalizeContent } from '@/lib/email-template'
 import { getEmailProvider } from '@/lib/email/providers'
 import { createUnsubscribeToken } from '@/lib/email/tokens'
 
-export async function POST(
+async function perform(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -58,6 +60,7 @@ export async function POST(
 
   // Send test email
   const provider = getEmailProvider()
+  await requestEvent(request,'campaign_test_send_requested',id)
   const result = await provider.send({
     to: { email: realContact.email },
     from: { email: campaign.fromEmail, name: campaign.fromName },
@@ -70,9 +73,15 @@ export async function POST(
     },
   })
 
+  await requestEvent(request,result.ok?'campaign_test_send_accepted':result.error.class==='unknown'?'campaign_test_send_unknown':'campaign_test_send_failed',id)
   if (!result.ok) {
     return NextResponse.json({ error: result.error.message, code: result.error.code }, { status: 500 })
   }
 
   return NextResponse.json({ success: true, provider: result.provider, messageId: result.messageId })
+}
+
+export async function POST(request:NextRequest,context:{params:Promise<{id:string}>}){
+ const denied=await guard(request);if(denied)return denied
+ return observeAction(request,'campaign_test',(await context.params).id,()=>perform(request,context))
 }

@@ -1,3 +1,4 @@
+import { actorFor, businessEvent } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
@@ -38,10 +39,14 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: error instanceof SyntaxError ? 'Invalid settings data.' : error instanceof Error ? error.message : 'Invalid settings data.' }, { status: 400 })
   }
   try {
-    await prisma.setting.upsert({
+    const actor=await actorFor(request)
+    await prisma.$transaction(async tx=>{
+    await tx.setting.upsert({
       where: { key: CAMPAIGN_DEFAULTS_KEY },
       create: { key: CAMPAIGN_DEFAULTS_KEY, value: JSON.stringify(defaults) },
       update: { value: JSON.stringify(defaults) },
+    })
+    await businessEvent(tx,actor,'campaign_defaults_updated','campaign-defaults')
     })
     return NextResponse.json({ defaults })
   } catch {

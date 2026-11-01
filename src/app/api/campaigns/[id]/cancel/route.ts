@@ -1,8 +1,10 @@
+import { observeAction } from '@/lib/security/history'
+import { actorFor, businessEvent } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(
+async function perform(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -26,16 +28,23 @@ export async function POST(
     )
   }
 
-  await prisma.$transaction([
-    prisma.campaignRecipient.updateMany({
+  const actor=await actorFor(request)
+  await prisma.$transaction(async tx=>{
+    await tx.campaignRecipient.updateMany({
       where: { campaignId: id, status: 'QUEUED' },
       data: { status: 'CANCELLED', leasedUntil: null, leaseOwner: null },
-    }),
-    prisma.campaign.update({
+    });
+    await tx.campaign.update({
       where: { id },
       data: { status: 'CANCELLED', cancelledAt: new Date() },
-    }),
-  ])
+    });
+    await businessEvent(tx,actor,'campaign_cancel',id)
+  })
 
   return NextResponse.json({ success: true })
+}
+
+export async function POST(request:NextRequest,context:{params:Promise<{id:string}>}){
+ const denied=await guard(request);if(denied)return denied
+ return observeAction(request,'campaign_cancel',(await context.params).id,()=>perform(request,context))
 }

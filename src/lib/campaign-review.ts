@@ -1,3 +1,4 @@
+import { businessEvent } from './security/history'
 import { createHash } from 'node:crypto'
 import { Prisma, type Campaign } from '@prisma/client'
 import { prisma } from './db'
@@ -15,14 +16,15 @@ export function reviewState(events: {action:string;contentHash:string}[], hash:s
   if(!decision || decision.contentHash!==hash) return 'Draft'
   return ({SUBMIT:'Awaiting review',CHANGES:'Changes requested',APPROVE:'Design approved'} as Record<string,string>)[decision.action]||'Draft'
 }
-export async function recordReview(id:string, body:Record<string,unknown>) {
+export async function recordReview(id:string, body:Record<string,unknown>, actor?: { id:string; name:string }) {
   const {action,contentHash}=body
   if(!['NOTE','SUBMIT','CHANGES','APPROVE','COPY'].includes(String(action))) throw Error('Choose a valid review action')
-  const author=typeof body.author==='string'?body.author.trim():''
+  const author=actor?.name ?? (typeof body.author==='string'?body.author.trim():'')
   const note=typeof body.note==='string'?body.note.trim():''
-  if(action!=='COPY' && (!author || author.length>100 || note.length>5000)) throw Error('Enter your name and a note of at most 5,000 characters')
+  if(action!=='COPY' && (!author || author.length>(actor ? 120 : 100) || note.length>5000)) throw Error('Enter your name and a note of at most 5,000 characters')
   if(['NOTE','CHANGES'].includes(String(action))&&!note) throw Error('Add your notes first')
   return prisma.$transaction(async tx=>{
+    await businessEvent(tx, actor?.id ?? null, `campaign_review_${String(action).toLowerCase()}`, id)
     await tx.$queryRaw`SELECT id FROM "Campaign" WHERE id=${id} FOR UPDATE`
     const c=await tx.campaign.findUnique({where:{id}})
     if(!c) throw Error('Campaign not found')

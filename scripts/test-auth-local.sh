@@ -26,9 +26,19 @@ SQL
 ./node_modules/.bin/prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
 # DDL/migration history belongs to the owner; all runtime tests below use only DML grants.
 export DATABASE_URL="postgresql://crm_review_app@localhost:55441/crm_auth_test?host=$LOCAL_PROOF_ROOT&port=55441"
-./node_modules/.bin/tsx --test tests/auth-grants.integration.test.ts tests/auth.integration.test.ts tests/operator.integration.test.ts
+./node_modules/.bin/tsx --test tests/auth-grants.integration.test.ts tests/auth.integration.test.ts tests/operator.integration.test.ts tests/security-history.integration.test.ts
 if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 ]]; then
-  ./node_modules/.bin/next start --hostname 127.0.0.1 --port 3257 > "$LOCAL_PROOF_ROOT/web.log" 2>&1 & LOCAL_WEB_PID=$!
-  for i in {1..60}; do if curl -fsS http://127.0.0.1:3257/login >/dev/null; then break; fi; sleep 1; done
+  CRM_AUTH_BROWSER_PORT="${CRM_AUTH_BROWSER_PORT:-3263}"
+  [[ "$CRM_AUTH_BROWSER_PORT" =~ ^[0-9]+$ ]] || exit 1
+  export CRM_AUTH_ORIGIN="http://127.0.0.1:$CRM_AUTH_BROWSER_PORT"
+  ./node_modules/.bin/next start --hostname 127.0.0.1 --port "$CRM_AUTH_BROWSER_PORT" > "$LOCAL_PROOF_ROOT/web.log" 2>&1 & LOCAL_WEB_PID=$!
+  sleep 1
+  kill -0 "$LOCAL_WEB_PID" || { echo 'Synthetic browser server failed to start; possible port collision.'; exit 1; }
+  for i in {1..60}; do
+    kill -0 "$LOCAL_WEB_PID" || exit 1
+    if curl -fsS "$CRM_AUTH_ORIGIN/login" >/dev/null; then break; fi
+    sleep 1
+  done
   ./node_modules/.bin/tsx scripts/auth-browser-proof.ts
+  ./node_modules/.bin/tsx scripts/security-history-browser-proof.ts
 fi

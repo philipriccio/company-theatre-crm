@@ -1,8 +1,10 @@
+import { observeAction } from '@/lib/security/history'
+import { actorFor, businessEvent } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(
+async function perform(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -15,6 +17,15 @@ export async function POST(
   if (!['QUEUED', 'SCHEDULED', 'SENDING'].includes(campaign.status)) {
     return NextResponse.json({ error: 'Campaign cannot be paused from its current state' }, { status: 400 })
   }
-  await prisma.campaign.update({ where: { id }, data: { status: 'PAUSED', pausedAt: new Date() } })
+  const actor=await actorFor(_request)
+  await prisma.$transaction(async tx=>{
+  await tx.campaign.update({ where: { id }, data: { status: 'PAUSED', pausedAt: new Date() } })
+    await businessEvent(tx,actor,'campaign_pause',id)
+  })
   return NextResponse.json({ success: true })
+}
+
+export async function POST(request:NextRequest,context:{params:Promise<{id:string}>}){
+ const denied=await guard(request);if(denied)return denied
+ return observeAction(request,'campaign_pause',(await context.params).id,()=>perform(request,context))
 }

@@ -1,3 +1,4 @@
+import { actorFor, businessEvent } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
@@ -46,7 +47,9 @@ export async function PUT(
   const { id } = await params
   const body = await request.json()
 
-  const contact = await prisma.contact.update({
+  const actor=await actorFor(request)
+  const contact=await prisma.$transaction(async tx=>{
+  const updated = await tx.contact.update({
     where: { id },
     data: {
       email: body.email,
@@ -69,6 +72,9 @@ export async function PUT(
     },
   })
 
+  await businessEvent(tx,actor,'contact_updated',id)
+  return updated
+  })
   return NextResponse.json(contact)
 }
 
@@ -81,9 +87,13 @@ export async function DELETE(
 
   const { id } = await params
 
-  await prisma.contact.delete({
+  const actor=await actorFor(request)
+  await prisma.$transaction(async tx=>{
+  await tx.contact.delete({
     where: { id },
   })
 
+  await businessEvent(tx,actor,'contact_deleted',id)
+  })
   return NextResponse.json({ success: true })
 }

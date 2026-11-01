@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { randomBytes, randomUUID } from 'node:crypto'
-import { authPool, changePassword, identity, login, logout, throttle } from '../src/lib/auth/store'
+import { authPool, changePassword, identity, login, logout, throttle, updateProfile, logoutOtherSessions, tokenHash } from '../src/lib/auth/store'
 import { hashPassword } from '../src/lib/auth/password'
 import { guard } from '../src/lib/auth/access'
 const enabled = process.env.CRM_AUTH_ISOLATED_PROOF === '1'
@@ -33,8 +33,60 @@ test('isolated real-DB auth: credentials, revocation, password races, durable th
     const blocked = await accountAction(new Request('http://127.0.0.1:3257/api/auth/logout',{method:'POST'}),{params:Promise.resolve({action:'logout'})})
     assert.equal(blocked.status,403)
 
+    const fixtureSession = async () => {
+      const token=randomBytes(32).toString('hex')
+      await authPool.query(`INSERT INTO "CrmSession" ("tokenHash","userId","expiresAt") VALUES ($1,$2,NOW()+INTERVAL '1 day')`,[tokenHash(token),id])
+      return token
+    }
+    const profileRequest = (body: unknown, token = first, origin = 'http://127.0.0.1:3257') => accountAction(new Request('http://127.0.0.1:3257/api/auth/profile', {method:'POST', headers:{origin,'content-type':'application/json',cookie:`crm-local-session=${token}`},body:JSON.stringify(body)}),{params:Promise.resolve({action:'profile'})})
+    const profileResponse = await profileRequest({name:'  Renée Synthetic  '})
+    assert.equal(profileResponse.status,200)
+    assert.equal(profileResponse.headers.get('set-cookie'),null, 'profile must not replace/clear session')
+    assert.equal((await profileResponse.json()).name,'Renée Synthetic')
+    assert.equal((await identity(first))?.name,'Renée Synthetic')
+    assert.equal((await identity(first))?.email,email)
+    for (const name of ['', '   ', 'x'.repeat(121), 'bad\nname', 'bad\u202ename', null, 42]) assert.equal((await profileRequest({name})).status,400)
+    assert.equal((await profileRequest({name:'Forgery',id:randomUUID(),email:'other@example.invalid',role:'admin'})).status,400)
+    assert.equal((await profileRequest({name:'Forgery'},first,'https://attacker.invalid')).status,403)
+    assert.equal((await profileRequest({name:'Forgery'},'missing')).status,401)
+    const otherId=randomUUID(), otherEmail=`${otherId}@example.invalid`
+    await authPool.query('INSERT INTO "CrmUser" ("id","email","name","passwordHash") VALUES ($1,$2,$3,$4)',[otherId,otherEmail,'Other account',await hashPassword(password)])
+    try {
+      const unrelated=await login(otherEmail,password)
+      const revoked=await fixtureSession()
+      const signout=await accountAction(new Request('http://127.0.0.1:3257/api/auth/logout-others',{method:'POST',headers:{origin:'http://127.0.0.1:3257',cookie:`crm-local-session=${first}`}}),{params:Promise.resolve({action:'logout-others'})})
+      assert.equal(signout.status,200);assert.equal(signout.headers.get('set-cookie'),null)
+      assert.ok(await identity(first));assert.equal(await identity(revoked),null);assert.ok(await identity(unrelated))
+      await assert.rejects(updateProfile(revoked,'Forbidden'),/session has ended/)
+      await assert.rejects(logoutOtherSessions(revoked),/session has ended/)
+      assert.equal((await identity(unrelated))?.name,'Other account')
+      // Hold the user lock while a profile write starts, then revoke its session.
+      // The write must recheck after obtaining the lock, not trust initial identity.
+      const pendingToken=await fixtureSession(), lock=await authPool.connect()
+      await lock.query('BEGIN');await lock.query('SELECT 1 FROM "CrmUser" WHERE "id"=$1 FOR UPDATE',[id])
+      const pending=updateProfile(pendingToken,'Must not persist')
+      const rejected=assert.rejects(pending,/session has ended/)
+      try {
+      for(let attempt=0;attempt<100;attempt++) {
+        await lock.query('SELECT pg_stat_clear_snapshot()')
+        const waiting=await lock.query(`SELECT 1 FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND wait_event_type='Lock' AND query LIKE '%SELECT "disabled" FROM "CrmUser"%'`)
+        if(waiting.rowCount) break
+        assert.ok(attempt<99,'profile transaction must be waiting on user lock')
+        await new Promise(resolve=>setTimeout(resolve,10))
+      }
+      await lock.query('DELETE FROM "CrmSession" WHERE "tokenHash"=$1',[ tokenHash(pendingToken)])
+      await lock.query('COMMIT')
+      } finally { await lock.query('ROLLBACK');lock.release() }
+      await rejected
+      assert.equal((await identity(first))?.name,'Renée Synthetic')
+      const events=await authPool.query('SELECT "kind","details" FROM "CrmAuthEvent" WHERE "userId"=$1',[id])
+      for(const kind of ['profile_updated','other_sessions_revoked']) assert.ok(events.rows.some(row=>row.kind===kind))
+      assert.ok(!JSON.stringify(events.rows).includes('Renée'))
+    } finally {await authPool.query('DELETE FROM "CrmUser" WHERE "id"=$1',[otherId])}
+    // Session revocation above deliberately removed second; replace it for the password-race proof.
+    const raceSecond=await fixtureSession()
     const alternative = randomBytes(24).toString('hex')
-    const race = await Promise.allSettled([changePassword(first,password,replacement), changePassword(second,password,alternative)])
+    const race = await Promise.allSettled([changePassword(first,password,replacement), changePassword(raceSecond,password,alternative)])
     assert.equal(race.filter(r=>r.status==='fulfilled').length,1)
     assert.equal(await identity(first),null); assert.equal(await identity(second),null)
     const rotated = race.find(r=>r.status==='fulfilled') as PromiseFulfilledResult<string>

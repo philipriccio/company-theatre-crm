@@ -1,3 +1,4 @@
+import { exportStarted } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { analyticsReport, filteredTimestamps, csvLine, parseAnalyticsQuery, recipientSelect, recipientWhere } from '@/lib/email/analytics'
@@ -11,6 +12,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params
   const campaign = await prisma.campaign.findUnique({ where: { id }, select: { id: true } })
   if (!campaign) return Response.json({ error: 'Campaign not found' }, { status: 404, headers: { 'Cache-Control': 'no-store, private' } })
+  await exportStarted(request, id)
   const query = parseAnalyticsQuery(new URL(request.url).searchParams)
   const where = recipientWhere(id, query)
   const view = new URL(request.url).searchParams.get('view')

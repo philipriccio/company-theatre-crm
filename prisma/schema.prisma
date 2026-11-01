@@ -425,12 +425,18 @@ model CrmAuthThrottle {
   @@index([expiresAt])
 }
 model CrmAuthEvent {
+  actorType String @default("legacy")
+  actorLabel String @default("Historical attribution not verified")
+  outcome String @default("unknown")
+  resourceId String?
   details Json?
   id String @id
   userId String?
   kind String
   createdAt DateTime @default(now())
   @@index([createdAt])
+  @@index([kind, createdAt])
+  @@index([userId, createdAt])
 }
 
 model CrmMachineIdentity {
@@ -442,4 +448,20 @@ model CrmMachineIdentity {
   createdAt DateTime @default(now())
   expiresAt DateTime
   @@index([expiresAt])
+}
+
+model CrmSecurityAlert {
+ id String @id
+ eventId String
+ rule String
+ reason String
+ createdAt DateTime @default(now())
+ reviewedAt DateTime?
+ reviewedBy String?
+ reviewerName String?
+ @@index([createdAt])
+}
+model CrmSecurityCoverage {
+ id String @id
+ startedAt DateTime @default(now())
 }

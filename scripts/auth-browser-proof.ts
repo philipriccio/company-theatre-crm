@@ -3,14 +3,14 @@ import { randomBytes, randomUUID } from 'node:crypto'
 import { spawn } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { mkdir } from 'node:fs/promises'
-import { authPool } from '../src/lib/auth/store'
+import { authPool, login } from '../src/lib/auth/store'
 import { operatorAction } from '../src/lib/auth/operator'
 import { createOperatorServer } from './auth-operator/server'
 import { hashPassword } from '../src/lib/auth/password'
 const require = createRequire(process.cwd() + '/package.json')
 const { chromium } = require('/opt/homebrew/lib/node_modules/agent-browser/node_modules/playwright-core')
 async function main() {
-const base='http://127.0.0.1:3257'
+const base=process.env.CRM_AUTH_ORIGIN!
 const out='../../audits/company-crm-fortification-20261031'
 assert.equal(process.env.CRM_AUTH_ISOLATED_PROOF,'1')
 assert.ok(process.env.DATABASE_URL?.includes('/crm_auth_test?host=/tmp/company-crm-auth.'))
@@ -65,6 +65,29 @@ try {
  await page.getByLabel('Password',{exact:true}).fill(password)
  await page.getByRole('button',{name:'Sign in',exact:true}).click(); await page.waitForURL(base+'/')
  await page.goto(base+'/settings/account')
+ assert.equal(await page.getByLabel('Email',{exact:true}).getAttribute('readonly'),'')
+ await page.getByLabel('Name',{exact:true}).fill('Updated synthetic reviewer')
+ await page.getByRole('button',{name:'Save name',exact:true}).click()
+ await page.getByRole('status').filter({hasText:'Name saved.'}).waitFor()
+ await page.reload()
+ assert.equal(await page.getByLabel('Name',{exact:true}).inputValue(),'Updated synthetic reviewer')
+ assert.equal((await context.request.get(base+'/api/contacts')).status(),200)
+ await page.route('**/api/auth/profile', (route: {abort: () => Promise<void>}) => route.abort())
+ await page.getByLabel('Name',{exact:true}).fill('Preserved unsaved name')
+ await page.getByRole('button',{name:'Save name',exact:true}).click()
+ await page.getByRole('alert').filter({hasText:'Connection lost'}).waitFor()
+ assert.equal(await page.getByLabel('Name',{exact:true}).inputValue(),'Preserved unsaved name')
+ await page.unroute('**/api/auth/profile')
+ await page.getByRole('button',{name:'Save name',exact:true}).click()
+ await page.getByRole('status').filter({hasText:'Name saved.'}).waitFor()
+ const otherToken=await login(email,password), otherSession=await browser.newContext()
+ await otherSession.addCookies([{name:'crm-local-session',value:otherToken,url:base}])
+ assert.equal((await otherSession.request.get(base+'/api/contacts')).status(),200)
+ await page.getByRole('button',{name:'Sign out other sessions',exact:true}).click()
+ await page.getByRole('status').filter({hasText:'Other sessions signed out.'}).waitFor()
+ assert.equal((await otherSession.request.get(base+'/api/contacts')).status(),401)
+ assert.equal((await context.request.get(base+'/api/contacts')).status(),200)
+ await otherSession.close()
  const oldCookies=await context.cookies()
  const other=await browser.newContext();await other.addCookies(oldCookies)
  await page.getByLabel('Current password',{exact:true}).fill('incorrect')
@@ -83,11 +106,12 @@ try {
  for(const width of [1440,390,320]) {
   await page.setViewportSize({width,height:width===1440?1000:844})
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`overflow at ${width}`)
-  await page.screenshot({path:`${out}/account-${width}.png`,fullPage:true})
+  await page.getByRole('heading',{name:'Your account',exact:true}).scrollIntoViewIfNeeded()
+  await page.screenshot({path:`${out}/profile-account-${width}.png`,fullPage:true})
   await page.getByRole('button',{name:'Sign out',exact:true}).scrollIntoViewIfNeeded()
   const target = await page.getByRole('button',{name:'Sign out',exact:true}).boundingBox()
   assert.ok(target && target.height >= 44)
-  await page.screenshot({path:`${out}/account-${width}-actions.png`,fullPage:true})
+  await page.screenshot({path:`${out}/profile-account-${width}-actions.png`,fullPage:true})
  }
  await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.waitForURL('**/login')
  assert.equal((await context.request.get(base+'/api/contacts')).status(),401)
@@ -95,8 +119,8 @@ try {
  await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.waitForURL(base+'/')
  assert.deepEqual(errors,[])
  await other.close();await context.close()
- console.log('Browser proof PASS: anonymous/spoofed access, cross-origin login/mutation rejection, correct-current-password check, failed-form preservation, rotation/other-session revocation, logout, new-password login, 1440/390/320 no-overflow and screenshots, no page errors; machine HTTP read/draft-only/no-send/revocation parity and private operator UI masked fields. Synthetic fixture only.')
+ console.log('Browser proof PASS: editable profile persistence/reload, read-only email, network failure input preservation/retry, independent other-session revocation preserving current session; anonymous/spoofed access, cross-origin login/mutation rejection, correct-current-password check, failed-form preservation, rotation/other-session revocation, logout, new-password login, 1440/390/320 no-overflow and screenshots, no page errors; machine HTTP read/draft-only/no-send/revocation parity and private operator UI masked fields. Synthetic fixture only.')
 } finally {await browser.close();await authPool.query('DELETE FROM "CrmUser" WHERE "id"=$1',[id]);await authPool.end()}
 
 }
-main().catch(() => { console.error("Browser proof FAILED; inspect locally without logging credentials."); process.exitCode=1 })
+main().catch(error => { console.error("Browser proof FAILED", error instanceof Error ? error.name : "unknown", error instanceof Error ? error.stack?.split("\n").filter(line => /^\s+at /.test(line) && line.includes("auth-browser-proof.ts:")).join("\n") : ""); process.exitCode=1 })

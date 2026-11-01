@@ -68,6 +68,38 @@ export async function changePassword(token: string, current: unknown, replacemen
     return next
   } catch (error) { await client.query('ROLLBACK'); if (error instanceof AuthError) await audit('password_change_failed',user.id,{status:error.status},client); throw error } finally { client.release() }
 }
+// Serialize with password/operator changes; NO KEY UPDATE permits logout audit FK checks.
+// Locking the live session prevents a profile write from outlasting concurrent revocation.
+async function accountUpdate<T>(token: string, operation: (client: pg.PoolClient, user: Identity) => Promise<T>) {
+  const user = await identity(token)
+  if (!user) throw new AuthError(401, 'Your session has ended. Sign in again.')
+  await throttle(`account:${user.id}`, 30)
+  const client = await authPool.connect()
+  try {
+    await client.query('BEGIN')
+    const locked = await client.query('SELECT "disabled" FROM "CrmUser" WHERE "id"=$1 FOR NO KEY UPDATE', [user.id])
+    const session = await client.query('SELECT 1 FROM "CrmSession" WHERE "tokenHash"=$1 AND "userId"=$2 AND "expiresAt">NOW() FOR UPDATE', [tokenHash(token), user.id])
+    if (!locked.rowCount || locked.rows[0].disabled || !session.rowCount) throw new AuthError(401, 'Your session has ended. Sign in again.')
+    const result = await operation(client, user)
+    await client.query('COMMIT')
+    return result
+  } catch (error) { await client.query('ROLLBACK'); throw error } finally { client.release() }
+}
+export async function updateProfile(token: string, nameInput: unknown) {
+  const name = typeof nameInput === 'string' ? nameInput.trim() : ''
+  if (!name || name.length > 120 || /[\p{Cc}\p{Cf}]/u.test(name)) throw new AuthError(400, 'Enter a name of 1–120 characters without control characters.')
+  return accountUpdate(token, async (client, user) => {
+    await client.query('UPDATE "CrmUser" SET "name"=$1 WHERE "id"=$2', [name, user.id])
+    await audit('profile_updated', user.id, {}, client)
+    return { name }
+  })
+}
+export async function logoutOtherSessions(token: string) {
+  return accountUpdate(token, async (client, user) => {
+    await client.query('DELETE FROM "CrmSession" WHERE "userId"=$1 AND "tokenHash"<>$2', [user.id, tokenHash(token)])
+    await audit('other_sessions_revoked', user.id, {}, client)
+  })
+}
 export async function logout(token?: string) {
   if (!token) return
   const client = await authPool.connect()

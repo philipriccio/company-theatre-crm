@@ -1,3 +1,4 @@
+import { exportStarted } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { csvLine, filteredTimestamps } from '@/lib/email/analytics'
@@ -12,6 +13,7 @@ export async function GET(request: Request) {
   const query = parseCombinedQuery(new URL(request.url).searchParams)
   const headers = { 'Cache-Control':'no-store, private', 'X-Content-Type-Options':'nosniff' }
   if (query.error) return Response.json({error:query.error},{status:400,headers})
+  await exportStarted(request, 'combined-analytics')
   if (new URL(request.url).searchParams.get('view') === 'links') {
     const encoder = new TextEncoder()
     let after: CombinedLink | null = null

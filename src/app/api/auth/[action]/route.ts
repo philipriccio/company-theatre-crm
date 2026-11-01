@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { AuthError, changePassword, login, logout, SESSION_SECONDS } from '@/lib/auth/store'
+import { AuthError, changePassword, login, logout, updateProfile, logoutOtherSessions, SESSION_SECONDS } from '@/lib/auth/store'
 import { authFailure, authOrigin, cookieName, requestToken, sameOrigin } from '@/lib/auth/access'
 import { passwordError } from '@/lib/auth/password'
 export const runtime = 'nodejs'
@@ -26,11 +26,16 @@ export async function POST(request: Request, context: { params: Promise<{ action
   try {
     if (!sameOrigin(request)) throw new AuthError(403, 'Request origin could not be verified.')
     const { action } = await context.params
-    let token = ''
-    if (action === 'logout') await logout(requestToken(request))
+    let token: string | undefined
+    let profile: { name: string } | undefined
+    if (action === 'logout') { await logout(requestToken(request)); token = '' }
+    else if (action === 'logout-others') await logoutOtherSessions(requestToken(request) ?? '')
     else {
       const body = await readBody(request)
-      if (action === 'login') token = await login(body.email, body.password)
+      if (action === 'profile') {
+        if (Object.keys(body).some(key => key !== 'name')) throw new AuthError(400, 'Only your name can be changed here.')
+        profile = await updateProfile(requestToken(request) ?? '', body.name)
+      } else if (action === 'login') token = await login(body.email, body.password)
       else if (action === 'password') {
         const issue = passwordError(body.newPassword)
         if (issue) throw new AuthError(400, issue)
@@ -38,8 +43,8 @@ export async function POST(request: Request, context: { params: Promise<{ action
         token = await changePassword(requestToken(request) ?? '', body.currentPassword, body.newPassword as string)
       } else throw new AuthError(404, 'Account action not found.')
     }
-    const response = NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } })
-    response.cookies.set(cookieName(), token, { httpOnly: true, secure: authOrigin().startsWith('https:'), sameSite: 'lax', path: '/', maxAge: token ? SESSION_SECONDS : 0 })
+    const response = NextResponse.json({ ok: true, ...profile }, { headers: { 'Cache-Control': 'no-store' } })
+    if (token !== undefined) response.cookies.set(cookieName(), token, { httpOnly: true, secure: authOrigin().startsWith('https:'), sameSite: 'lax', path: '/', maxAge: token ? SESSION_SECONDS : 0 })
     return response
   } catch (error) { return authFailure(error) }
 }

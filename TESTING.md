@@ -143,3 +143,9 @@ See AUTHENTICATION.md for fail-closed configuration, rollout gates and account/m
 
 ### Protected Gateway adapter
 `./node_modules/.bin/tsx --test tests/gateway-adapter.test.ts` checks request/context/response bounds, scope and destination controls, and actual system curl CONNECT to a local synthetic407 proxy. It uses no credentials, production connections or external network destinations. The pure machine-scope mapping is shared with server auth, with no database import required by this adapter. Successful protected proxy substitution remains production acceptance, not claimed by these tests.
+
+## Security history local proof — 2026-11-01
+`./scripts/test-auth-local.sh` now includes isolated security-history DB tests (including owner-only fault injection in the disposable cluster). `CRM_AUTH_BROWSER_PROOF=1 ./scripts/test-auth-local.sh` also runs existing account/operator regressions and the new security UI proof. Build first. Browser server defaults to loopback port 3263; `CRM_AUTH_BROWSER_PORT` can select another free port. The harness verifies its spawned process remains alive so a stale/unrelated preview cannot satisfy readiness. All database state is synthetic and removed on exit. Evidence/coverage boundaries: `../../audits/crm-security-history-20261101/COMPANY.md`.
+
+### Combined release-candidate regression — November 1
+The security-history suite now also confirms a trusted 120-character account display name can author a campaign review; browser/HTTP attribution still ignores supplied author. Fresh combined evidence lives in `../../audits/crm-release-readiness-20261101/`. Re-run typecheck independently after webpack since Next configuration skips build-time type failures.

@@ -1,3 +1,4 @@
+import { actorFor } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
@@ -20,6 +21,6 @@ export async function PUT(request:NextRequest,{params}:{params:Promise<{id:strin
  try {
   const body=await request.json()
   if(!body||typeof body!=='object'||Array.isArray(body))throw Error('Invalid text changes')
-  return NextResponse.json(await saveCampaignCopy((await params).id,body))
+  return NextResponse.json(await saveCampaignCopy((await params).id,body,await actorFor(request)))
  } catch(error) { return NextResponse.json({error:error instanceof Error?error.message:'Unable to save text',code:error instanceof Error&&error.message.startsWith('This draft changed since')?'STALE_COPY':undefined},{status:409}) }
 }

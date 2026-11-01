@@ -1,3 +1,4 @@
+import { actorFor, businessEvent } from '@/lib/security/history'
 import { guard } from '@/lib/auth/access'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
@@ -33,7 +34,9 @@ export async function POST(
     return NextResponse.json({ error: 'Content is required' }, { status: 400 })
   }
 
-  const note = await prisma.contactNote.create({
+  const actor=await actorFor(request)
+  const note=await prisma.$transaction(async tx=>{
+  const created = await tx.contactNote.create({
     data: {
       contactId: id,
       content: body.content.trim(),
@@ -41,5 +44,8 @@ export async function POST(
     },
   })
 
+  await businessEvent(tx,actor,'contact_note_added',id)
+  return created
+  })
   return NextResponse.json(note, { status: 201 })
 }

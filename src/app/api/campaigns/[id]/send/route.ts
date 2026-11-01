@@ -1,10 +1,11 @@
+import { observeAction } from '@/lib/security/history'
 import { guard, requestToken } from '@/lib/auth/access'
 import { identity } from '@/lib/auth/store'
 import { prisma } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 import { enqueueCampaign } from '@/lib/email/queue'
 
-export async function POST(
+async function perform(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -45,6 +46,7 @@ export async function POST(
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       approvedBy: `${actor.name} <${actor.email}> [${actor.id}]`,
       approvalNote,
+      securityActorId: actor.id,
     })
 
     return NextResponse.json({
@@ -57,4 +59,9 @@ export async function POST(
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to enqueue campaign' }, { status: 400 })
   }
+}
+
+export async function POST(request:NextRequest,context:{params:Promise<{id:string}>}){
+ const denied=await guard(request);if(denied)return denied
+ return observeAction(request,'campaign_send',(await context.params).id,()=>perform(request,context))
 }
