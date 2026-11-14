@@ -13,6 +13,7 @@ interface Props {
   campaignId: string
   tags: Tag[]
   totalSubscribed: number
+  initialExcludedTags?: string[]
 }
 
 interface SendProgress {
@@ -28,10 +29,11 @@ interface SendProgress {
   completedAt: string | null
 }
 
-export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
+export function SendFlowClient({ campaignId, tags, totalSubscribed, initialExcludedTags = [] }: Props) {
   const router = useRouter()
   const [mode, setMode] = useState<'' | 'all' | 'tags'>('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [excludedTags, setExcludedTags] = useState<string[]>(initialExcludedTags)
   const [sending, setSending] = useState(false)
   const [sendMode, setSendMode] = useState<'now' | 'schedule'>('now')
   const [scheduledDate, setScheduledDate] = useState('')
@@ -50,9 +52,9 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
   useEffect(()=>{
     const controller=new AbortController();setAudience(null);setAudienceError('');setConfirmText('')
     if(!mode || (mode==='tags'&&!selectedTags.length)) return ()=>controller.abort()
-    fetch('/api/campaigns/audience',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode,tagIds:selectedTags}),signal:controller.signal}).then(async r=>{const data=await r.json();if(!r.ok)throw Error(data.error||'Could not count recipients');setAudience(data)}).catch(e=>{if(!controller.signal.aborted)setAudienceError(e.message)})
+    fetch('/api/campaigns/audience',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode,tagIds:selectedTags,excludeTagIds:excludedTags}),signal:controller.signal}).then(async r=>{const data=await r.json();if(!r.ok)throw Error(data.error||'Could not count recipients');setAudience(data)}).catch(e=>{if(!controller.signal.aborted)setAudienceError(e.message)})
     return ()=>controller.abort()
-  },[mode,selectedTags])
+  },[mode,selectedTags,excludedTags])
   const selectedCount=audience?.eligible||0
 
   const handleTagToggle = (tagId: string) => {
@@ -101,6 +103,7 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
       const body: Record<string, unknown> = {
         mode,
         tagIds: mode === 'tags' ? selectedTags : undefined,
+        excludeTagIds: excludedTags,
         approvalName,
         approvalNote,
       }
@@ -335,6 +338,18 @@ export function SendFlowClient({ campaignId, tags, totalSubscribed }: Props) {
           </div>
         )}
       </div>
+
+      <fieldset className="bg-white rounded-xl shadow-sm p-6 min-w-0">
+        <legend className="text-lg font-semibold">Exclude tags from this campaign</legend>
+        <p className="text-sm text-gray-600 mb-3">People with any selected tag will not receive this email. Their subscription and other campaigns are unchanged.</p>
+        <div className="max-h-56 overflow-y-auto space-y-2">
+          {tags.map(tag => <label key={tag.id} className="flex gap-3 items-center break-words">
+            <input type="checkbox" checked={excludedTags.includes(tag.id)}
+              onChange={() => { setAudience(null); setConfirmText(''); setExcludedTags(previous => previous.includes(tag.id) ? previous.filter(id => id !== tag.id) : [...previous, tag.id]) }} />
+            <span className="min-w-0">{tag.name}</span>
+          </label>)}
+        </div>
+      </fieldset>
 
       {/* Recipient Count + Warning */}
       <div

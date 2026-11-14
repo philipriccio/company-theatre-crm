@@ -1,5 +1,14 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
 import { prisma } from '@/lib/db'
+import type { Prisma } from '@prisma/client'
+
+export const SCRATCH_SIGNUP_TAG = 'Scratch Game Sign Ups'
+
+async function tagScratchContact(tx: Prisma.TransactionClient, contactId: string) {
+  // The tag is a participation label, never consent or a global suppression.
+  const tag = await tx.tag.upsert({ where: { name: SCRATCH_SIGNUP_TAG }, update: {}, create: { name: SCRATCH_SIGNUP_TAG } })
+  await tx.contactTag.createMany({ data: [{ contactId, tagId: tag.id }], skipDuplicates: true })
+}
 
 export const CONSENT_VERSION = 'company-theatre-marketing-v1'
 export const CONSENT_TEXT = 'I agree to receive marketing emails from The Company Theatre, including news, productions and ticket offers. I can unsubscribe at any time.'
@@ -58,6 +67,10 @@ export async function recordScratchEntry(input: ReturnType<typeof parseIntake>) 
     const previous = await tx.scratchEntry.findUnique({ where: { submissionId: input.submissionId } })
     if (previous) {
       if (previous.payloadHash !== payloadHash) throw new IntakeError(409, 'Submission ID payload conflict')
+      // Old retries can repair a missing label, but cannot recreate deleted contacts.
+      if (await tx.contact.findUnique({ where: { id: previous.contactId }, select: { id: true } })) {
+        await tagScratchContact(tx, previous.contactId)
+      }
       return { entryId: previous.id, replayed: true, marketingConsentRecorded: previous.marketingConsent }
     }
     await tx.$queryRaw`SELECT 1 FROM pg_advisory_xact_lock(hashtextextended(${`scratch:email:${input.email}`}, 0))`
@@ -67,6 +80,7 @@ export async function recordScratchEntry(input: ReturnType<typeof parseIntake>) 
     const contact = matches[0] || await tx.contact.create({ data: {
       email: input.email, fullName: input.fullName, solicitation: input.marketingConsent && !suppressed,
     } })
+    await tagScratchContact(tx, contact.id)
     const entry = await tx.scratchEntry.create({ data: {
       submissionId: input.submissionId, promotionId: input.promotionId, email: input.email,
       fullName: input.fullName, contactId: contact.id, payloadHash, marketingConsent: input.marketingConsent,

@@ -6,8 +6,8 @@ export async function POST(request: NextRequest) {
   if (denied) return denied
 
   try {
-    const { mode, tagIds } = await request.json();
-    const { eligible, excluded, matched } = await selectAudience(mode, tagIds);
+    const { mode, tagIds, excludeTagIds } = await request.json();
+    const { eligible, excluded, matched } = await selectAudience(mode, tagIds, excludeTagIds);
     return NextResponse.json({ eligible, excluded, matched });
   } catch (error) {
     return NextResponse.json(

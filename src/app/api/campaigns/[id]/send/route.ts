@@ -14,7 +14,7 @@ async function perform(
 
   const { id } = await params
   const body = await request.json()
-  const { mode, tagIds, scheduledAt, approvalName, approvalNote } = body
+  const { mode, tagIds, excludeTagIds, scheduledAt, approvalName, approvalNote } = body
 
   if (!['all', 'tags'].includes(mode) || (mode === 'tags' && (!Array.isArray(tagIds) || !tagIds.length || !tagIds.every((id: unknown) => typeof id === 'string' && id.length > 0)))) {
     return NextResponse.json({ error: 'Explicit valid audience mode and tag IDs are required' }, { status: 400 })
@@ -43,6 +43,7 @@ async function perform(
     const result = await enqueueCampaign(id, {
       mode: mode === 'tags' ? 'tags' : 'all',
       tagIds: mode === 'tags' ? tagIds || [] : [],
+      excludeTagIds,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       approvedBy: `${actor.name} <${actor.email}> [${actor.id}]`,
       approvalNote,

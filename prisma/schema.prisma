@@ -139,6 +139,7 @@ model Campaign {
   cancelledAt DateTime?
   audienceMode String?
   audienceTagIds String[]          @default([])
+  audienceExcludeTagIds String[]   @default([])
   approvedAt  DateTime?
   approvedBy  String?
   approvalNote String?

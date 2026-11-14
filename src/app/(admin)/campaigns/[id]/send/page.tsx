@@ -85,6 +85,7 @@ export default async function SendCampaignPage({
           count: t._count.contacts,
         }))}
         totalSubscribed={subscribedCount}
+        initialExcludedTags={campaign.audienceExcludeTagIds}
       />
     </div>
   )
