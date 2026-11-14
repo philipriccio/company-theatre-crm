@@ -1,0 +1,1 @@
+ALTER TABLE "Campaign" ADD COLUMN "audienceExcludeTagIds" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];

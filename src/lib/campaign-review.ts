@@ -31,7 +31,7 @@ export async function recordReview(id:string, body:Record<string,unknown>) {
       const ref=await tx.campaignReview.findFirst({where:{id:body.referenceId,campaignId:id,action:'APPROVE'}})
       if(!ref?.snapshot) throw Error('Approved reference not found')
       const s=ref.snapshot as unknown as ReturnType<typeof reviewSnapshot>
-      const draft=await tx.campaign.create({data:{name:`${s.name} (Copy)`,subject:s.subject,fromName:s.fromName,fromEmail:s.fromEmail,replyToEmail:s.replyToEmail,previewText:s.previewText,content:s.content,design:s.design??Prisma.DbNull,status:'DRAFT'}})
+      const draft=await tx.campaign.create({data:{name:`${s.name} (Copy)`,subject:s.subject,fromName:s.fromName,fromEmail:s.fromEmail,replyToEmail:s.replyToEmail,previewText:s.previewText,content:s.content,design:s.design??Prisma.DbNull,status:'DRAFT',audienceExcludeTagIds:c.audienceExcludeTagIds}})
       return {id:draft.id}
     }
     if(c.status!=='DRAFT') throw Error('Only drafts can be reviewed; create a copy first')

@@ -128,3 +128,6 @@ After a production build, `PROOF_FIXED=1 bash scripts/test-copy-save-local.sh` r
 
 ## Combined email analytics — October 14
 `bash scripts/test-analytics-local.sh` now also runs `tests/combined-analytics.integration.test.ts` against the same disposable, Unix-socket-only database. It checks cross-batch aggregation, Toronto sent-date boundaries/DST, invalid/reversed ranges, unsent exclusions, current status versus historical delivery evidence, shared CSV/list/summary filters and automation parity. Preview mode defaults to `/campaigns/analytics` (all sent email records together). Run `node scripts/combined-analytics-browser-proof.mjs` after starting the labelled synthetic preview for responsive 1440/390/320 checks and real filter/export/drilldown interactions. See `reports/combined-analytics-2026-10-14/REVIEW.md`. No production or email operations.
+
+## November 14: Scratch tag/exclusion proof
+`bash scripts/test-readiness-local.sh` now checks participant tag idempotency/replay, consent preservation, exclusion counts/queue parity, late signup worker hold, deleted-tag fail-closed behavior, and draft save/copy preservation. All fixtures use the disposable Unix-socket-only database and mock provider; no external sends. Browser evidence uses the real SendFlow component with synthetic audience HTTP responses at 1440/390/320; it is not a live or inbox proof.

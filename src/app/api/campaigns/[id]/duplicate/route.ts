@@ -28,6 +28,7 @@ export async function POST(
       replyToEmail: campaign.replyToEmail,
       previewText: campaign.previewText,
       status: 'DRAFT',
+      audienceExcludeTagIds: campaign.audienceExcludeTagIds,
     },
   })
 

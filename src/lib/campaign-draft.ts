@@ -53,7 +53,12 @@ export function draftData(body: Record<string, unknown>) {
   const content = design
     ? generateHtml(design.blocks, design.styles)
     : field("content", 1000000);
+  const exclusions = body.audienceExcludeTagIds
+  if (exclusions !== undefined && (!Array.isArray(exclusions) || exclusions.length > 200 || !exclusions.every(id => typeof id === 'string' && id.trim()))) {
+    throw new Error('Excluded tag IDs must be a list of valid IDs')
+  }
   return {
+    ...(exclusions !== undefined ? { audienceExcludeTagIds: [...new Set(exclusions as string[])] } : {}),
     name,
     subject,
     fromName,

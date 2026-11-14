@@ -118,3 +118,6 @@ New admin shell, useful audience overview/presets, shared directory/count/CSV fi
 
 ## October 13: email analytics — local release candidate
 The isolated analytics worktree adds durable minimal event capture, placement-specific clicks, attributed unsubscribe evidence, reports/recipient timelines/CSV exports, and explicit coverage/automation caveats. SES opens and signed app clicks are canonical for new emails; provider mirrors never double-count. Historical evidence recovery and production approval remain separate. Existing email sending stays disabled; no migration/deployment/send was performed. Design and verified local checks: `reports/analytics-2026-10-13/REVIEW.md`. Earlier historical deployment statements above are not current evidence.
+
+## November 14: Scratch participant segmentation (local candidate)
+Scratch intake transactionally applies `Scratch Game Sign Ups`, including idempotent repair on replay, without changing consent or suppressions. Campaigns can exclude selected tags; eligible audience counts and queue approval use the same filter, and the worker rechecks before delivery. Missing exclusion tags fail closed. Exclusions are campaign-only and preserved by draft edits/copies; send-flow selections are frozen on approval. No deployment or sends. Evidence: `audits/jt-scratch-email-20261114/IMPLEMENTATION.md` in the shared workspace.

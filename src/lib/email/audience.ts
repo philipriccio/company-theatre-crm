@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { LEGACY_NEGATIVE_TAGS } from './legacy-exclusions';
-export async function selectAudience(mode: string, tagIds: string[] = []) {
+export async function selectAudience(mode: string, tagIds: string[] = [], excludeTagIds: string[] = []) {
   if (
     !["all", "tags"].includes(mode) ||
     !Array.isArray(tagIds) ||
@@ -8,6 +8,12 @@ export async function selectAudience(mode: string, tagIds: string[] = []) {
       (!tagIds.length || !tagIds.every((id) => typeof id === "string" && id)))
   )
     throw new Error("Choose all subscribed contacts or at least one tag");
+  if (!Array.isArray(excludeTagIds) || excludeTagIds.length > 200 || !excludeTagIds.every(id => typeof id === 'string' && id.trim())) {
+    throw new Error('Excluded tag IDs must be a list of valid IDs')
+  }
+  if (excludeTagIds.length && await prisma.tag.count({ where: { id: { in: [...new Set(excludeTagIds)] } } }) !== new Set(excludeTagIds).size) {
+    throw new Error('An excluded tag no longer exists; review the audience')
+  }
   const tagFilter =
     mode === "tags" ? { tags: { some: { tagId: { in: tagIds } } } } : {};
   const [suppressions, candidates] = await Promise.all([
@@ -22,7 +28,7 @@ export async function selectAudience(mode: string, tagIds: string[] = []) {
         fullName: true,
         solicitation: true,
         unsubscribedAt: true,
-        tags: { where: { tag: { name: { in: LEGACY_NEGATIVE_TAGS } } }, select: { tagId: true } },
+        tags: { where: { OR: [{ tag: { name: { in: LEGACY_NEGATIVE_TAGS } } }, { tagId: { in: excludeTagIds } }] }, select: { tagId: true } },
       },
     }),
   ]);

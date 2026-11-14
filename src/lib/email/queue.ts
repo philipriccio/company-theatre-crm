@@ -11,6 +11,7 @@ import type { EmailProvider } from './types'
 export interface AudienceSelection {
   mode: 'all' | 'tags'
   tagIds?: string[]
+  excludeTagIds?: string[]
   scheduledAt?: Date | null
   approvedBy: string
   approvalNote?: string
@@ -29,7 +30,8 @@ export async function enqueueCampaign(campaignId: string, selection: AudienceSel
     throw new Error('Select at least one tag before enqueueing a tagged audience')
   }
 
-  const { contacts } = await selectAudience(selection.mode, selection.tagIds)
+  const excludeTagIds = selection.excludeTagIds ?? campaign.audienceExcludeTagIds
+  const { contacts } = await selectAudience(selection.mode, selection.tagIds, excludeTagIds)
 
   if (contacts.length === 0) throw new Error('No recipients found')
 
@@ -70,6 +72,7 @@ export async function enqueueCampaign(campaignId: string, selection: AudienceSel
         scheduledAt: selection.scheduledAt || null,
         audienceMode: selection.mode,
         audienceTagIds: selection.tagIds || [],
+        audienceExcludeTagIds: excludeTagIds,
         approvedAt: now,
         approvedBy: selection.approvedBy,
         approvalNote: selection.approvalNote || null,
@@ -150,6 +153,21 @@ export async function processRecipient(recipientId: string, provider: EmailProvi
       data: { status: 'SUPPRESSED', suppressedAt: now, leasedUntil: null, leaseOwner: null,
         lastErrorClass: 'suppressed', lastErrorCode: 'legacy_negative_tag_review',
         lastErrorMessage: 'Imported unsubscribe or hard-bounce tag requires review before sending' },
+    })
+    return
+  }
+  // Campaign-only exclusions are rechecked after queueing, without changing consent.
+  const excludedTagIds = recipient.campaign.audienceExcludeTagIds
+  const excluded = excludedTagIds.length > 0 && (
+    await prisma.tag.count({ where: { id: { in: [...new Set(excludedTagIds)] } } }) !== new Set(excludedTagIds).size ||
+    await prisma.contactTag.count({ where: { contactId: recipient.contactId, tagId: { in: excludedTagIds } } }) > 0
+  )
+  if (excluded) {
+    await prisma.campaignRecipient.updateMany({
+      where: { id: recipient.id, status: 'SENDING', leaseOwner: recipient.leaseOwner },
+      data: { status: 'SUPPRESSED', suppressedAt: now, leasedUntil: null, leaseOwner: null,
+        lastErrorClass: 'suppressed', lastErrorCode: 'campaign_tag_excluded',
+        lastErrorMessage: 'Campaign exclusion matched or excluded tag was removed; review this audience' },
     })
     return
   }
