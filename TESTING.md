@@ -131,3 +131,19 @@ After a production build, `PROOF_FIXED=1 bash scripts/test-copy-save-local.sh` r
 
 ## November 14: Scratch tag/exclusion proof
 `bash scripts/test-readiness-local.sh` now checks participant tag idempotency/replay, consent preservation, exclusion counts/queue parity, late signup worker hold, deleted-tag fail-closed behavior, and draft save/copy preservation. All fixtures use the disposable Unix-socket-only database and mock provider; no external sends. Browser evidence uses the real SendFlow component with synthetic audience HTTP responses at 1440/390/320; it is not a live or inbox proof.
+
+## November 16: bounded campaign queue SES readiness
+The SES seed allowlist remains mandatory and direct/test calls remain exact-seed-only.
+An optional `EMAIL_SES_QUEUED_CAMPAIGN_ID` enables only that exact campaign's
+approved queue path. Only `processRecipient` can create a one-use, object-bound,
+content-bound capability after lease/approval/audience/suppression checks. Copies,
+metadata, direct sends, missing config, draft/unapproved rows, wrong workers and
+expired leases cannot use it. No change to disabled-provider default.
+
+The serial worker waits 250ms after every recipient, limiting one worker to four
+provider calls/sec, including across batches. Do not scale workers horizontally
+without implementing shared account-level rate limiting.
+
+`bash scripts/test-readiness-local.sh` covers this using a fake SES SDK, with no
+network or real email. `npm test` covers exact seed guards and worker pacing.
+Production rollout and actual sends remain separate owner decisions.

@@ -42,7 +42,7 @@ export class SesEmailProvider implements EmailProvider {
   }
 
   async send(message: EmailMessage): Promise<EmailProviderResult> {
-    // Seed-only safety boundary; an allowlisted recipient is not send approval.
+    // Direct/test sends remain seed-only. Bulk capability is minted only by the checked queue.
     const entries = (process.env.EMAIL_SES_RECIPIENT_ALLOWLIST || '').split(',').map(normalizeSeedEmail)
     if (entries.some(email => email === null)) {
       return {
@@ -52,7 +52,9 @@ export class SesEmailProvider implements EmailProvider {
       }
     }
     const recipient = normalizeSeedEmail(message.to.email)
-    if (!recipient || !entries.includes(recipient)) {
+    const queuedAuthorized = recipient && process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID
+      ? (await import('./queue')).consumeQueuedSendAuthorization(message) : false
+    if (!recipient || (!entries.includes(recipient) && !queuedAuthorized)) {
       return {
         ok: false,
         provider: this.name,

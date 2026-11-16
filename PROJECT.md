@@ -121,3 +121,12 @@ The isolated analytics worktree adds durable minimal event capture, placement-sp
 
 ## November 14: Scratch participant segmentation (local candidate)
 Scratch intake transactionally applies `Scratch Game Sign Ups`, including idempotent repair on replay, without changing consent or suppressions. Campaigns can exclude selected tags; eligible audience counts and queue approval use the same filter, and the worker rechecks before delivery. Missing exclusion tags fail closed. Exclusions are campaign-only and preserved by draft edits/copies; send-flow selections are frozen on approval. No deployment or sends. Evidence: `audits/jt-scratch-email-20261114/IMPLEMENTATION.md` in the shared workspace.
+
+## November 16: bounded SES queue readiness candidate (not deployed)
+The optional exact `EMAIL_SES_QUEUED_CAMPAIGN_ID` adds a queue-owned one-use
+message capability for an approved frozen campaign, after current suppression
+and owned-lease checks. Direct/test endpoints remain exact-seed-only, the seed
+allowlist remains required, and the default provider remains disabled. Serial
+worker pacing is fixed at 250ms per recipient. No migration, production config,
+email, push or deployment performed by this implementation task.
+Evidence: `audits/jt-email-final-prep-20261116/sender/IMPLEMENTATION.md` in workspace.

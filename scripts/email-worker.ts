@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { paceEmailWorker } from '../src/lib/email/pacing'
 import { getEmailProvider } from '../src/lib/email/providers'
 import { claimRecipients, processRecipient, recoverExpiredLeases, updateCampaignCompletions } from '../src/lib/email/queue'
 
@@ -18,6 +19,7 @@ async function runOnce() {
   const recipients = await claimRecipients(workerId, batchSize, leaseSeconds)
   for (const recipient of recipients) {
     await processRecipient(recipient.id, provider, workerId)
+    await paceEmailWorker()
   }
   await updateCampaignCompletions()
   return recipients.length

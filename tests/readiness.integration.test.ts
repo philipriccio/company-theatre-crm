@@ -42,6 +42,75 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
     return { contact, campaign, recipient }
   }
   try {
+    await t.test('SES bulk path requires exact campaign config and one-use checked queue capability', async () => {
+      const { SesEmailProvider } = await import('../src/lib/email/providers')
+      const { buildCampaignEmail } = await import('../src/lib/email/message')
+      const calls: unknown[] = []
+      const provider = new SesEmailProvider({ send: async (command: unknown) => {
+        calls.push(command); return { MessageId: `offline-bulk-${calls.length}` }
+      } } as unknown as import('@aws-sdk/client-sesv2').SESv2Client)
+      const previous = { seed: process.env.EMAIL_SES_RECIPIENT_ALLOWLIST, campaign: process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID }
+      process.env.EMAIL_SES_RECIPIENT_ALLOWLIST = 'seed@example.com'
+      try {
+        for (const scenario of ['missing-config', 'wrong-config', 'missing-seed-config', 'draft', 'unapproved', 'missing-approver', 'not-frozen',
+          'wrong-worker', 'expired', 'not-queued', 'suppressed', 'excluded', 'deleted-exclusion', 'eligible']) {
+          process.env.EMAIL_SES_RECIPIENT_ALLOWLIST = 'seed@example.com'
+          if (scenario === 'missing-seed-config') delete process.env.EMAIL_SES_RECIPIENT_ALLOWLIST
+          const fixture = await makeRecipient(`bulk-${scenario}`)
+          await prisma.campaign.update({ where: { id: fixture.campaign.id }, data: { approvedBy: 'synthetic-owner', frozenRecipientCount: 1 } })
+          process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID = scenario === 'wrong-config' ? 'wrong-campaign' : fixture.campaign.id
+          if (scenario === 'missing-config') delete process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID
+          if (scenario === 'draft') await prisma.campaign.update({ where: { id: fixture.campaign.id }, data: { status: 'DRAFT' } })
+          if (scenario === 'unapproved') await prisma.campaign.update({ where: { id: fixture.campaign.id }, data: { approvedAt: null } })
+          if (scenario === 'missing-approver') await prisma.campaign.update({ where: { id: fixture.campaign.id }, data: { approvedBy: null } })
+          if (scenario === 'not-frozen') await prisma.campaign.update({ where: { id: fixture.campaign.id }, data: { frozenRecipientCount: null } })
+          if (scenario === 'expired') await prisma.campaignRecipient.update({ where: { id: fixture.recipient.id }, data: { leasedUntil: new Date(0) } })
+          if (scenario === 'not-queued') await prisma.campaignRecipient.update({ where: { id: fixture.recipient.id }, data: { status: 'ACCEPTED' } })
+          if (scenario === 'suppressed') await prisma.contact.update({ where: { id: fixture.contact.id }, data: { solicitation: false } })
+          if (scenario === 'excluded' || scenario === 'deleted-exclusion') {
+            const tag = await prisma.tag.create({ data: { name: `bulk-${scenario}` } })
+            await prisma.campaign.update({ where: { id: fixture.campaign.id }, data: { audienceExcludeTagIds: [tag.id] } })
+            if (scenario === 'excluded') await prisma.contactTag.create({ data: { contactId: fixture.contact.id, tagId: tag.id } })
+            else await prisma.tag.delete({ where: { id: tag.id } })
+          }
+          const before = calls.length
+          const direct = buildCampaignEmail(fixture.campaign, fixture.recipient)
+          assert.equal((await provider.send(direct)).ok, false, 'metadata cannot authorize direct/test send')
+          await queue.processRecipient(fixture.recipient.id, provider, scenario === 'wrong-worker' ? 'impostor' : 'proof')
+          assert.equal(calls.length - before, scenario === 'eligible' ? 1 : 0, scenario)
+        }
+        const replay = await makeRecipient('bulk-replay')
+        await prisma.campaign.update({ where: { id: replay.campaign.id }, data: { approvedBy: 'synthetic-owner', frozenRecipientCount: 1 } })
+        process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID = replay.campaign.id
+        await queue.processRecipient(replay.recipient.id, { name: 'ses', send: async message => {
+          assert.equal((await provider.send({ ...message })).ok, false, 'copy is not a capability')
+          const accepted = await provider.send(message)
+          assert.equal(accepted.ok, true)
+          assert.equal((await provider.send(message)).ok, false, 'capability is one-use')
+          return accepted
+        } }, 'proof')
+        const tampered = await makeRecipient('bulk-tampered')
+        await prisma.campaign.update({ where: { id: tampered.campaign.id }, data: { approvedBy: 'synthetic-owner', frozenRecipientCount: 1 } })
+        process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID = tampered.campaign.id
+        const before = calls.length
+        await queue.processRecipient(tampered.recipient.id, { name: 'ses', send: async message => {
+          message.to.email = 'different@example.com'
+          return provider.send(message)
+        } }, 'proof')
+        assert.equal(calls.length, before, 'message mutation invalidates capability')
+      } finally {
+        for (const [name, value] of [['EMAIL_SES_RECIPIENT_ALLOWLIST', previous.seed], ['EMAIL_SES_QUEUED_CAMPAIGN_ID', previous.campaign]]) {
+          if (value === undefined) delete process.env[name!]; else process.env[name!] = value
+        }
+        // Fixtures must not leak into existing audience assertions.
+        await prisma.emailDeliveryAttempt.deleteMany({ where: { campaign: { name: { startsWith: 'bulk-' } } } })
+        await prisma.campaignRecipient.deleteMany({ where: { campaign: { name: { startsWith: 'bulk-' } } } })
+        await prisma.campaign.deleteMany({ where: { name: { startsWith: 'bulk-' } } })
+        await prisma.globalSuppression.deleteMany({ where: { email: { startsWith: 'bulk-' } } })
+        await prisma.contact.deleteMany({ where: { email: { startsWith: 'bulk-' } } })
+        await prisma.tag.deleteMany({ where: { name: { startsWith: 'bulk-' } } })
+      }
+    })
     await t.test('auth fails closed before writes, including missing configuration', async () => {
       assert.equal((await intake(request(base, false))).status, 401)
       const token = process.env.SCRATCH_INTAKE_TOKEN

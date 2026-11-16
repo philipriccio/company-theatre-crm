@@ -6,7 +6,21 @@ import { canRetry, nextAttemptAt } from './retry'
 import { buildCampaignEmail } from './message'
 import { getEmailProvider } from './providers'
 import { recordSuppression } from './events'
-import type { EmailProvider } from './types'
+import type { EmailMessage, EmailProvider, EmailProviderResult } from './types'
+import { createHash } from 'node:crypto'
+
+// Only processRecipient can mint this one-use capability, after live queue checks.
+// An object copy, metadata, recipient ID or direct/test endpoint call cannot mint it.
+const queuedMessages = new WeakMap<EmailMessage, { campaignId: string; expires: number; digest: string }>()
+const messageDigest = (message: EmailMessage) => createHash('sha256').update(JSON.stringify(message)).digest('hex')
+
+export function consumeQueuedSendAuthorization(message: EmailMessage): boolean {
+  const authorization = queuedMessages.get(message)
+  queuedMessages.delete(message)
+  const allowedCampaign = process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID
+  return !!authorization && !!allowedCampaign && allowedCampaign === authorization.campaignId
+    && authorization.expires > Date.now() && authorization.digest === messageDigest(message)
+}
 
 export interface AudienceSelection {
   mode: 'all' | 'tags'
@@ -183,7 +197,20 @@ export async function processRecipient(recipientId: string, provider: EmailProvi
 
   const message = buildCampaignEmail(recipient.campaign, recipient)
   await prisma.campaignRecipient.update({ where: { id: recipient.id }, data: { analyticsVersion: 1 } })
-  const result = await provider.send(message)
+  // Approval metadata alone is insufficient: this is the exact message constructed
+  // from a live, approved, due, leased recipient after all suppression checks above.
+  if (workerId && recipient.leaseOwner === workerId && recipient.campaign.approvedBy?.trim()
+    && (recipient.campaign.frozenRecipientCount || 0) > 0
+    && process.env.EMAIL_SES_QUEUED_CAMPAIGN_ID === recipient.campaignId) {
+    queuedMessages.set(message, { campaignId: recipient.campaignId,
+      expires: Math.min(recipient.leasedUntil.getTime(), Date.now() + 5000), digest: messageDigest(message) })
+  }
+  let result: EmailProviderResult
+  try {
+    result = await provider.send(message)
+  } finally {
+    queuedMessages.delete(message)
+  }
   const attemptCount = recipient.attemptCount + 1
 
   if (result.ok) {
