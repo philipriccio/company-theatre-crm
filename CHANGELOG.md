@@ -14,3 +14,9 @@
 - Split worker runtime dependencies from build tooling. The worker image now excludes Prisma CLI/dev peers and fails its build if production dependencies contain a high-severity advisory.
 
 Blocked AWS/DNS work remains: SES identity verification and production access, DKIM/SPF/DMARC records, configuration-set/SNS provisioning and subscription confirmation, protected credentials, seed inbox proof, and production worker enablement.
+
+## 2026-11-17 — Scratch player reporting candidate
+
+- Added authenticated Scratch players navigation/view covering existing CRM contacts and unmatched game players.
+- Reports original signup, first verification, latest gameplay, started/completed cards, prize tiers and observational source with source/status/date/search filters and pagination.
+- Uses an optional separate restricted reporting database connection, read-only bounded transactions, explicit unavailable states, and safe normalized CRM profile links. No schema migration, campaign sends or game mutations.

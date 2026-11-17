@@ -1,14 +1,14 @@
 {
-  "project": "crm-approved-sending-20261117",
-  "generatedAt": "2026-11-17T16:43:21.504Z",
+  "project": "crm-scratch-players-20261117",
+  "generatedAt": "2026-11-17T18:44:21.551Z",
   "stats": {
-    "nodes": 668,
-    "edges": 5977,
-    "files": 167,
-    "functions": 421,
+    "nodes": 688,
+    "edges": 6239,
+    "files": 171,
+    "functions": 433,
     "classes": 6,
-    "types": 35,
-    "imports": 591
+    "types": 39,
+    "imports": 613
   },
   "nodes": [
     {
@@ -314,6 +314,46 @@
       "exported": false,
       "async": false,
       "params": []
+    },
+    {
+      "id": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "type": "file",
+      "name": "scratch-players-browser-proof.ts",
+      "file": "scripts/scratch-players-browser-proof.ts",
+      "language": "typescript",
+      "lines": 90
+    },
+    {
+      "id": "function:scripts/scratch-players-browser-proof.ts:main",
+      "type": "function",
+      "name": "main",
+      "file": "scripts/scratch-players-browser-proof.ts",
+      "line": 10,
+      "exported": false,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "function:scripts/scratch-players-browser-proof.ts:stop",
+      "type": "function",
+      "name": "stop",
+      "file": "scripts/scratch-players-browser-proof.ts",
+      "line": 23,
+      "exported": false,
+      "async": false,
+      "params": []
+    },
+    {
+      "id": "function:scripts/scratch-players-browser-proof.ts:start",
+      "type": "function",
+      "name": "start",
+      "file": "scripts/scratch-players-browser-proof.ts",
+      "line": 24,
+      "exported": false,
+      "async": false,
+      "params": [
+        "mode"
+      ]
     },
     {
       "id": "file:scripts/security-history-browser-proof.ts:security-history-browser-proof.ts",
@@ -1481,6 +1521,38 @@
       "exported": true,
       "async": false,
       "params": []
+    },
+    {
+      "id": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "type": "file",
+      "name": "page.tsx",
+      "file": "src/app/(admin)/scratch-players/page.tsx",
+      "language": "tsx",
+      "lines": 55
+    },
+    {
+      "id": "function:src/app/(admin)/scratch-players/page.tsx:time",
+      "type": "function",
+      "name": "time",
+      "file": "src/app/(admin)/scratch-players/page.tsx",
+      "line": 13,
+      "exported": false,
+      "async": false,
+      "params": [
+        "value"
+      ]
+    },
+    {
+      "id": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "type": "function",
+      "name": "ScratchPlayersPage",
+      "file": "src/app/(admin)/scratch-players/page.tsx",
+      "line": 14,
+      "exported": true,
+      "async": false,
+      "params": [
+        "{ searchParams }"
+      ]
     },
     {
       "id": "file:src/app/(admin)/security/page.tsx:page.tsx",
@@ -6264,6 +6336,121 @@
       ]
     },
     {
+      "id": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "type": "file",
+      "name": "scratch-players.ts",
+      "file": "src/lib/scratch-players.ts",
+      "language": "typescript",
+      "lines": 94
+    },
+    {
+      "id": "type:src/lib/scratch-players.ts:PlayerParams",
+      "type": "type",
+      "name": "PlayerParams",
+      "file": "src/lib/scratch-players.ts",
+      "line": 4,
+      "exported": true
+    },
+    {
+      "id": "type:src/lib/scratch-players.ts:PlayerFilters",
+      "type": "type",
+      "name": "PlayerFilters",
+      "file": "src/lib/scratch-players.ts",
+      "line": 5,
+      "exported": true
+    },
+    {
+      "id": "type:src/lib/scratch-players.ts:PlayerRow",
+      "type": "type",
+      "name": "PlayerRow",
+      "file": "src/lib/scratch-players.ts",
+      "line": 6,
+      "exported": true
+    },
+    {
+      "id": "type:src/lib/scratch-players.ts:PlayerReport",
+      "type": "type",
+      "name": "PlayerReport",
+      "file": "src/lib/scratch-players.ts",
+      "line": 7,
+      "exported": true
+    },
+    {
+      "id": "function:src/lib/scratch-players.ts:date",
+      "type": "function",
+      "name": "date",
+      "file": "src/lib/scratch-players.ts",
+      "line": 9,
+      "exported": false,
+      "async": false,
+      "params": [
+        "value"
+      ]
+    },
+    {
+      "id": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "type": "function",
+      "name": "parsePlayerFilters",
+      "file": "src/lib/scratch-players.ts",
+      "line": 10,
+      "exported": true,
+      "async": false,
+      "params": [
+        "params"
+      ]
+    },
+    {
+      "id": "function:src/lib/scratch-players.ts:get",
+      "type": "function",
+      "name": "get",
+      "file": "src/lib/scratch-players.ts",
+      "line": 11,
+      "exported": false,
+      "arrow": true,
+      "params": [
+        "key"
+      ]
+    },
+    {
+      "id": "function:src/lib/scratch-players.ts:playerUrl",
+      "type": "function",
+      "name": "playerUrl",
+      "file": "src/lib/scratch-players.ts",
+      "line": 14,
+      "exported": true,
+      "async": false,
+      "params": [
+        "f",
+        "page"
+      ]
+    },
+    {
+      "id": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "type": "function",
+      "name": "readPlayerReport",
+      "file": "src/lib/scratch-players.ts",
+      "line": 53,
+      "exported": true,
+      "async": false,
+      "params": [
+        "db",
+        "f",
+        "campaign"
+      ]
+    },
+    {
+      "id": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "type": "function",
+      "name": "getPlayerReport",
+      "file": "src/lib/scratch-players.ts",
+      "line": 62,
+      "exported": true,
+      "async": false,
+      "params": [
+        "f"
+      ]
+    },
+    {
       "id": "file:src/lib/security/history.ts:history.ts",
       "type": "file",
       "name": "history.ts",
@@ -6958,6 +7145,31 @@
       "params": [
         "batch",
         "n"
+      ]
+    },
+    {
+      "id": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "type": "file",
+      "name": "scratch-players.integration.test.ts",
+      "file": "tests/scratch-players.integration.test.ts",
+      "language": "typescript",
+      "lines": 74
+    },
+    {
+      "id": "function:tests/scratch-players.integration.test.ts:event",
+      "type": "function",
+      "name": "event",
+      "file": "tests/scratch-players.integration.test.ts",
+      "line": 18,
+      "exported": false,
+      "arrow": true,
+      "params": [
+        "id",
+        "player",
+        "name",
+        "created",
+        "props",
+        "cardId"
       ]
     },
     {
@@ -10648,6 +10860,1020 @@
       "relationship": "calls",
       "name": "console.log",
       "line": 186
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "import:node:assert/strict",
+      "relationship": "imports",
+      "path": "node:assert/strict",
+      "symbols": [
+        "assert"
+      ]
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "import:node:crypto",
+      "relationship": "imports",
+      "path": "node:crypto",
+      "symbols": [
+        "randomBytes",
+        "randomUUID"
+      ]
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "import:node:module",
+      "relationship": "imports",
+      "path": "node:module",
+      "symbols": [
+        "createRequire"
+      ]
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "import:node:child_process",
+      "relationship": "imports",
+      "path": "node:child_process",
+      "symbols": [
+        "spawn",
+        "ChildProcess"
+      ]
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "import:node:fs/promises",
+      "relationship": "imports",
+      "path": "node:fs/promises",
+      "symbols": [
+        "mkdir",
+        "open",
+        "chmod"
+      ]
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "import:node:events",
+      "relationship": "imports",
+      "path": "node:events",
+      "symbols": [
+        "once"
+      ]
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "import:../src/lib/auth/store",
+      "relationship": "imports",
+      "path": "../src/lib/auth/store",
+      "symbols": [
+        "authPool",
+        "tokenHash"
+      ]
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "function:scripts/scratch-players-browser-proof.ts:main",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 11
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.ok",
+      "relationship": "calls",
+      "name": "assert.ok",
+      "line": 12
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:process.env.DATABASE_URL?.includes",
+      "relationship": "calls",
+      "name": "process.env.DATABASE_URL?.includes",
+      "line": 12
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:mkdir",
+      "relationship": "calls",
+      "name": "mkdir",
+      "line": 14
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:randomUUID",
+      "relationship": "calls",
+      "name": "randomUUID",
+      "line": 15
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:randomBytes(32).toString",
+      "relationship": "calls",
+      "name": "randomBytes(32).toString",
+      "line": 15
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:randomBytes",
+      "relationship": "calls",
+      "name": "randomBytes",
+      "line": 15
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 16
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 17
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:tokenHash",
+      "relationship": "calls",
+      "name": "tokenHash",
+      "line": 17
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 18
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:chromium.launch",
+      "relationship": "calls",
+      "name": "chromium.launch",
+      "line": 20
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:open",
+      "relationship": "calls",
+      "name": "open",
+      "line": 22
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:once",
+      "relationship": "calls",
+      "name": "once",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:server.kill",
+      "relationship": "calls",
+      "name": "server.kill",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:setTimeout",
+      "relationship": "calls",
+      "name": "setTimeout",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:server?.kill",
+      "relationship": "calls",
+      "name": "server?.kill",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:clearTimeout",
+      "relationship": "calls",
+      "name": "clearTimeout",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:stop",
+      "relationship": "calls",
+      "name": "stop",
+      "line": 25
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:spawn",
+      "relationship": "calls",
+      "name": "spawn",
+      "line": 29
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:fetch",
+      "relationship": "calls",
+      "name": "fetch",
+      "line": 32
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:setTimeout",
+      "relationship": "calls",
+      "name": "setTimeout",
+      "line": 33
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:start",
+      "relationship": "calls",
+      "name": "start",
+      "line": 38
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:fetch",
+      "relationship": "calls",
+      "name": "fetch",
+      "line": 40
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.ok",
+      "relationship": "calls",
+      "name": "assert.ok",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:[307,308].includes",
+      "relationship": "calls",
+      "name": "[307,308].includes",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.match",
+      "relationship": "calls",
+      "name": "assert.match",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:r.headers.get",
+      "relationship": "calls",
+      "name": "r.headers.get",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.ok",
+      "relationship": "calls",
+      "name": "assert.ok",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:(await r.text()).includes",
+      "relationship": "calls",
+      "name": "(await r.text()).includes",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:r.text",
+      "relationship": "calls",
+      "name": "r.text",
+      "line": 41
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:browser.newContext",
+      "relationship": "calls",
+      "name": "browser.newContext",
+      "line": 43
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:context.addCookies",
+      "relationship": "calls",
+      "name": "context.addCookies",
+      "line": 44
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:context.newPage",
+      "relationship": "calls",
+      "name": "context.newPage",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.setDefaultTimeout",
+      "relationship": "calls",
+      "name": "page.setDefaultTimeout",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.setDefaultNavigationTimeout",
+      "relationship": "calls",
+      "name": "page.setDefaultNavigationTimeout",
+      "line": 45
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.on",
+      "relationship": "calls",
+      "name": "page.on",
+      "line": 46
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:errors.push",
+      "relationship": "calls",
+      "name": "errors.push",
+      "line": 46
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.setViewportSize",
+      "relationship": "calls",
+      "name": "page.setViewportSize",
+      "line": 48
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 49
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('heading',{name:'Scratch players.'}).waitFor",
+      "relationship": "calls",
+      "name": "page.getByRole('heading',{name:'Scratch players.'}).waitFor",
+      "line": 49
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 49
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 50
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').count",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').count",
+      "line": 50
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 50
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').first().getByRole('link',{name:'Open CRM profile →'}).getAttribute",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').first().getByRole('link',{name:'Open CRM profile →'}).getAttribute",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').first().getByRole",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').first().getByRole",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').first",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').first",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 51
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 52
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.evaluate",
+      "relationship": "calls",
+      "name": "page.evaluate",
+      "line": 52
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.screenshot",
+      "relationship": "calls",
+      "name": "page.screenshot",
+      "line": 53
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:console.log",
+      "relationship": "calls",
+      "name": "console.log",
+      "line": 55
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('summary').click",
+      "relationship": "calls",
+      "name": "page.locator('summary').click",
+      "line": 56
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 56
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByLabel('Signup source',{exact:true}).selectOption",
+      "relationship": "calls",
+      "name": "page.getByLabel('Signup source',{exact:true}).selectOption",
+      "line": 57
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByLabel",
+      "relationship": "calls",
+      "name": "page.getByLabel",
+      "line": 57
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('button',{name:'Apply filters'}).click",
+      "relationship": "calls",
+      "name": "page.getByRole('button',{name:'Apply filters'}).click",
+      "line": 58
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 58
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:console.log",
+      "relationship": "calls",
+      "name": "console.log",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.url",
+      "relationship": "calls",
+      "name": "page.url",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.waitForURL",
+      "relationship": "calls",
+      "name": "page.waitForURL",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').count",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').count",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 59
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.match",
+      "relationship": "calls",
+      "name": "assert.match",
+      "line": 60
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').innerText",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').innerText",
+      "line": 60
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 60
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.match",
+      "relationship": "calls",
+      "name": "assert.match",
+      "line": 61
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').innerText",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').innerText",
+      "line": 61
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 61
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.ok",
+      "relationship": "calls",
+      "name": "assert.ok",
+      "line": 62
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:(await page.locator('.player-card').innerText()).includes",
+      "relationship": "calls",
+      "name": "(await page.locator('.player-card').innerText()).includes",
+      "line": 62
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').innerText",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').innerText",
+      "line": 62
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 62
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 63
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 63
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').count",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').count",
+      "line": 63
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 63
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 64
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('heading',{name:'No players match these filters.'}).waitFor",
+      "relationship": "calls",
+      "name": "page.getByRole('heading',{name:'No players match these filters.'}).waitFor",
+      "line": 64
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 64
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 65
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('alert').filter({hasText:'Choose a From date'}).waitFor",
+      "relationship": "calls",
+      "name": "page.getByRole('alert').filter({hasText:'Choose a From date'}).waitFor",
+      "line": 65
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('alert').filter",
+      "relationship": "calls",
+      "name": "page.getByRole('alert').filter",
+      "line": 65
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 65
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 66
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 66
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').count",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').count",
+      "line": 66
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 66
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:start",
+      "relationship": "calls",
+      "name": "start",
+      "line": 68
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 68
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('heading',{name:'Player activity is unavailable'}).waitFor",
+      "relationship": "calls",
+      "name": "page.getByRole('heading',{name:'Player activity is unavailable'}).waitFor",
+      "line": 68
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 68
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-card').count",
+      "relationship": "calls",
+      "name": "page.locator('.player-card').count",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator('.player-stats').count",
+      "relationship": "calls",
+      "name": "page.locator('.player-stats').count",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.locator",
+      "relationship": "calls",
+      "name": "page.locator",
+      "line": 69
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.screenshot",
+      "relationship": "calls",
+      "name": "page.screenshot",
+      "line": 70
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:assert.deepEqual",
+      "relationship": "calls",
+      "name": "assert.deepEqual",
+      "line": 72
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:start",
+      "relationship": "calls",
+      "name": "start",
+      "line": 73
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 74
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:authPool.query",
+      "relationship": "calls",
+      "name": "authPool.query",
+      "line": 75
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('link',{name:'Refresh activity'}).click",
+      "relationship": "calls",
+      "name": "page.getByRole('link',{name:'Refresh activity'}).click",
+      "line": 76
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 76
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole('heading',{name:'Updated gameplay report name'}).waitFor",
+      "relationship": "calls",
+      "name": "page.getByRole('heading',{name:'Updated gameplay report name'}).waitFor",
+      "line": 77
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.getByRole",
+      "relationship": "calls",
+      "name": "page.getByRole",
+      "line": 77
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:console.log",
+      "relationship": "calls",
+      "name": "console.log",
+      "line": 78
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:console.log",
+      "relationship": "calls",
+      "name": "console.log",
+      "line": 79
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:page.goto",
+      "relationship": "calls",
+      "name": "page.goto",
+      "line": 81
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:context.storageState",
+      "relationship": "calls",
+      "name": "context.storageState",
+      "line": 83
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:chmod",
+      "relationship": "calls",
+      "name": "chmod",
+      "line": 83
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:console.log",
+      "relationship": "calls",
+      "name": "console.log",
+      "line": 84
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:process.once",
+      "relationship": "calls",
+      "name": "process.once",
+      "line": 85
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:resolve",
+      "relationship": "calls",
+      "name": "resolve",
+      "line": 85
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:stop",
+      "relationship": "calls",
+      "name": "stop",
+      "line": 87
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:browser.close",
+      "relationship": "calls",
+      "name": "browser.close",
+      "line": 87
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:log.close",
+      "relationship": "calls",
+      "name": "log.close",
+      "line": 87
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:main",
+      "target": "call:authPool.end",
+      "relationship": "calls",
+      "name": "authPool.end",
+      "line": 87
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "function:scripts/scratch-players-browser-proof.ts:stop",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:stop",
+      "target": "call:once",
+      "relationship": "calls",
+      "name": "once",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:stop",
+      "target": "call:server.kill",
+      "relationship": "calls",
+      "name": "server.kill",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:stop",
+      "target": "call:setTimeout",
+      "relationship": "calls",
+      "name": "setTimeout",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:stop",
+      "target": "call:server?.kill",
+      "relationship": "calls",
+      "name": "server?.kill",
+      "line": 23
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:stop",
+      "target": "call:clearTimeout",
+      "relationship": "calls",
+      "name": "clearTimeout",
+      "line": 23
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "function:scripts/scratch-players-browser-proof.ts:start",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:start",
+      "target": "call:stop",
+      "relationship": "calls",
+      "name": "stop",
+      "line": 25
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:start",
+      "target": "call:spawn",
+      "relationship": "calls",
+      "name": "spawn",
+      "line": 29
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:start",
+      "target": "call:assert.equal",
+      "relationship": "calls",
+      "name": "assert.equal",
+      "line": 31
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:start",
+      "target": "call:fetch",
+      "relationship": "calls",
+      "name": "fetch",
+      "line": 32
+    },
+    {
+      "source": "function:scripts/scratch-players-browser-proof.ts:start",
+      "target": "call:setTimeout",
+      "relationship": "calls",
+      "name": "setTimeout",
+      "line": 33
     },
     {
       "source": "file:scripts/security-history-browser-proof.ts:security-history-browser-proof.ts",
@@ -20222,6 +21448,357 @@
       "relationship": "calls",
       "name": "d.updatedAt.toLocaleDateString",
       "line": 22
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:next/link",
+      "relationship": "imports",
+      "path": "next/link",
+      "symbols": [
+        "Link"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:next/headers",
+      "relationship": "imports",
+      "path": "next/headers",
+      "symbols": [
+        "cookies"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:next/navigation",
+      "relationship": "imports",
+      "path": "next/navigation",
+      "symbols": [
+        "redirect"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:@prisma/client",
+      "relationship": "imports",
+      "path": "@prisma/client",
+      "symbols": [
+        "Prisma"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:@/lib/auth/store",
+      "relationship": "imports",
+      "path": "@/lib/auth/store",
+      "symbols": [
+        "identity"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:@/lib/auth/access",
+      "relationship": "imports",
+      "path": "@/lib/auth/access",
+      "symbols": [
+        "cookieName"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:@/lib/db",
+      "relationship": "imports",
+      "path": "@/lib/db",
+      "symbols": [
+        "prisma"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:@/lib/scratch-players",
+      "relationship": "imports",
+      "path": "@/lib/scratch-players",
+      "symbols": [
+        "getPlayerReport",
+        "parsePlayerFilters",
+        "playerUrl",
+        "PlayerParams"
+      ]
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "import:./players.css",
+      "relationship": "imports",
+      "path": "./players.css",
+      "symbols": []
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "function:src/app/(admin)/scratch-players/page.tsx:time",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:time",
+      "target": "call:new Intl.DateTimeFormat('en-CA', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Toron...",
+      "relationship": "calls",
+      "name": "new Intl.DateTimeFormat('en-CA', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Toron...",
+      "line": 13
+    },
+    {
+      "source": "file:src/app/(admin)/scratch-players/page.tsx:page.tsx",
+      "target": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:identity",
+      "relationship": "calls",
+      "name": "identity",
+      "line": 16
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:(await cookies()).get",
+      "relationship": "calls",
+      "name": "(await cookies()).get",
+      "line": 16
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:cookies",
+      "relationship": "calls",
+      "name": "cookies",
+      "line": 16
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:cookieName",
+      "relationship": "calls",
+      "name": "cookieName",
+      "line": 16
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:redirect",
+      "relationship": "calls",
+      "name": "redirect",
+      "line": 16
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:parsePlayerFilters",
+      "relationship": "calls",
+      "name": "parsePlayerFilters",
+      "line": 17
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:getPlayerReport",
+      "relationship": "calls",
+      "name": "getPlayerReport",
+      "line": 18
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:report.rows.map",
+      "relationship": "calls",
+      "name": "report.rows.map",
+      "line": 23
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.email.trim().toLowerCase",
+      "relationship": "calls",
+      "name": "p.email.trim().toLowerCase",
+      "line": 23
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.email.trim",
+      "relationship": "calls",
+      "name": "p.email.trim",
+      "line": 23
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:await prisma.$queryRaw",
+      "relationship": "calls",
+      "name": "await prisma.$queryRaw",
+      "line": 24
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:Prisma.sql",
+      "relationship": "calls",
+      "name": "Prisma.sql",
+      "line": 24
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:Prisma.join",
+      "relationship": "calls",
+      "name": "Prisma.join",
+      "line": 24
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:c.email.trim().toLowerCase",
+      "relationship": "calls",
+      "name": "c.email.trim().toLowerCase",
+      "line": 27
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:c.email.trim",
+      "relationship": "calls",
+      "name": "c.email.trim",
+      "line": 27
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:groups.set",
+      "relationship": "calls",
+      "name": "groups.set",
+      "line": 27
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:groups.get",
+      "relationship": "calls",
+      "name": "groups.get",
+      "line": 27
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:crmLinks.set",
+      "relationship": "calls",
+      "name": "crmLinks.set",
+      "line": 28
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:playerUrl",
+      "relationship": "calls",
+      "name": "playerUrl",
+      "line": 32
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:Object.entries(sourceNames).map",
+      "relationship": "calls",
+      "name": "Object.entries(sourceNames).map",
+      "line": 36
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:Object.entries",
+      "relationship": "calls",
+      "name": "Object.entries",
+      "line": 36
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:time",
+      "relationship": "calls",
+      "name": "time",
+      "line": 45
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:report.rows.map",
+      "relationship": "calls",
+      "name": "report.rows.map",
+      "line": 47
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:crmLinks.has",
+      "relationship": "calls",
+      "name": "crmLinks.has",
+      "line": 48
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.email.trim().toLowerCase",
+      "relationship": "calls",
+      "name": "p.email.trim().toLowerCase",
+      "line": 48
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.email.trim",
+      "relationship": "calls",
+      "name": "p.email.trim",
+      "line": 48
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:crmLinks.get",
+      "relationship": "calls",
+      "name": "crmLinks.get",
+      "line": 48
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.email.trim().toLowerCase",
+      "relationship": "calls",
+      "name": "p.email.trim().toLowerCase",
+      "line": 48
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.email.trim",
+      "relationship": "calls",
+      "name": "p.email.trim",
+      "line": 48
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:time",
+      "relationship": "calls",
+      "name": "time",
+      "line": 49
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:time",
+      "relationship": "calls",
+      "name": "time",
+      "line": 49
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:time",
+      "relationship": "calls",
+      "name": "time",
+      "line": 49
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.prizes.map(v => prizeNames[v]).join",
+      "relationship": "calls",
+      "name": "p.prizes.map(v => prizeNames[v]).join",
+      "line": 49
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:p.prizes.map",
+      "relationship": "calls",
+      "name": "p.prizes.map",
+      "line": 49
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:playerUrl",
+      "relationship": "calls",
+      "name": "playerUrl",
+      "line": 51
+    },
+    {
+      "source": "function:src/app/(admin)/scratch-players/page.tsx:ScratchPlayersPage",
+      "target": "call:playerUrl",
+      "relationship": "calls",
+      "name": "playerUrl",
+      "line": 51
     },
     {
       "source": "file:src/app/(admin)/security/page.tsx:page.tsx",
@@ -44854,6 +46431,423 @@
       "line": 88
     },
     {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "import:pg",
+      "relationship": "imports",
+      "path": "pg",
+      "symbols": [
+        "Pool",
+        "PoolClient"
+      ]
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "type:src/lib/scratch-players.ts:PlayerParams",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "type:src/lib/scratch-players.ts:PlayerFilters",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "type:src/lib/scratch-players.ts:PlayerRow",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "type:src/lib/scratch-players.ts:PlayerReport",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "function:src/lib/scratch-players.ts:date",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:date",
+      "target": "call:/^\\d{4}-\\d{2}-\\d{2}$/.test",
+      "relationship": "calls",
+      "name": "/^\\d{4}-\\d{2}-\\d{2}$/.test",
+      "line": 9
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:date",
+      "target": "call:Number.isNaN",
+      "relationship": "calls",
+      "name": "Number.isNaN",
+      "line": 9
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:date",
+      "target": "call:Date.parse",
+      "relationship": "calls",
+      "name": "Date.parse",
+      "line": 9
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:date",
+      "target": "call:new Date(value).toISOString().slice",
+      "relationship": "calls",
+      "name": "new Date(value).toISOString().slice",
+      "line": 9
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:date",
+      "target": "call:new Date(value).toISOString",
+      "relationship": "calls",
+      "name": "new Date(value).toISOString",
+      "line": 9
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get('search').trim().slice",
+      "relationship": "calls",
+      "name": "get('search').trim().slice",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get('search').trim",
+      "relationship": "calls",
+      "name": "get('search').trim",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:sources.includes",
+      "relationship": "calls",
+      "name": "sources.includes",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:['played', 'not_played', 'verified', 'unverified'].includes",
+      "relationship": "calls",
+      "name": "['played', 'not_played', 'verified', 'unverified'].includes",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:date",
+      "relationship": "calls",
+      "name": "date",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:date",
+      "relationship": "calls",
+      "name": "date",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:Math.min",
+      "relationship": "calls",
+      "name": "Math.min",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:Math.max",
+      "relationship": "calls",
+      "name": "Math.max",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:Number.parseInt",
+      "relationship": "calls",
+      "name": "Number.parseInt",
+      "line": 12
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:parsePlayerFilters",
+      "target": "call:get",
+      "relationship": "calls",
+      "name": "get",
+      "line": 12
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "function:src/lib/scratch-players.ts:get",
+      "relationship": "defines"
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "function:src/lib/scratch-players.ts:playerUrl",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:playerUrl",
+      "target": "call:Object.entries",
+      "relationship": "calls",
+      "name": "Object.entries",
+      "line": 16
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:playerUrl",
+      "target": "call:query.set",
+      "relationship": "calls",
+      "name": "query.set",
+      "line": 16
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:playerUrl",
+      "target": "call:String",
+      "relationship": "calls",
+      "name": "String",
+      "line": 16
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:playerUrl",
+      "target": "call:query.toString",
+      "relationship": "calls",
+      "name": "query.toString",
+      "line": 17
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 55
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:Math.max",
+      "relationship": "calls",
+      "name": "Math.max",
+      "line": 56
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:Math.ceil",
+      "relationship": "calls",
+      "name": "Math.ceil",
+      "line": 56
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:Math.min",
+      "relationship": "calls",
+      "name": "Math.min",
+      "line": 57
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:(await db.query(PLAYER_CTE + ` SELECT * FROM filtered ORDER BY activity_at DESC NULLS LAST,id LIMIT ...",
+      "relationship": "calls",
+      "name": "(await db.query(PLAYER_CTE + ` SELECT * FROM filtered ORDER BY activity_at DESC NULLS LAST,id LIMIT ...",
+      "line": 58
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 58
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:r.signup_at?.toISOString",
+      "relationship": "calls",
+      "name": "r.signup_at?.toISOString",
+      "line": 58
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:r.verified_at?.toISOString",
+      "relationship": "calls",
+      "name": "r.verified_at?.toISOString",
+      "line": 58
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:r.last_play_at?.toISOString",
+      "relationship": "calls",
+      "name": "r.last_play_at?.toISOString",
+      "line": 58
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:r.activity_at?.toISOString",
+      "relationship": "calls",
+      "name": "r.activity_at?.toISOString",
+      "line": 58
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:readPlayerReport",
+      "target": "call:new Date().toISOString",
+      "relationship": "calls",
+      "name": "new Date().toISOString",
+      "line": 59
+    },
+    {
+      "source": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "target": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:reportPool.listenerCount",
+      "relationship": "calls",
+      "name": "reportPool.listenerCount",
+      "line": 68
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:reportPool.on",
+      "relationship": "calls",
+      "name": "reportPool.on",
+      "line": 68
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:reportPool.connect",
+      "relationship": "calls",
+      "name": "reportPool.connect",
+      "line": 71
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 72
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 73
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 74
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 76
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 84
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:readPlayerReport",
+      "relationship": "calls",
+      "name": "readPlayerReport",
+      "line": 86
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 87
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query('ROLLBACK').catch",
+      "relationship": "calls",
+      "name": "db.query('ROLLBACK').catch",
+      "line": 90
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 90
+    },
+    {
+      "source": "function:src/lib/scratch-players.ts:getPlayerReport",
+      "target": "call:db?.release",
+      "relationship": "calls",
+      "name": "db?.release",
+      "line": 92
+    },
+    {
       "source": "file:src/lib/security/history.ts:history.ts",
       "target": "import:node:crypto",
       "relationship": "imports",
@@ -48169,6 +50163,65 @@
       "line": 15
     },
     {
+      "source": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "target": "import:node:test",
+      "relationship": "imports",
+      "path": "node:test",
+      "symbols": [
+        "test"
+      ]
+    },
+    {
+      "source": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "target": "import:node:assert/strict",
+      "relationship": "imports",
+      "path": "node:assert/strict",
+      "symbols": [
+        "assert"
+      ]
+    },
+    {
+      "source": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "target": "import:pg",
+      "relationship": "imports",
+      "path": "pg",
+      "symbols": [
+        "Pool"
+      ]
+    },
+    {
+      "source": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "target": "import:node:crypto",
+      "relationship": "imports",
+      "path": "node:crypto",
+      "symbols": [
+        "randomUUID"
+      ]
+    },
+    {
+      "source": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "target": "import:../src/lib/scratch-players",
+      "relationship": "imports",
+      "path": "../src/lib/scratch-players",
+      "symbols": [
+        "getPlayerReport",
+        "parsePlayerFilters",
+        "readPlayerReport"
+      ]
+    },
+    {
+      "source": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "target": "function:tests/scratch-players.integration.test.ts:event",
+      "relationship": "defines"
+    },
+    {
+      "source": "function:tests/scratch-players.integration.test.ts:event",
+      "target": "call:db.query",
+      "relationship": "calls",
+      "name": "db.query",
+      "line": 18
+    },
+    {
       "source": "file:tests/security-history.integration.test.ts:security-history.integration.test.ts",
       "target": "import:node:test",
       "relationship": "imports",
@@ -48644,6 +50697,16 @@
         "updateCampaignCompletions"
       ],
       "originalPath": "../src/lib/email/queue"
+    },
+    {
+      "source": "file:scripts/scratch-players-browser-proof.ts:scratch-players-browser-proof.ts",
+      "target": "file:src/lib/auth/store.ts:store.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "authPool",
+        "tokenHash"
+      ],
+      "originalPath": "../src/lib/auth/store"
     },
     {
       "source": "file:scripts/security-history-browser-proof.ts:security-history-browser-proof.ts",
@@ -49510,6 +51573,17 @@
         "prisma"
       ],
       "originalPath": "../src/lib/db"
+    },
+    {
+      "source": "file:tests/scratch-players.integration.test.ts:scratch-players.integration.test.ts",
+      "target": "file:src/lib/scratch-players.ts:scratch-players.ts",
+      "relationship": "imports_file",
+      "symbols": [
+        "getPlayerReport",
+        "parsePlayerFilters",
+        "readPlayerReport"
+      ],
+      "originalPath": "../src/lib/scratch-players"
     },
     {
       "source": "file:tests/security-history.integration.test.ts:security-history.integration.test.ts",

@@ -159,3 +159,24 @@ newly eligible contacts, concurrent duplicate release, authenticated machine att
 revocation and zero external sends. The synthetic send route queues only; no SES call.
 `npm test` includes protected adapter handling and malformed/unapproved-send refusal.
 Existing `scripts/test-auth-local.sh` verifies stored draft-only scopes still cannot send.
+
+## Scratch player reporting — November 17
+`bash scripts/test-scratch-players-local.sh` creates a disposable Unix-socket-only PostgreSQL
+cluster with synthetic players, events and cards. It proves first-signup dates, stable source,
+last gameplay (excluding login/prize viewing), separate started/completed counts, test exclusion,
+source/status/date/search filters, pagination, normalized contact linking prerequisites and
+SELECT-column-only role boundaries. Missing configuration, denied SELECT and accidental column
+or table writer grants fail explicitly rather than appearing as zero players.
+
+After `next build --webpack`, run `CRM_SCRATCH_BROWSER_PROOF=1 bash scripts/test-scratch-players-local.sh`
+for authenticated HTTP/UI proof at 1440/390/320, forged/unauthenticated denial, source filtering,
+empty/error states, existing-contact linkage and a database-update/Refresh freshness assertion.
+`CRM_SCRATCH_KEEP_PREVIEW=1` retains the synthetic preview until the proof process receives SIGTERM;
+its browser state file is local-only mode0600. No production credentials or external email used.
+
+Runtime requires a separate `SCRATCH_REPORT_DATABASE_URL` with SELECT only on the documented
+columns; never reuse the game's application role. `SCRATCH_REPORT_CAMPAIGN_ID` defaults to
+`jt-scratch-20261106`. No CRM/game schema migration. Missing/invalid/non-public campaign or
+unavailable database reports unavailable. The optional profile lookup is normalized email-only;
+ambiguous legacy matches are deliberately not linked. This read-only view neither creates
+contacts nor changes consent, tags, email queues, game state or prize fulfillment.
