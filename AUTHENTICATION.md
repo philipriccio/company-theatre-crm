@@ -62,3 +62,42 @@ Prerequisites: enabled protected egress proxy; exact destination permitted by it
 Transport uses system curl explicitly bound to the inherited loopback proxy, verified ephemeral CA, HTTPS-only, no redirects, no user curl configuration or no-proxy bypass, and no diagnostic stderr. Only proxy/CA environment entries reach curl; the opaque machine header is sent through its stdin config, never arguments. This avoids relying on Node-version-dependent native fetch proxy behavior. Destination is fixed to https://crm.companytheatre.ca, shared server scope mapping admits only existing read/export/notes/draft routes, and no cookie, Origin, arbitrary headers or send action is supported. Bounds: 64 KiB input/5-second stdin deadline; 4 KiB URL; 5-second connect/15-second request/16-second process deadline; 4 MiB buffered response. Credential-shaped output is rejected before printing.
 
 Offline tests cover context, request and response rejection plus an actual curl CONNECT to a synthetic loopback proxy returning407 (including attempted NO_PROXY bypass). They do not prove real protected substitution, successful TLS interception, stored-entry binding, production machine authorization or Basic-gate cutover. Existing Basic authentication still prevents public machine acceptance until the separately verified controlled cutover.
+
+## Approval-based machine delivery — November 17, 2026 candidate
+
+An explicitly granted `campaigns:send` scope allows only `POST /api/campaigns/:id/send`.
+Existing identities retain their stored scopes; deploying code does not grant sending.
+No test/resume/retry/cancel, administration, credential or scheduler route is added.
+Use the protected Gateway adapter; do not export the machine credential.
+
+Machine requests require the existing `approvalName`, a nonblank `approvalNote`, tagged
+immediate selection matching the saved draft, and `sendApproval`:
+
+```json
+{
+  "reference": "telegram:conversation:message",
+  "approvedBy": "Owner name reported by the calling agent",
+  "updatedAt": "exact saved draft ISO timestamp",
+  "contentSha256": "campaignSendFingerprint(campaign)",
+  "audienceSha256": "audienceSendFingerprint(eligibleContacts)",
+  "recipientCount": 500
+}
+```
+
+Compute fingerprints with `src/lib/email/send-approval.ts` against reviewed evidence.
+The content fingerprint binds subject/HTML/preview/sender/reply-to and saved audience
+selectors. It is NOT the standalone HTML SHA256. The audience fingerprint binds exact
+contact IDs and normalized addresses, not just count. Suppression or membership changes
+therefore fail closed until a fresh review; do not silently replace approved recipients.
+Draft version is compare-and-swapped when claiming the queue, preventing concurrent edit
+or duplicate send approval. Normal suppression checks and durable queue behavior remain.
+
+The authenticated machine remains the audit actor. `approvedBy` describes approval
+reported by the agent; it does not impersonate a browser-authenticated owner. The CRM
+cannot independently authenticate Telegram messages. The agent must possess explicit
+owner approval before constructing this request, and retain its source reference.
+No scheduled or all-subscriber machine sends are supported by this bounded increment.
+
+Rollback: remove `campaigns:send` from the identity and restore the previous web image.
+Never delete queue/recipient/audit records. Reconcile any successful or ambiguous queue
+request before retrying; queue acceptance is not provider delivery. No schema migration.

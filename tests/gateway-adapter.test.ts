@@ -37,6 +37,21 @@ test('fixed HTTPS, shared scope mapping, no credential in request input; draft b
   } finally { await rm(f.dir, { recursive:true, force:true }) }
 })
 
+test('explicit machine-send request passes protected transport without credentials in input', async () => {
+  const f=await fixture()
+  try {
+    const body={mode:'tags',tagIds:['batch'],approvalName:'Owner',approvalNote:'Owner approved',sendApproval:{reference:'telegram:synthetic:1',approvedBy:'Owner',updatedAt:new Date().toISOString(),contentSha256:'a'.repeat(64),audienceSha256:'b'.repeat(64),recipientCount:1}}
+    let calls=0
+    await gatewayRequest(JSON.stringify({method:'POST',path:'/api/campaigns/batch/send',body}),f.env,async config=>{
+      calls++
+      assert.match(config,/campaigns\/batch\/send/)
+      return Buffer.from('{"recipientCount":1}\n200')
+    })
+    assert.equal(calls,1)
+    await assert.rejects(gatewayRequest(JSON.stringify({method:'POST',path:'/api/campaigns/batch/send',body:{...body,mode:'all'}}),f.env,async()=>assert.fail('transport')))
+  } finally {await rm(f.dir,{recursive:true,force:true})}
+})
+
 test('invalid gateway context and raw credentials fail before transport', async () => {
   const f = await fixture()
   try {

@@ -151,3 +151,11 @@ See AUTHENTICATION.md for fail-closed configuration, rollout gates and account/m
 The security-history suite now also confirms a trusted 120-character account display name can author a campaign review; browser/HTTP attribution still ignores supplied author. Fresh combined evidence lives in `../../audits/crm-release-readiness-20261101/`. Re-run typecheck independently after webpack since Next configuration skips build-time type failures.
 ## November 14: Scratch tag/exclusion proof
 `bash scripts/test-readiness-local.sh` now checks participant tag idempotency/replay, consent preservation, exclusion counts/queue parity, late signup worker hold, deleted-tag fail-closed behavior, and draft save/copy preservation. All fixtures use the disposable Unix-socket-only database and mock provider; no external sends. Browser evidence uses the real SendFlow component with synthetic audience HTTP responses at 1440/390/320; it is not a live or inbox proof.
+
+## Approval-based machine sending — November 17
+`bash scripts/test-readiness-local.sh` additionally exercises machine-send scope denial,
+explicit approval requirements, exact draft/audience fingerprint binding, excluded and
+newly eligible contacts, concurrent duplicate release, authenticated machine attribution,
+revocation and zero external sends. The synthetic send route queues only; no SES call.
+`npm test` includes protected adapter handling and malformed/unapproved-send refusal.
+Existing `scripts/test-auth-local.sh` verifies stored draft-only scopes still cannot send.

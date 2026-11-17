@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process'
 import { access } from 'node:fs/promises'
 import { isAbsolute } from 'node:path'
+import { parseSendApproval } from '../src/lib/email/send-approval'
 import { requiredMachineScope } from '../src/lib/auth/machine-scopes'
 
 export const SECRET_NAME = 'COMPANY_CRM_MACHINE_TOKEN'
@@ -37,6 +38,11 @@ export async function gatewayRequest(input: string, env: Partial<NodeJS.ProcessE
     if (url.origin !== ORIGIN || !requiredMachineScope(path.split('?')[0], method)) reject()
     if (method === 'GET' && body !== undefined) reject()
     if (body !== undefined && (!body || typeof body !== 'object' || Array.isArray(body))) reject()
+    if (requiredMachineScope(path.split('?')[0], method) === 'campaigns:send') {
+      parseSendApproval(body?.sendApproval)
+      if (body.mode !== 'tags' || body.scheduledAt || !Array.isArray(body.tagIds) || !body.tagIds.length ||
+          typeof body.approvalNote !== 'string' || !body.approvalNote.trim()) reject()
+    }
     // No secret-bearing input channel, even within a request body/query.
     if (/oc-sent-v2\.|mcrm_[a-f0-9]{64}/.test(input)) reject()
     const config = [

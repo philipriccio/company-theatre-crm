@@ -1,3 +1,5 @@
+import { authorizeMachine } from '@/lib/auth/machine'
+import { parseSendApproval } from '@/lib/email/send-approval'
 import { observeAction } from '@/lib/security/history'
 import { guard, requestToken } from '@/lib/auth/access'
 import { identity } from '@/lib/auth/store'
@@ -38,16 +40,22 @@ async function perform(
   }
 
   try {
-    const actor = await identity(requestToken(request))
-    if (!actor) return NextResponse.json({ error: 'Sign in again before approving delivery.' }, { status: 401 })
+    const machineId = request.headers.has('x-crm-machine-token') ? await authorizeMachine(request, false) : null
+    const actor = machineId ? null : await identity(requestToken(request))
+    if (!machineId && !actor) return NextResponse.json({ error: 'Sign in again before approving delivery.' }, { status: 401 })
+    const sendApproval = machineId ? parseSendApproval(body.sendApproval) : undefined
+    if (machineId && (mode !== 'tags' || scheduledAt || typeof approvalNote !== 'string' || !approvalNote.trim() || approvalNote.length > 2000)) {
+      return NextResponse.json({error:'Machine sends require an explicit tagged audience, immediate send and approval note.'},{status:400})
+    }
     const result = await enqueueCampaign(id, {
       mode: mode === 'tags' ? 'tags' : 'all',
       tagIds: mode === 'tags' ? tagIds || [] : [],
       excludeTagIds,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-      approvedBy: `${actor.name} <${actor.email}> [${actor.id}]`,
-      approvalNote,
-      securityActorId: actor.id,
+      approvedBy: machineId ? `Machine [${machineId}]; approval reported from ${sendApproval!.approvedBy}` : `${actor!.name} <${actor!.email}> [${actor!.id}]`,
+      approvalNote: machineId ? `[${sendApproval!.reference}] ${approvalNote}` : approvalNote,
+      securityActorId: machineId ?? actor!.id,
+      sendApproval,
     })
 
     return NextResponse.json({

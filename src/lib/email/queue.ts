@@ -1,3 +1,4 @@
+import { campaignSendFingerprint, audienceSendFingerprint, type SendApproval } from './send-approval'
 import { businessEvent } from '../security/history'
 import { selectAudience } from './audience'
 import { LEGACY_NEGATIVE_TAGS } from './legacy-exclusions'
@@ -17,6 +18,7 @@ export interface AudienceSelection {
   approvedBy: string
   securityActorId?: string
   approvalNote?: string
+  sendApproval?: SendApproval
 }
 
 export async function enqueueCampaign(campaignId: string, selection: AudienceSelection) {
@@ -36,11 +38,18 @@ export async function enqueueCampaign(campaignId: string, selection: AudienceSel
   const { contacts } = await selectAudience(selection.mode, selection.tagIds, excludeTagIds)
 
   if (contacts.length === 0) throw new Error('No recipients found')
+  const approval = selection.sendApproval
+  const sameTags = (a: string[], b: string[]) => JSON.stringify([...new Set(a)].sort()) === JSON.stringify([...new Set(b)].sort())
+  if (approval && (selection.mode !== campaign.audienceMode || !sameTags(selection.tagIds ?? [], campaign.audienceTagIds) || !sameTags(excludeTagIds, campaign.audienceExcludeTagIds) || campaign.updatedAt.toISOString() !== approval.updatedAt ||
+      campaignSendFingerprint(campaign) !== approval.contentSha256 ||
+      audienceSendFingerprint(contacts) !== approval.audienceSha256 || contacts.length !== approval.recipientCount)) {
+    throw new Error('Approved draft or audience changed; review before sending')
+  }
 
   await prisma.$transaction(async (tx) => {
     await businessEvent(tx, selection.securityActorId ?? null, 'campaign_send_approved', campaignId)
     // Atomic draft claim: concurrent approvals cannot refreeze the audience.
-    const claimed = await tx.campaign.updateMany({ where: { id: campaignId, status: 'DRAFT' }, data: { status: 'QUEUED' } })
+    const claimed = await tx.campaign.updateMany({ where: { id: campaignId, status: 'DRAFT', updatedAt: campaign.updatedAt }, data: { status: 'QUEUED' } })
     if (claimed.count !== 1) throw new Error('Campaign is no longer a draft')
     await tx.campaignRecipient.createMany({
       data: contacts.map((contact) => ({

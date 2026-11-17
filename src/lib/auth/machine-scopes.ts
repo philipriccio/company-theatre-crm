@@ -1,4 +1,4 @@
-export const MACHINE_SCOPES = ['contacts:read','contacts:export','contacts:notes','campaigns:read','campaigns:drafts'] as const
+export const MACHINE_SCOPES = ['contacts:read','contacts:export','contacts:notes','campaigns:read','campaigns:drafts','campaigns:send'] as const
 export type MachineScope = typeof MACHINE_SCOPES[number]
 export function requiredMachineScope(path: string, method: string): MachineScope | null {
   // Deliberately reject encoded separators, fragments, extension tricks and unknown routes.
@@ -10,5 +10,6 @@ export function requiredMachineScope(path: string, method: string): MachineScope
   if (method === 'POST' && path === '/api/campaigns') return 'campaigns:drafts'
   if (method === 'PUT' && /^\/api\/campaigns\/[a-zA-Z0-9_-]+$/.test(path)) return 'campaigns:drafts'
   if (method === 'PUT' && /^\/api\/campaigns\/[a-zA-Z0-9_-]+\/copy$/.test(path)) return 'campaigns:drafts'
+  if (method === 'POST' && /^\/api\/campaigns\/[a-zA-Z0-9_-]+\/send$/.test(path)) return 'campaigns:send'
   return null
 }
