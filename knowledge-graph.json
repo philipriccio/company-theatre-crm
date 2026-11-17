@@ -1,6 +1,6 @@
 {
   "project": "crm-approved-sending-20261117",
-  "generatedAt": "2026-11-17T14:46:30.528Z",
+  "generatedAt": "2026-11-17T16:43:21.504Z",
   "stats": {
     "nodes": 668,
     "edges": 5977,
@@ -6867,7 +6867,7 @@
       "name": "readiness.integration.test.ts",
       "file": "tests/readiness.integration.test.ts",
       "language": "typescript",
-      "lines": 470
+      "lines": 492
     },
     {
       "id": "function:tests/readiness.integration.test.ts:request",

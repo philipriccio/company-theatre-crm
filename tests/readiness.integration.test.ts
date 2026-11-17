@@ -460,6 +460,28 @@ test('isolated PostgreSQL readiness proof', { skip: process.env.CRM_ISOLATED_PRO
       await authPool.query('UPDATE "CrmMachineIdentity" SET disabled=true WHERE id=$1',['send-proof-machine'])
       assert.equal((await invoke(payload)).status,401)
     })
+    await t.test('6322-recipient freeze survives a slow transaction atomically', async () => {
+      const before=sends
+      const tag=await prisma.tag.create({data:{name:'Bulk6322 proof'}})
+      const contacts=Array.from({length:6322},(_,i)=>({id:`bulk6322-${i}`,email:`bulk6322-${i}@example.invalid`,solicitation:true}))
+      await prisma.contact.createMany({data:contacts})
+      await prisma.contactTag.createMany({data:contacts.map(c=>({contactId:c.id,tagId:tag.id}))})
+      const c=await prisma.campaign.create({data:{id:'bulk6322-proof',name:'Synthetic bulk',subject:'Proof',content:'<p>Synthetic</p>',audienceMode:'tags',audienceTagIds:[tag.id]}})
+      await authPool.query(`CREATE FUNCTION bulk_slow_proof() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW."contactId"='bulk6322-0' THEN PERFORM pg_sleep(6); END IF; RETURN NEW; END $$`)
+      await authPool.query(`CREATE TRIGGER bulk_slow_proof BEFORE INSERT ON "CampaignRecipient" FOR EACH ROW EXECUTE FUNCTION bulk_slow_proof()`)
+      try {
+        const result=await queue.enqueueCampaign(c.id,{mode:'tags',tagIds:[tag.id],approvedBy:'Synthetic proof'})
+        assert.equal(result.recipientCount,6322)
+        assert.equal(await prisma.campaignRecipient.count({where:{campaignId:c.id}}),6322)
+        assert.equal(await prisma.consentEvidence.count({where:{source:'campaign_enqueue',contactId:{in:contacts.map(c=>c.id)}}}),6322)
+        assert.equal((await prisma.campaign.findUniqueOrThrow({where:{id:c.id}})).frozenRecipientCount,6322)
+        await assert.rejects(queue.enqueueCampaign(c.id,{mode:'tags',tagIds:[tag.id],approvedBy:'Synthetic proof'}),/draft/)
+        assert.equal(sends,before)
+      } finally {
+        await authPool.query('DROP TRIGGER bulk_slow_proof ON "CampaignRecipient"')
+        await authPool.query('DROP FUNCTION bulk_slow_proof()')
+      }
+    })
   } finally {
     await authPool.end()
     await prisma.$disconnect()

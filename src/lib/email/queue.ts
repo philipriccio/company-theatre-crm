@@ -91,7 +91,7 @@ export async function enqueueCampaign(campaignId: string, selection: AudienceSel
         frozenRecipientCount: contacts.length,
       },
     })
-  })
+  }, { timeout: 30_000 }) // Atomically freeze large approved audiences and consent snapshots.
 
   return { recipientCount: contacts.length, scheduledAt: selection.scheduledAt || null }
 }
