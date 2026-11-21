@@ -101,3 +101,62 @@ No scheduled or all-subscriber machine sends are supported by this bounded incre
 Rollback: remove `campaigns:send` from the identity and restore the previous web image.
 Never delete queue/recipient/audit records. Reconcile any successful or ambiguous queue
 request before retrying; queue acceptance is not provider delivery. No schema migration.
+
+## Private invitation setup — November 21, 2026
+
+Trusted operators can issue a 48-hour, one-use setup code with `scripts/crm-invite.cjs`.
+There is no public registration, account-reset or mail-sending API. A pending invitation
+is not a login-capable account. The account is created only when its recipient chooses
+a valid password at `/set-password`. Existing accounts are never reset/re-enabled or
+replaced; their sessions are untouched. Acceptance issues no session: ordinary login
+is required afterward. New accounts have the same existing human CRM capabilities.
+
+The setup page uses a clean URL and a masked setup-code field, not a secret-bearing
+URL. Its security headers disable referrers, external resources and framing. No
+third-party fonts/analytics are loaded. Neither setup codes nor passwords are retained
+in browser storage. Password policy/hash, body limits, same-origin checks and durable
+throttles reuse existing auth machinery. Only SHA-256 setup-code hashes persist;
+acceptance/consumption/user creation/audit are one transaction with a row lock, strict
+DB-time expiry and unique-user protection. GET/link scanners cannot consume an invite.
+
+### Operator transport
+
+Run the standalone CommonJS helper inside the trusted host/container with its existing
+protected DATABASE_URL and CRM_AUTH_ORIGIN. It requires only Node and `pg`; no TS source,
+Prisma client or CLI is required. No command arguments are accepted. JSON on private
+stdin: `{email,name,requestId,operator}`; `requestId` is a fresh UUID and email is normalized.
+Stdout is **sensitive**, to be consumed directly in memory by the transactional mail
+transport: `{email,name,invitationId,expiresAt,setupUrl,setupCode}`. Never run directly in
+a captured tool terminal, redirect stdout to a file, use tee/shell tracing, or log the
+mail request/response/body. TTY input/output is rejected. The mail transport must keep
+the code out of process arguments and logs, and report only nonsecret receipt metadata.
+No email is sent by the helper itself. Parent/operator owns explicit recipient/send approval.
+
+The database commit precedes output: an uncertain send/transport result is NOT permission
+to blindly issue/re-send. Inspect invitation metadata plus mail receipts first. Reusing
+an issuance request ID fails. Explicit pending-invitation rotation requires a fresh
+requestId plus `replacePendingId` matching the current unused invitation ID; rotation
+invalidates its previous code and retains issuance/rotation audit history. A consumed
+invitation cannot be rotated. Revocation sets `revokedAt` on the exact invitation ID.
+Do not expose the helper publicly or grant invitation issuance to machine HTTP scopes.
+
+### Migration / grants / rollback
+
+Additive migration `20261121190000_crm_invitation` creates only CrmInvitation. Runtime
+needs SELECT/INSERT/UPDATE on this new table; no DELETE is required. Acceptance also
+needs existing CrmUser SELECT/INSERT (login's FOR UPDATE already requires UPDATE),
+CrmAuthEvent INSERT (and its existing security trigger CrmSecurityAlert INSERT/SELECT), and CrmAuthThrottle SELECT/INSERT/UPDATE. No new machine scope,
+email-provider, worker or sender setting is introduced. Review exact live grants.
+
+Rollback: restore prior web image while retaining populated CrmInvitation, CrmUser,
+auth events and migration records. Do not drop tables or restore an entire database.
+Already accepted named accounts continue to use prior auth. Unconsumed invitations
+become inaccessible until this feature is restored; revoke their exact records if
+aborting. No expiry, password or session weakening is needed for rollback.
+
+Verification: ordinary offline suite; `scripts/test-auth-local.sh` includes lifecycle,
+expiry/replay/concurrency, existing-account preservation, throttle, origin/body bounds,
+and a separately constrained role (no invitation/user DELETE, no DDL). Set
+CRM_INVITATION_BROWSER_PROOF=1 to verify real Chromium setup/login at 1440/390/320,
+privacy headers, no external requests/secret URLs, validation retention and task access.
+All tests use disposable synthetic local data; never enable proof flags in production.

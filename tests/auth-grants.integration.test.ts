@@ -8,7 +8,7 @@ test('runtime DML grants inherited from theatre migrations, no owner privileges'
     const role = (await authPool.query('SELECT current_user, rolsuper, rolcreatedb, rolcreaterole FROM pg_roles WHERE rolname=current_user')).rows[0]
     assert.equal(role.current_user, 'crm_review_app')
     assert.equal(role.rolsuper, false); assert.equal(role.rolcreatedb, false); assert.equal(role.rolcreaterole, false)
-    for (const table of ['CrmUser','CrmSession','CrmAuthThrottle','CrmAuthEvent','CrmMachineIdentity']) {
+    for (const table of ['CrmUser','CrmSession','CrmAuthThrottle','CrmAuthEvent','CrmMachineIdentity','CrmInvitation']) {
       const row = (await authPool.query(`SELECT pg_get_userbyid(relowner) AS owner,
         has_table_privilege(current_user,oid,'SELECT,INSERT,UPDATE,DELETE') AS dml
         FROM pg_class WHERE relname=$1`,[table])).rows[0]

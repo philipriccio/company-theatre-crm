@@ -17,11 +17,11 @@ export function sameOrigin(request: Request) {
 }
 export function publicRoute(path: string, method: string) {
   if (method === 'GET' || method === 'HEAD') {
-    if (path === '/login' || path === '/favicon.ico' || path.startsWith('/_next/static/')) return true
+    if ((path === '/login' || path === '/set-password') || path === '/favicon.ico' || path.startsWith('/_next/static/')) return true
     if (/^\/unsubscribe\/[^/]+$/.test(path)) return true
     if (/^\/api\/track\/(click|open)\/[^/]+$/.test(path)) return true
   }
-  if (method === 'POST' && ['/api/auth/login', '/api/webhooks/ses', '/api/webhooks/sendgrid', '/api/website-signups', '/api/intake/scratch'].includes(path)) return true
+  if (method === 'POST' && ['/api/auth/login', '/api/auth/invitation', '/api/webhooks/ses', '/api/webhooks/sendgrid', '/api/website-signups', '/api/intake/scratch'].includes(path)) return true
   return (method === 'GET' || method === 'POST') && /^\/api\/unsubscribe\/[^/]+$/.test(path)
 }
 export function authFailure(error: unknown) {

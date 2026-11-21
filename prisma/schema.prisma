@@ -504,3 +504,15 @@ model JtTaskRequest {
  result Json
  createdAt DateTime @default(now())
 }
+
+// Issued only by a trusted private operator; never public signup/recovery.
+model CrmInvitation {
+  id String @id
+  email String @unique
+  name String
+  tokenHash String @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  consumedAt DateTime?
+  revokedAt DateTime?
+}

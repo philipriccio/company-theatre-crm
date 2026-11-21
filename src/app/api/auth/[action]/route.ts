@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { AuthError, changePassword, login, logout, updateProfile, logoutOtherSessions, SESSION_SECONDS } from '@/lib/auth/store'
 import { authFailure, authOrigin, cookieName, requestToken, sameOrigin } from '@/lib/auth/access'
+import { acceptInvitation } from '@/lib/auth/invitation'
 import { passwordError } from '@/lib/auth/password'
 export const runtime = 'nodejs'
 async function readBody(request: Request): Promise<Record<string, unknown>> {
@@ -36,6 +37,10 @@ export async function POST(request: Request, context: { params: Promise<{ action
         if (Object.keys(body).some(key => key !== 'name')) throw new AuthError(400, 'Only your name can be changed here.')
         profile = await updateProfile(requestToken(request) ?? '', body.name)
       } else if (action === 'login') token = await login(body.email, body.password)
+      else if (action === 'invitation') {
+        if (Object.keys(body).some(key => !['token', 'password', 'confirmation'].includes(key))) throw new AuthError(400, 'Invalid form.')
+        await acceptInvitation(body.token, body.password, body.confirmation)
+      }
       else if (action === 'password') {
         const issue = passwordError(body.newPassword)
         if (issue) throw new AuthError(400, issue)

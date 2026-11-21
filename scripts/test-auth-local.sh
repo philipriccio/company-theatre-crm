@@ -24,10 +24,19 @@ ALTER DEFAULT PRIVILEGES FOR ROLE theatre IN SCHEMA public GRANT SELECT, USAGE O
 SQL
 ./node_modules/.bin/prisma migrate deploy
 ./node_modules/.bin/prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code
+# Separate role proves invitation acceptance requires no user delete or DDL; user UPDATE is already needed by login row locks.
+"$PG_BIN/psql" -X -v ON_ERROR_STOP=1 -U theatre -h "$LOCAL_PROOF_ROOT" -p 55441 -d crm_auth_test <<'SQL'
+CREATE ROLE crm_invite_limited LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
+GRANT USAGE ON SCHEMA public TO crm_invite_limited;
+GRANT SELECT,INSERT ON "CrmSession","CrmAuthEvent","CrmSecurityAlert" TO crm_invite_limited;
+GRANT SELECT,INSERT,UPDATE ON "CrmUser" TO crm_invite_limited;
+GRANT SELECT,INSERT,UPDATE ON "CrmInvitation","CrmAuthThrottle" TO crm_invite_limited;
+SQL
 # DDL/migration history belongs to the owner; all runtime tests below use only DML grants.
 export DATABASE_URL="postgresql://crm_review_app@localhost:55441/crm_auth_test?host=$LOCAL_PROOF_ROOT&port=55441"
-./node_modules/.bin/tsx --test tests/auth-grants.integration.test.ts tests/auth.integration.test.ts tests/operator.integration.test.ts tests/security-history.integration.test.ts
-if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 ]]; then
+./node_modules/.bin/tsx --test tests/auth-grants.integration.test.ts tests/auth.integration.test.ts tests/operator.integration.test.ts tests/security-history.integration.test.ts tests/invitation.integration.test.ts
+DATABASE_URL="postgresql://crm_invite_limited@localhost:55441/crm_auth_test?host=$LOCAL_PROOF_ROOT&port=55441" CRM_INVITATION_NARROW_PROOF=1 ./node_modules/.bin/tsx --test tests/invitation.integration.test.ts
+if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 || "${CRM_INVITATION_BROWSER_PROOF:-0}" = 1 ]]; then
   CRM_AUTH_BROWSER_PORT="${CRM_AUTH_BROWSER_PORT:-3263}"
   [[ "$CRM_AUTH_BROWSER_PORT" =~ ^[0-9]+$ ]] || exit 1
   export CRM_AUTH_ORIGIN="http://127.0.0.1:$CRM_AUTH_BROWSER_PORT"
@@ -39,6 +48,11 @@ if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 ]]; then
     if curl -fsS "$CRM_AUTH_ORIGIN/login" >/dev/null; then break; fi
     sleep 1
   done
-  ./node_modules/.bin/tsx scripts/auth-browser-proof.ts
-  ./node_modules/.bin/tsx scripts/security-history-browser-proof.ts
+  if [[ "${CRM_AUTH_BROWSER_PROOF:-0}" = 1 ]]; then
+    ./node_modules/.bin/tsx scripts/auth-browser-proof.ts
+    ./node_modules/.bin/tsx scripts/security-history-browser-proof.ts
+  fi
+  if [[ "${CRM_INVITATION_BROWSER_PROOF:-0}" = 1 ]]; then
+    ./node_modules/.bin/tsx scripts/invitation-browser-proof.ts
+  fi
 fi
