@@ -1,8 +1,10 @@
-export const MACHINE_SCOPES = ['contacts:read','contacts:export','contacts:notes','campaigns:read','campaigns:drafts','campaigns:send'] as const
+export const MACHINE_SCOPES = ['contacts:read','contacts:export','contacts:notes','campaigns:read','campaigns:drafts','campaigns:send','tasks:read','tasks:write'] as const
 export type MachineScope = typeof MACHINE_SCOPES[number]
 export function requiredMachineScope(path: string, method: string): MachineScope | null {
   // Deliberately reject encoded separators, fragments, extension tricks and unknown routes.
   if (/%|\\|\.|\/\//.test(path)) return null
+  if (method === 'GET' && /^\/api\/jt-tasks(?:\/[a-zA-Z0-9_-]+)?$/.test(path)) return 'tasks:read'
+  if ((method === 'POST' && path === '/api/jt-tasks') || (method === 'PATCH' && /^\/api\/jt-tasks\/[a-zA-Z0-9_-]+$/.test(path))) return 'tasks:write'
   if (method === 'GET' && path === '/api/contacts/export') return 'contacts:export'
   if (method === 'GET' && (/^\/api\/contacts(?:\/[a-zA-Z0-9_-]+)?$/.test(path) || /^\/api\/contacts\/[a-zA-Z0-9_-]+\/(notes|interactions|follow-ups|connections|tags)$/.test(path))) return 'contacts:read'
   if (method === 'POST' && /^\/api\/contacts\/[a-zA-Z0-9_-]+\/notes$/.test(path)) return 'contacts:notes'

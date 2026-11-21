@@ -33,3 +33,7 @@ The private operator UI generates tokens using browser crypto, keeps them masked
 Synthetic real-HTTP tests show machine read200, draft201 with injected SENDING ignored/result DRAFT, send/test/resume/retry/review403, revocation401, and independent human password changes. Protected operator HTTP tests cover Host/Origin rejection and masked UI; database tests cover recovery/session revocation, scopes/rotation/expiry, metadata omission of hashes, and audit retention.
 
 No live named machine identity or broker binding exists yet. A deployment must verify the actual routine agent's protected-store transport, intended workflows, scope-denied behavior and token rotation before removing any old dependency. Source inventory is evidence of inspected scripts, not a claim to have exhaustively found every historical operator script.
+
+### JT To Do
+
+`tasks:read` permits GET `/api/jt-tasks` and GET `/api/jt-tasks/:id` only. `tasks:write` permits POST `/api/jt-tasks` and PATCH `/api/jt-tasks/:id` only. Neither permits contacts, campaigns, sends, exports, deletion, account operations or other task paths. Human and machine requests use the same versioned service and named transaction history. No identity is granted these scopes by the migration.

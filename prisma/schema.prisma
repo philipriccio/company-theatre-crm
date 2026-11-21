@@ -466,3 +466,41 @@ model CrmSecurityCoverage {
  id String @id
  startedAt DateTime @default(now())
 }
+
+model JtTask {
+ latestUpdate String @default("")
+ id String @id @default(cuid())
+ title String
+ owner String?
+ status String @default("TODO")
+ dueDate String?
+ notes String @default("")
+ sourceLinks Json @default("[]")
+ sourceKey String? @unique
+ parentId String?
+ parent JtTask? @relation("TaskChildren", fields: [parentId], references: [id], onDelete: Restrict)
+ children JtTask[] @relation("TaskChildren")
+ changes JtTaskChange[]
+ archivedAt DateTime?
+ version Int @default(1)
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([archivedAt, status])
+}
+model JtTaskChange {
+ id String @id @default(cuid())
+ taskId String
+ task JtTask @relation(fields: [taskId], references: [id], onDelete: Restrict)
+ actorId String
+ actorLabel String
+ before Json?
+ after Json
+ createdAt DateTime @default(now())
+ @@index([taskId, createdAt])
+}
+model JtTaskRequest {
+ id String @id
+ hash String
+ result Json
+ createdAt DateTime @default(now())
+}

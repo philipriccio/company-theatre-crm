@@ -180,3 +180,11 @@ columns; never reuse the game's application role. `SCRATCH_REPORT_CAMPAIGN_ID` d
 unavailable database reports unavailable. The optional profile lookup is normalized email-only;
 ambiguous legacy matches are deliberately not linked. This read-only view neither creates
 contacts nor changes consent, tags, email queues, game state or prize fulfillment.
+
+## JT To Do — isolated production-build proof
+
+After `npm run build`, run `./scripts/test-jt-tasks-local.sh`. It creates a temporary Unix-socket-only PostgreSQL cluster, applies all migrations, checks schema drift, and uses a non-superuser runtime role. It never loads the project `.env`. It exercises shared persistence, atomic named history, create/update retries, concurrent versions, imports, narrow machine scopes, and synthetic authenticated browser workflows at 1440/390/320px. It stops the app and removes the synthetic cluster on exit. No provider calls or emails occur. Screenshots are written to workspace `audits/jt-todo-20261121/`.
+
+JT endpoints are `/api/jt-tasks` (GET/POST) and `/api/jt-tasks/[id]` (GET/PATCH). Every mutation requires a unique `requestId` reused unchanged for an uncertain retry; PATCH also requires the current `version`. A 409 means reload/reconcile, not a forced overwrite. Import `sourceKey` is unique and optional; existing source tasks are never silently updated. `sourceLinks` is an array of HTTP(S) URLs. Owners are PHILIP/JANICE/MILDRED or null; statuses TODO/IN_PROGRESS/WAITING/DONE; dates are nullable YYYY-MM-DD strings. Source parent tasks must be created before children.
+
+Rollback: return the web app to its prior image while retaining the additive task tables/history. Do not drop populated task tables to roll back the UI. Before launch, grant the runtime role SELECT/INSERT/UPDATE on JtTask and SELECT/INSERT on JtTaskChange/JtTaskRequest; no task deletion grant is needed. Machine capabilities `tasks:read`/`tasks:write` require explicit enrollment on the intended existing identity; code deployment alone grants no scopes. Existing human account authentication is unchanged.
