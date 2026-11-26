@@ -2,14 +2,14 @@
 import { Pool, type PoolClient } from 'pg';
 
 export type PlayerParams = Record<string, string | string[] | undefined>;
-export type PlayerFilters = { search: string; source: string; status: string; dateField: string; from: string; to: string; page: number };
+export type PlayerFilters = { search: string; source: string; status: string; dateField: string; from: string; to: string; page: number; sort: 'newest' | 'activity' };
 export type PlayerRow = { id: string; name: string; email: string; verified: boolean; signup_at: string | null; verified_at: string | null; last_play_at: string | null; activity_at: string | null; started: number; completed: number; prizes: string[]; source: string };
 export type PlayerReport = { state: 'ready'; rows: PlayerRow[]; total: number; verified: number; played: number; completed: number; page: number; pages: number; checkedAt: string } | { state: 'unavailable'; reason: 'configuration' | 'connection' } | { state: 'invalid_range' };
 const sources = ['newsletter', 'social', 'direct', 'partner', 'other', 'unknown'];
 function date(value: string) { return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value ? value : ''; }
 export function parsePlayerFilters(params: PlayerParams): PlayerFilters {
   const get = (key: string) => typeof params[key] === 'string' ? params[key] as string : '';
-  return { search: get('search').trim().slice(0, 120), source: sources.includes(get('source')) ? get('source') : '', status: ['played', 'not_played', 'verified', 'unverified'].includes(get('status')) ? get('status') : '', dateField: get('dateField') === 'signup' ? 'signup' : 'last_play', from: date(get('from')), to: date(get('to')), page: Math.min(100000, Math.max(1, Number.parseInt(get('page'), 10) || 1)) };
+  return { sort: get('sort') === 'activity' ? 'activity' : 'newest', search: get('search').trim().slice(0, 120), source: sources.includes(get('source')) ? get('source') : '', status: ['played', 'not_played', 'verified', 'unverified'].includes(get('status')) ? get('status') : '', dateField: get('dateField') === 'signup' ? 'signup' : 'last_play', from: date(get('from')), to: date(get('to')), page: Math.min(100000, Math.max(1, Number.parseInt(get('page'), 10) || 1)) };
 }
 export function playerUrl(f: PlayerFilters, page: number) {
   const query = new URLSearchParams();
@@ -55,7 +55,9 @@ export async function readPlayerReport(db: PoolClient, f: PlayerFilters, campaig
   const totals = (await db.query(PLAYER_CTE + ` SELECT count(*)::int AS total,count(*) FILTER (WHERE verified)::int AS verified,count(*) FILTER (WHERE started>0)::int AS played,coalesce(sum(completed),0)::int AS completed FROM filtered`, args)).rows[0];
   const pages = Math.max(1, Math.ceil(totals.total / 50));
   const page = Math.min(f.page, pages);
-  const rows = (await db.query(PLAYER_CTE + ` SELECT * FROM filtered ORDER BY activity_at DESC NULLS LAST,id LIMIT 50 OFFSET $8`, [...args, (page - 1) * 50])).rows.map((r) => ({ ...r, signup_at: r.signup_at?.toISOString() ?? null, verified_at: r.verified_at?.toISOString() ?? null, last_play_at: r.last_play_at?.toISOString() ?? null, activity_at: r.activity_at?.toISOString() ?? null }));
+  // Only these server-owned column names may enter SQL; never interpolate a query parameter.
+  const orderColumn = f.sort === 'activity' ? 'activity_at' : 'signup_at';
+  const rows = (await db.query(PLAYER_CTE + ` SELECT * FROM filtered ORDER BY ${orderColumn} DESC NULLS LAST,id LIMIT 50 OFFSET $8`, [...args, (page - 1) * 50])).rows.map((r) => ({ ...r, signup_at: r.signup_at?.toISOString() ?? null, verified_at: r.verified_at?.toISOString() ?? null, last_play_at: r.last_play_at?.toISOString() ?? null, activity_at: r.activity_at?.toISOString() ?? null }));
   return { state: 'ready', ...totals, rows, page, pages, checkedAt: new Date().toISOString() };
 }
 let reportPool: Pool | undefined;

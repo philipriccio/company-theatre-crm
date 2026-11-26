@@ -10,7 +10,7 @@ const { chromium } = require('/opt/homebrew/lib/node_modules/agent-browser/node_
 async function main() {
   assert.equal(process.env.CRM_SCRATCH_ISOLATED_PROOF, '1');
   assert.ok(process.env.DATABASE_URL?.includes('/crm_scratch_test?host=/tmp/company-crm-scratch.'));
-  const out = '../../audits/crm-scratch-players-20261117';
+  const out = '../../audits/crm-player-search-20261125';
   await mkdir(out,{recursive:true});
   const id=randomUUID(), token=randomBytes(32).toString('hex');
   await authPool.query('INSERT INTO "CrmUser" (id,email,name,"passwordHash") VALUES ($1,$2,$3,$4)',[id,'viewer@example.invalid','Synthetic viewer','unusable']);
@@ -48,11 +48,34 @@ async function main() {
       await page.setViewportSize({width,height:width===1440?1000:844});
       await page.goto(base+'/scratch-players'); await page.getByRole('heading',{name:'Scratch players.'}).waitFor();
       assert.equal(await page.locator('.player-card').count(),50);
-      assert.equal(await page.locator('.player-card').first().getByRole('link',{name:'Open CRM profile →'}).getAttribute('href'),'/contacts/synthetic-existing');
+      assert.equal(await page.locator('.player-card').first().getByRole('heading').innerText(),'Registered Only');
+      assert.equal(await page.getByLabel('Find a player').isVisible(),true);
+      assert.equal(await page.getByLabel('Sort players').isVisible(),true);
+      assert.equal(await page.getByRole('link',{name:'Open CRM profile →'}).getAttribute('href'),'/contacts/synthetic-existing');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,`overflow ${width}`);
       await page.screenshot({path:`${out}/players-${width}.png`,fullPage:width===1440});
     }
     console.log('PASS: viewport/auth/profile checks');
+    await page.getByLabel('Sort players').selectOption('activity');
+    await page.getByRole('button',{name:'Search players'}).click();
+    await page.waitForURL(/sort=activity/);
+    assert.equal(await page.locator('.player-card').first().getByRole('heading').innerText(),'Played Person');
+    await page.getByLabel('Find a player').fill('stered on');
+    await page.getByLabel('Find a player').press('Enter');
+    await page.waitForURL(/search=stered/);
+    assert.equal(await page.locator('.player-card').count(),1);
+    assert.equal(await page.getByLabel('Sort players').inputValue(),'activity');
+    await page.goto(base+'/scratch-players?search=Extra&sort=activity&status=not_played');
+    await page.getByRole('link',{name:'Next →'}).click();
+    await page.waitForURL(/page=2/);
+    assert.equal(await page.locator('.player-card').count(),5);
+    assert.equal(new URL(page.url()).searchParams.get('search'),'Extra');
+    assert.equal(new URL(page.url()).searchParams.get('sort'),'activity');
+    assert.equal(new URL(page.url()).searchParams.get('status'),'not_played');
+    await page.getByRole('button',{name:'Search players'}).click();
+    await page.waitForURL(u=>!u.searchParams.has('page'));
+    assert.equal(await page.locator('.player-card').count(),50);
+    await page.goto(base+'/scratch-players');
     await page.locator('summary').click();
     await page.getByLabel('Signup source',{exact:true}).selectOption('newsletter');
     await page.getByRole('button',{name:'Apply filters'}).click();

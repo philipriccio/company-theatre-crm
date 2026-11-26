@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Pool } from 'pg';
 import { randomUUID } from 'node:crypto';
-import { getPlayerReport, parsePlayerFilters, readPlayerReport } from '../src/lib/scratch-players';
+import { getPlayerReport, parsePlayerFilters, playerUrl, readPlayerReport } from '../src/lib/scratch-players';
 const enabled = process.env.CRM_SCRATCH_ISOLATED_PROOF === '1';
 test('read-only player reports: real SQL, source/date/status, tests, no duplicated counts, stable pagination, restricted grants', { skip: !enabled }, async () => {
   assert.ok(process.env.DATABASE_URL?.includes('/crm_scratch_test?host=/tmp/company-crm-scratch.'));
@@ -26,6 +26,8 @@ test('read-only player reports: real SQL, source/date/status, tests, no duplicat
     await event('login',played,'game_resumed','2026-11-22T12:00:00Z');
     const filters = parsePlayerFilters({});
     let result = await readPlayerReport(db, filters, campaign);
+    assert.deepEqual(result.rows.map(r=>r.id),[registered,played,legacy]);
+    assert.deepEqual((await readPlayerReport(db,{...filters,sort:'activity'},campaign)).rows.map(r=>r.id),[played,registered,legacy]);
     assert.equal(result.total,3); assert.equal(result.played,1); assert.equal(result.completed,1);
     const p = result.rows.find(r => r.id === played)!;
     assert.equal(p.signup_at,'2026-11-16T23:59:00.000Z'); assert.equal(p.source,'newsletter'); assert.equal(p.last_play_at,'2026-11-17T16:12:00.000Z'); assert.deepEqual(p.prizes,['25']); assert.equal(p.started,1);
@@ -33,6 +35,11 @@ test('read-only player reports: real SQL, source/date/status, tests, no duplicat
     assert.equal((await readPlayerReport(db,{...filters,status:'not_played'},campaign)).total,2);
     assert.equal((await readPlayerReport(db,{...filters,source:'newsletter'},campaign)).total,1);
     assert.equal((await readPlayerReport(db,{...filters,search:'PLAYED@EXAMPLE'},campaign)).total,1);
+    assert.equal((await readPlayerReport(db,{...filters,search:'stered on'},campaign)).rows[0].id,registered);
+    for (const literal of ['%', '_', "' OR true --"]) assert.equal((await readPlayerReport(db,{...filters,search:literal},campaign)).total,0);
+    await db.query('UPDATE scratch_player SET name=$1 WHERE id=$2',["O’Neil 100%_Test",registered]);
+    assert.equal((await readPlayerReport(db,{...filters,search:'100%_test'},campaign)).rows[0].id,registered);
+    await db.query('UPDATE scratch_player SET name=$1 WHERE id=$2',['Registered Only',registered]);
     assert.equal((await readPlayerReport(db,{...filters,dateField:'signup',from:'2026-11-17',to:'2026-11-17'},campaign)).total,1);
     assert.equal((await readPlayerReport(db,{...filters,dateField:'last_play',from:'2026-11-17',to:'2026-11-17'},campaign)).total,1);
     assert.equal((await readPlayerReport(db,filters,'synthetic')).total,0);
@@ -70,4 +77,11 @@ test('read-only player reports: real SQL, source/date/status, tests, no duplicat
 test('bounded filters reject malformed dates and unsupported values', () => {
   const f=parsePlayerFilters({from:'2026-02-30',to:'invalid',source:'evil',status:'evil',search:'x'.repeat(200),page:'-1'});
   assert.equal(f.from,'');assert.equal(f.to,'');assert.equal(f.source,'');assert.equal(f.status,'');assert.equal(f.search.length,120);assert.equal(f.page,1);
+});
+
+test('newest is default and invalid sort cannot enter SQL; links preserve active filters and sort', () => {
+  assert.equal(parsePlayerFilters({sort:'signup_at; DROP TABLE scratch_player'}).sort,'newest');
+  const f=parsePlayerFilters({search:'  Ann & Jo  ',source:'social',status:'verified',dateField:'signup',from:'2026-11-01',to:'2026-11-25',sort:'activity',page:'8'});
+  const next=new URL(playerUrl(f,2),'https://example.invalid');
+  assert.deepEqual(parsePlayerFilters(Object.fromEntries(next.searchParams)),{...f,page:2});
 });
