@@ -516,3 +516,35 @@ model CrmInvitation {
   consumedAt DateTime?
   revokedAt DateTime?
 }
+
+model JtFinanceWorkspace {
+ id String @id
+ version Int @default(1)
+ data Json
+ updatedAt DateTime @updatedAt
+}
+model JtFinanceChange {
+ id String @id
+ actorId String
+ actorLabel String
+ version Int
+ before Json
+ after Json
+ createdAt DateTime @default(now())
+}
+model JtFinanceRequest {
+ id String @id
+ hash String
+ result Json
+ createdAt DateTime @default(now())
+}
+model JtFinanceReceipt {
+ id String @id
+ expenseId String
+ filename String
+ mime String
+ bytes Bytes
+ actorId String
+ createdAt DateTime @default(now())
+ @@index([expenseId])
+}
